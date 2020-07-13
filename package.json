@@ -11,5 +11,13 @@
   "dependencies": {
     "express": "^4.17.1",
     "vhost": "^3.0.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rashley2712/astroserver.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rashley2712/astroserver/issues"
+  },
+  "homepage": "https://github.com/rashley2712/astroserver#readme"
 }

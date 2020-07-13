@@ -19,11 +19,28 @@ if __name__ == "__main__":
 		JSON = True
 	if arg.date == 'now':	
 		currentDate = ephem.Date(datetime.datetime.utcnow())
+		(year, month, date, hour, minute, second) = currentDate.tuple()
+		# If between 9.00am and midnight. Use the date set to midday
+		if hour>9:
+			hour = 12
+			minute = 0
+			second = 0
+		else:
+			hour = 12
+			minute = 0
+			second = 0
+			date = date - 1
+		if output: print year, month, date, hour, minute, second
+		currentDate = ephem.Date((year, month, date, hour, minute, second))
+		
+	
 	else:
 		currentDate = ephem.Date(arg.date)
 		currentDate+= .5
 			
-	if output: print "Using the following date for calculations: ", currentDate
+	if output: 
+		print "Using the following date for calculations: ", currentDate
+		print "Current PyEphem date is: ", ephem.now() 
 
 	#---------------------------------------------------------------------------------
 		
@@ -34,25 +51,25 @@ if __name__ == "__main__":
 	roque.date = currentDate
 	
 	roque.horizon = "-1.19"
-	sunset = roque.next_setting(ephem.Sun())
-	sunrise = roque.next_rising(ephem.Sun())
+	sunset = str(roque.next_setting(ephem.Sun())) + " UT"
+	sunrise = str(roque.next_rising(ephem.Sun())) + " UT"
 	
 	roque.horizon = "-18"
-	eTwilight = roque.next_setting(ephem.Sun(), use_center=False)
-	mTwilight = roque.next_rising(ephem.Sun(), use_center=False)
+	eTwilight = str(roque.next_setting(ephem.Sun(), use_center=False)) + " UT"
+	mTwilight = str(roque.next_rising(ephem.Sun(), use_center=False)) + " UT"
 	
 	if output:  
 		print "Sunset:", sunset
 		print "Evening twilight:", eTwilight
 		print "Morning twilight:", mTwilight
-		print "Sunrisgfdgdge:", sunrise
+		print "Sunrise:", sunrise
 		
 	if JSON:
 		response = {}
-		response['sunset'] = str(sunset)
-		response['sunrise'] = str(sunrise)
-		response['etwilight'] = str(eTwilight)
-		response['mtwilight'] = str(mTwilight)
+		response['sunset'] = sunset
+		response['sunrise'] = sunrise
+		response['etwilight'] = eTwilight
+		response['mtwilight'] = mTwilight
 		sys.stdout.write(json.dumps(response))
 	
 	sys.stdout.flush()
