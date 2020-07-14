@@ -49,6 +49,6 @@ app.use(vhost('astrofarm.*', astrofarm))
 
 app.get('/', (req, res) => res.redirect('/index.html'))
 app.use(express.static('/var/www'))
-app.listen(port, ()=> console.log('astroserveratm listening on port',  port))
+app.listen(port, ()=> console.log('astroserver listening on port',  port))
 
 
