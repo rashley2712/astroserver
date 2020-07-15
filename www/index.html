@@ -1,0 +1,92 @@
+<html>
+    <head>
+        <title>AstroFarm, La Palma</title>
+        <link rel="stylesheet" type="text/css" href="styles.css"/>
+     	
+        <script src="astrotools.js"></script>
+        
+        <script language="Javascript">
+            function getJSON(url, callback) {
+                var xhr = new XMLHttpRequest();
+                    xhr.open('GET', url, true);
+                    xhr.responseType = 'json';
+                    xhr.onload = function() {
+                        var status = xhr.status;
+                        if (status === 200) {
+                            callback(null, xhr.response);
+                        } else {
+                            callback(status, xhr.response);
+                        }
+                    };
+                xhr.send();
+            };    
+
+            // Global variables
+            var currentTime = new Date();
+            var clockID = null;
+            console.log(currentTime);
+            
+            document.onload = onLoad();
+            
+              
+            function onLoad() {
+                console.log("The page has loaded....");
+                getJSON('info', info);
+                clockID = setInterval(updateClock, 1000);
+            }
+       
+            function info(err, data) {
+                console.log(data);
+                document.getElementById("hostname").innerText = data.system.hostname;
+                document.getElementById("uptime").innerText = "uptime: " + data.system.uptime + "s";
+                document.getElementById("moonphase").innerText = decimalPlacesString(data.moon.illuminated, 2) + "  " + data.moon.mode;
+                document.getElementById("etwilight").innerText = data.sun.etwilight;
+                document.getElementById("mtwilight").innerText = data.sun.mtwilight;
+                document.getElementById("sunset").innerText = data.sun.sunset;
+                document.getElementById("sunrise").innerText = data.sun.sunrise;
+                document.getElementById('currentUTC').innerText = formatUTCTime(currentTime);
+            }
+
+            function updateClock() {
+                currentTime = new Date();
+                document.getElementById('currentUTC').innerText = formatUTCTime(currentTime);
+            }
+
+  
+
+</script>
+</head>
+
+<body>
+    
+    <h1>AstroFarm</h1>
+    <h2>La Palma</h2>
+    <p><a href="https://goo.gl/maps/B5QmqDhPithRyyS38">28°47'09.8"N 17°56'05.0"W</a></p>
+    <p>
+        <table border="1">
+            <tr>
+                <td style="font-weight: bold;">Current UTC</td><td><span id="currentUTC">&nbsp;</span></td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold;">Current moon phase</td><td><span id="moonphase">&nbsp;</span></td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold;">Sunset</td><td><span id="sunset">&nbsp;</span></td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold;">Evening twilight</td><td><span id="etwilight">&nbsp;</span></td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold;">Morning twilight</td><td><span id="mtwilight">&nbsp;</span></td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold;">Sunrise</td><td><span id="sunrise">&nbsp;</span></td>
+            </tr>
+        </table>
+    </p>
+  
+    <p id='footer'>
+    <span id="hostname">unknown</span>&nbsp;&nbsp;<span id="uptime">&nbsp;</span>
+    </p>
+</body>
+</html>

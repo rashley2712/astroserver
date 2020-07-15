@@ -9,11 +9,16 @@ function sun(inputDate, callback) {
 	callPython([__dirname + "/sun.py", "-d" + inputDate], callback)
 }
 
+function info(inputDate, callback) {
+	if (inputDate == undefined) inputDate = "now";
+	callPython([__dirname + "/info.py", "-d" + inputDate], callback)
+}
+
 
 function callPython(pythonScript, callback) {
 	var spawn = require("child_process").spawn;
 	pythonScript.push("--json")
-	var pythonCall = spawn('python', pythonScript);
+	var pythonCall = spawn('python3', pythonScript);
 	pythonResponse = ""
 	pythonCall.stdout.on('data', function (data){
 		pythonResponse+= data
@@ -33,3 +38,4 @@ function callPython(pythonScript, callback) {
 
 module.exports.moon = moon
 module.exports.sun = sun
+module.exports.info = info

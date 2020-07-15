@@ -25,23 +25,23 @@ if __name__ == "__main__":
 		currentDate = ephem.Date(datetime.datetime.utcnow())
 	else:
 		currentDate = ephem.Date(arg.date)	
-	if output: print currentDate
+	if output: print(currentDate)
 	moon.compute(currentDate)
-	if output: print "Illuminated:", moon.phase
-	if output: print "Next new moon:", ephem.next_new_moon(currentDate)
+	if output: print("Illuminated:", moon.phase)
+	if output: print("Next new moon:", ephem.next_new_moon(currentDate))
 	timeToNewMoon = ephem.next_new_moon(currentDate) - currentDate
 	timeSinceLastNewMoon = currentDate - ephem.previous_new_moon(currentDate)
 	period = timeToNewMoon + timeSinceLastNewMoon
 	phase = timeSinceLastNewMoon / period
 	if output: 
-		print timeSinceLastNewMoon, phase
-		print timeToNewMoon
+		print(timeSinceLastNewMoon, phase)
+		print(timeToNewMoon)
 	
 	if phase>0.5:
 		mode = "waning"
 	else:
 		mode = "waxing" 
-	if output: print "%1.0f%% illuminated, %s"%(moon.phase, mode)
+	if output: print("%1.0f%% illuminated, %s"%(moon.phase, mode))
 	
 	if JSON:
 		response = {}

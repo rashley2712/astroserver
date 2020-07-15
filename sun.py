@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import ephem
@@ -30,7 +30,7 @@ if __name__ == "__main__":
 			minute = 0
 			second = 0
 			date = date - 1
-		if output: print year, month, date, hour, minute, second
+		if output: print(year, month, date, hour, minute, second)
 		currentDate = ephem.Date((year, month, date, hour, minute, second))
 		
 	
@@ -39,8 +39,8 @@ if __name__ == "__main__":
 		currentDate+= .5
 			
 	if output: 
-		print "Using the following date for calculations: ", currentDate
-		print "Current PyEphem date is: ", ephem.now() 
+		print("Using the following date for calculations: ", currentDate)
+		print("Current PyEphem date is: ", ephem.now() )
 
 	#---------------------------------------------------------------------------------
 		
@@ -59,10 +59,10 @@ if __name__ == "__main__":
 	mTwilight = str(roque.next_rising(ephem.Sun(), use_center=False)) + " UT"
 	
 	if output:  
-		print "Sunset:", sunset
-		print "Evening twilight:", eTwilight
-		print "Morning twilight:", mTwilight
-		print "Sunrise:", sunrise
+		print("Sunset:", sunset)
+		print("Evening twilight:", eTwilight)
+		print("Morning twilight:", mTwilight)
+		print("Sunrise:", sunrise)
 		
 	if JSON:
 		response = {}
