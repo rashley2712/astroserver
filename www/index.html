@@ -34,16 +34,34 @@
             // Global variables
             var currentTime = new Date();
             var clockID = null;
+            var constellation = null;
+            var clockAngle = 0;
             console.log(currentTime);
             
-            document.onload = onLoad();
-            
+            // Call a function only when the page is fully loaded.
+		    document.addEventListener('readystatechange', event => {
+		        if (event.target.readyState === "complete") {
+			        onLoad();
+		        }
+		    });
+  
               
             function onLoad() {
                 console.log("The page has loaded....");
                 getJSON('info', info);
+                getJSON('ursaminor.json', starsLoaded)
                 clockID = setInterval(updateClock, 1000);
             }
+
+            window.onload = window.onresize = function() {
+                var canvas = document.getElementById('canvasContainer');
+                var canvasWidth = document.getElementById('canvas').width;
+                canvas.style.top = 20;
+                canvas.style.left = window.innerWidth - canvasWidth - 10;
+                console.log("resized");
+            }
+
+           
        
             function info(err, data) {
                 console.log(data);
@@ -60,8 +78,42 @@
             function updateClock() {
                 currentTime = new Date();
                 document.getElementById('currentUTC').innerText = formatUTCTime(currentTime);
+                clockAngle+=1;
+                drawClock();
             }
 
+            function starsLoaded(err, data) {
+                if (err!=null) { console.log(err);}
+                console.log("Constellation", data);
+                constellation = data;
+                drawClock();
+
+            }
+
+            function drawClock() {
+                const quiet = true;
+                var canvas = document.getElementById("canvas");
+                
+                var ctx = canvas.getContext("2d");
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(document.getElementById('cross'), canvas.width/2, canvas.height/2);
+                var stars = constellation.stars;
+                const size = canvas.width/2/(90-70);
+                for (s of stars) {
+                    if (!quiet) console.log(s.name, s.coordinates.RA, s.coordinates.DEC);
+                    var coords = s.coordinates.RA + " " +  s.coordinates.DEC;
+                    var result = fromSexagesimalString(coords);
+                    if (!quiet) console.log(result);
+                    var r = size * (90 - result.dec);
+                    var angle = clockAngle + result.ra;
+                    var x = canvas.width/2 + r * Math.sin(radians(angle));
+                    var y = canvas.height/2 - r * Math.cos(radians(angle));
+                    if (!quiet) console.log(x, y)
+                    ctx.drawImage(document.getElementById('star'), x, y);
+                }
+            }
+
+      
   
 
 </script>
@@ -94,6 +146,12 @@
             </tr>
         </table>
     </p>
+
+    <div id='canvasContainer' style="position:absolute; top:0; left:0; z-index:1">  
+    <canvas id="canvas" width="500" height="500" style="border:1px solid #ffffff;"></canvas>
+    </div>  
+    <div style="display:none;"><img id="star" src="images/star.png"></div>
+    <div style="display:none;"><img id="cross" src="images/cross.png"></div>
   
     <p id='footer'>
     <span id="hostname">unknown</span>&nbsp;&nbsp;<span id="uptime">&nbsp;</span>

@@ -1,0 +1,53 @@
+{ 
+"name": "Ursa Minor",
+"stars" :
+	[ 
+
+{ "name": "Polaris", 
+  "letter": "alpha",
+  "coordinates": { "RA": "02:31:47.08", "DEC": "+89:15:50.9" },
+  "mag": 1.97 
+},
+
+{
+  "name": "Beta UMi", 
+  "letter": "beta",
+  "coordinates": { "RA": "14:50:42.40", "DEC": "+74:09:19.7" },
+  "mag": 2.07 
+},
+  
+{
+  "name": "Gamma UMi", 
+  "letter": "gamma",
+  "coordinates": { "RA": "15:20:43.75", "DEC": "+71:50:02.3" },
+  "mag": 3.04 
+}, 
+{
+  "name": "Epsilon UMi", 
+  "letter": "epsilon",
+  "coordinates": { "RA": "16h 45m 58.16s", "DEC": "+82° 02′ 14.1″" },
+  "mag": 4.21 
+},
+
+{
+  "name": "Zeta UMi", 
+  "letter": "zeta",
+  "coordinates": { "RA": "15:44:03.46", "DEC": "+77:47:40.2" },
+  "mag": 4.29
+}, 
+{
+  "name": "Delta UMi", 
+  "letter": "delta",
+  "coordinates": { "RA": "17:32:12.90", "DEC": "+86:35:10.8" },
+  "mag": 4.35
+},
+{
+  "name": "Eta UMi", 
+  "letter": "eta",
+  "coordinates": { "RA": "16:17:30.50", "DEC": "+75:45:16.9" },
+  "mag": 4.95
+}
+]
+
+}
+

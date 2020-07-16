@@ -95,7 +95,7 @@ function removeEmptyElements(inputArray) {
 	for (element in inputArray) {
 		if (inputArray[element].length!=0) newArray.push(inputArray[element]); 
 	}
-	console.log(newArray);
+	// console.log(newArray);
 	return newArray;
 }
 
@@ -104,14 +104,14 @@ function fromSexagesimalString(radecStr) {
 	// Results are truncated to 4 figures after the decimal (1E-4 degrees)
 	// Format for input ra and dec are 'HH:MM:SS.dd' and 'nDD:MM:SS.dd' or HH MM SS.dd and nDD MM SS.dd 
 	
-	// First split on tabs
+	// First split on spaces
 	radecStr = radecStr.trim();
 	radecStr = radecStr.replace(/:/g, " ");
 	radecStr = radecStr.replace(/\t/g, " ");
-	console.log("input string:", radecStr);
+	//console.log("input string:", radecStr);
 	radecParts = radecStr.split(' ');
 	radecParts = removeEmptyElements(radecParts);
-	console.log("Parts:", radecParts);	
+	//console.log("Parts:", radecParts);	
 
 	if (radecParts.length != 6) {
 		console.log("Could not sensibly parse the line: " + radecStr);
