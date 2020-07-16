@@ -104,7 +104,7 @@
                     var coords = s.coordinates.RA + " " +  s.coordinates.DEC;
                     var result = fromSexagesimalString(coords);
                     if (!quiet) console.log(result);
-                    var r = size * (90 - result.dec);
+                    var r = Math.sin(radians(result.dec)) * size * (90 - result.dec);   // The first term is to correct for the projection on to a flat plane
                     var angle = clockAngle + result.ra;
                     var x = canvas.width/2 + r * Math.sin(radians(angle));
                     var y = canvas.height/2 - r * Math.cos(radians(angle));
@@ -148,7 +148,7 @@
     </p>
 
     <div id='canvasContainer' style="position:absolute; top:0; left:0; z-index:1">  
-    <canvas id="canvas" width="500" height="500" style="border:1px solid #ffffff;"></canvas>
+    <canvas id="canvas" width="500" height="500"></canvas>
     </div>  
     <div style="display:none;"><img id="star" src="images/star.png"></div>
     <div style="display:none;"><img id="cross" src="images/cross.png"></div>
@@ -157,4 +157,5 @@
     <span id="hostname">unknown</span>&nbsp;&nbsp;<span id="uptime">&nbsp;</span>
     </p>
 </body>
+<!--  style="border:1px solid #ffffff;-->
 </html>
