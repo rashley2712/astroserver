@@ -13,6 +13,16 @@ function zeroPad(input) {
 	return input.toString();
 }
 
+function formatDate(inputDate) {
+	var year, month, day;
+	year = inputDate.getYear() + 1900;
+	month = inputDate.getMonth() + 1;
+	day = inputDate.getDate(); 
+
+	var dateString = year.toString() + zeroPad(month) + zeroPad(day);
+	return dateString;
+}
+
 function formatUTCTime(inputDate) {
 	var hours;
 	var minutes;

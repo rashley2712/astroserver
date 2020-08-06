@@ -5,7 +5,8 @@
         <script language="javascript" type="text/javascript" src="astro.js-master/astro.js"></script>
 		<script language="javascript" type="text/javascript" src="astro.js-master/astro.constants.js"></script>
 		<script language="javascript" type="text/javascript" src="astro.js-master/astro.dates.js"></script>
-		<script language="javascript" type="text/javascript" src="astro.js-master/astro.ephem.js"></script>
+        <script language="javascript" type="text/javascript" src="astro.js-master/astro.ephem.js"></script>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <script>
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
@@ -14,16 +15,16 @@
           gtag('config', 'UA-52663594-2');
         </script>
         
-        <title>AstroFarm, La Palma</title>
+        <title>AstroFarm, Weather information</title>
         <link rel="stylesheet" type="text/css" href="styles.css"/>
      	
         <script src="astrotools.js"></script>
         
         <script language="Javascript">
-            function getJSON(url, callback) {
+            function getCSV(url, callback) {
                 var xhr = new XMLHttpRequest();
                     xhr.open('GET', url, true);
-                    xhr.responseType = 'json';
+                    // xhr.responseType = 'json';
                     xhr.onload = function() {
                         var status = xhr.status;
                         if (status === 200) {
@@ -39,148 +40,178 @@
             var currentTime = new Date();
             var secondsTimerId = null;
             var minutesTimerId = null;
-            var constellation = null;
-            var clockAngle = 0;
-            var LMSiderealTime; 
+            var cloudData = {};
+            var dayData = null;
+            var chartDate = "20200731";
+            var availableDates = [];
+            var currentDateIndex = -1;
+            var chartLoaded = false;
+            var chart;
             console.log(currentTime);
             
+            // Import Google Charts
+            google.charts.load('current', {'packages':['corechart', 'timeline']});
+            google.charts.setOnLoadCallback(function() { chartLoaded = true;});
+
             // Call a function only when the page is fully loaded.
 		    document.addEventListener('readystatechange', event => {
 		        if (event.target.readyState === "complete") {
 			        onLoad();
 		        }
 		    });
-  
-              
+                
             function onLoad() {
                 console.log("The page has loaded....");
-                getJSON('info', info);
-                getJSON('ursaminor.json', starsLoaded);
-                updateTime();
-                secondsTimerId = setInterval(updateTime, 1000);
-                minutesTimerId = setInterval(updateClock, 60*1000);
-                infoTimerId = setInterval(updateInfo, 10*60*1000);
-                var canvas = document.getElementById('canvasContainer');
-                var canvasWidth = document.getElementById('canvas').width;
-                canvas.style.top = 20;
-                canvas.style.left = window.innerWidth - canvasWidth - 10;
+                getCSV('userdata.csv', parseCSV);
+                 
             }
 
-            window.onresize = function() {
-                var canvas = document.getElementById('canvasContainer');
-                var canvasWidth = document.getElementById('canvas').width;
-                canvas.style.top = 20;
-                canvas.style.left = window.innerWidth - canvasWidth - 10;
-            }
-
-           
-       
-            function info(err, data) {
-                console.log(data);
-                document.getElementById("hostname").innerText = data.system.hostname;
-                document.getElementById("uptime").innerText = "uptime: " + data.system.uptime + "s";
-                document.getElementById("moonphase").innerText = decimalPlacesString(data.moon.illuminated, 2) + "  " + data.moon.mode;
-                document.getElementById("etwilight").innerText = data.sun.etwilight;
-                document.getElementById("mtwilight").innerText = data.sun.mtwilight;
-                document.getElementById("sunset").innerText = data.sun.sunset;
-                document.getElementById("sunrise").innerText = data.sun.sunrise;
-                document.getElementById('currentUTC').innerText = formatUTCTime(currentTime);
-            }
-
-            function updateTime() {
-                currentTime = new Date();
-                LMSiderealTime = astrojs.dates.getLST(currentTime, 342.1184);
-                // console.log(LMSiderealTime);
-                // console.log(timeDecimalToHMS(LMSiderealTime));
-                document.getElementById('currentUTC').innerText = formatUTCTime(currentTime);
-                document.getElementById('sidereal').innerText = timeDecimalToHMS(LMSiderealTime);
-            }
-
-            function updateClock() {
-                clockAngle = 360 - LMSiderealTime*15;
-                console.log("Redrawing siderial clock");
-                drawClock();
-            }
-
-            function updateInfo() {
-                getJSON('info', info);
-            }
-
-            function starsLoaded(err, data) {
-                if (err!=null) { console.log(err);}
-                console.log("Constellation", data);
-                constellation = data;
-                updateClock();
-            }
-
-            function drawClock() {
-                const quiet = true;
-                var canvas = document.getElementById("canvas");
-                const size = canvas.width/2/(90-70);
-                
-                var ctx = canvas.getContext("2d");
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                // Draw some grid lines first
-                for (var ra=0; ra<24; ra=ra+1) {
-                    angle = clockAngle + ra*15;
-                    r = size*50;
-                    var ox = canvas.width/2;
-                    var oy = canvas.height/2;
-                    var x = canvas.width/2 + r * Math.sin(radians(angle));
-                    var y = canvas.height/2 - r * Math.cos(radians(angle));
-                    ctx.beginPath();
-                    ctx.moveTo(ox, oy);
-                    ctx.lineTo(x, y);
-                    ctx.strokeStyle='#0000aa';
-                    ctx.stroke();
+            function parseField(field, type) {
+                if (!field) return null;
+                var valueStr = field.replace(/['"]+/g, '');
+                if (type=="float") return parseFloat(valueStr);
+                else return valueStr;    
                     
+            }
+
+            function combineDateTime(cloudData) {
+                cloudData.dateTime = [];
+                for (var i in cloudData.Date) {
+                    var dateString = cloudData.Date[i] + " " + cloudData.Time[i];
+                    var unixTime = Date.parse(dateString);
+                    var newDate = new Date(unixTime);
+                    cloudData.dateTime.push(newDate);
+                    }
+                // Search for the dateBreaks and update the times
+                var beginTime = cloudData.dateTime[0];
+                var startTime = beginTime;
+                var dateBroken = false;
+                var counter = 0;
+                for (var i=0; i<cloudData.dateTime.length; i++) {
+                    cloudField = cloudData['Cloud Condition'][i];
+                    var advance = cloudData.dateTime[i] - beginTime;
+                    var newTime = new Date(advance + startTime.getTime());
+                    if (cloudField=='DateBreak') {
+                        startTime = cloudData.dateTime[i];
+                        beginTime = cloudData.dateTime[i+1];
+                        console.log("DateBreak in line:", i);
+                        dateBroken = true;
+                        continue;
+                    }
+                 
+                    cloudData.dateTime[i] = newTime;
+
                 }
-                // Draw stronger grid lines 
-                for (var ra=0; ra<24; ra=ra+6) {
-                    angle = clockAngle + ra*15;
-                    r = size*50;
-                    var ox = canvas.width/2;
-                    var oy = canvas.height/2;
-                    var x = canvas.width/2 + r * Math.sin(radians(angle));
-                    var y = canvas.height/2 - r * Math.cos(radians(angle));
-                    ctx.beginPath();
-                    ctx.moveTo(ox, oy);
-                    ctx.lineTo(x, y);
-                    ctx.strokeStyle='#0000ff';
-                    ctx.stroke();
-                    
+                console.log(cloudData);
+            }
+
+            function parseCSV(err, data) {
+                console.log("Got CSV data");
+                lines = data.split('\n');
+                headers = lines.shift().split(",");
+                console.log(headers);
+                var headerArray = [];
+                for (h of headers) { 
+                    key = h.replace(/['"]+/g, '');
+                    headerArray.push(key);
+                    cloudData[key] = [];
                 }
-                for (var dec=85; dec>60; dec=dec-5) {
-                    var ox = canvas.width/2;
-                    var oy = canvas.height/2;
-                    radius = Math.sin(radians(dec)) * size*(90-dec);
-                    ctx.beginPath();
-                    ctx.arc(ox, oy, radius, 0, 2 * Math.PI);
-                    ctx.strokeStyle='#0000aa';
-                    ctx.stroke();
-                    
+                for (line of lines) {
+                    if (line.length < 3) continue;
+                    fields = line.split(",");
+                    cloudData[headerArray[0]].push(parseField(fields[0], "string"));    
+                    cloudData[headerArray[1]].push(parseField(fields[1], "string"));
+                    cloudData[headerArray[2]].push(parseField(fields[2], "string"));
+                        
+                    cloudData[headerArray[5]].push(parseField(fields[5], "float"));
                 }
-                //var cross = document.getElementById('cross')
-                //ctx.drawImage(cross, canvas.width/2 - cross.width/2, canvas.height/2 - cross.height/2);
-                var stars = constellation.stars;
-                var star = document.getElementById('star')
-                for (s of stars) {
-                    if (!quiet) console.log(s.name, s.coordinates.RA, s.coordinates.DEC);
-                    var coords = s.coordinates.RA + " " +  s.coordinates.DEC;
-                    var result = fromSexagesimalString(coords);
-                    if (!quiet) console.log(result);
-                    var r = Math.sin(radians(result.dec)) * size * (90 - result.dec);   // The first term is to correct for the projection on to a flat plane
-                    var angle = clockAngle + result.ra;
-                    var x = canvas.width/2 + r * Math.sin(radians(angle));
-                    var y = canvas.height/2 - r * Math.cos(radians(angle));
-                    if (!quiet) console.log(x, y)
-                    
-                    ctx.drawImage(star, x - star.width/2, y - star.height/2);
+                console.log(cloudData);
+
+                combineDateTime(cloudData);
+                dayData = groupIntoDays(cloudData);
+                drawChart(chartDate);
+               
+           }
+
+           function groupIntoDays(cloudData) {
+                var uniqueDates = [];
+                for (var i=0; i<cloudData.dateTime.length; i++) {
+                    var dateTimeValue = cloudData.dateTime[i];
+                    dateString = formatDate(dateTimeValue);
+                    if (!uniqueDates.includes(dateString)) uniqueDates.push(dateString);
                 }
-                // Draw some grid lines first
+                console.log("unique dates:", uniqueDates);
+                availableDates = uniqueDates;
+                dayData = {};
+                for (d of uniqueDates) {
+                    dayData[d] = {};
+                    var dateTimes = [];
+                    var skyTemps = [];
+                    for (var i=0; i<cloudData.dateTime.length; i++) {
+                        var dateTimeValue = cloudData.dateTime[i];
+                        dateString = formatDate(dateTimeValue);
+                        if (dateString==d) {
+                            dateTimes.push(dateTimeValue);
+                            skyTemps.push(cloudData['Cloud Value'][i]);
+                        }
+                    }
+                    dayData[d]['dateTime'] = dateTimes;
+                    dayData[d]['skyTemp'] = skyTemps;
+
+                }
+                console.log("Day data:", dayData);
+                return dayData;
             }
 
       
+
+            function drawChart() {
+                if (currentDateIndex == -1) currentDateIndex = availableDates.length -1;
+                if (!chartLoaded) {
+                    console.log("Google stuff not loaded! Will try again in 1 second...");
+                    setTimeout(drawChart, 1000, dateString);
+                    return;
+                } else {
+                    console.log("Google charts are ready.");
+                }
+
+                dateString = availableDates[currentDateIndex];
+                chartDate = dateString;
+                todaysData = dayData[dateString];
+                console.log("Today's data", todaysData);
+                
+                var data = new google.visualization.DataTable();
+                data.addColumn('datetime', 'Time of day');
+                data.addColumn('number', 'Sky temperature');
+                
+                for (var i=0; i<todaysData.dateTime.length; i++) {
+                    var dateObject = new Date(todaysData.dateTime[i].getYear()+1900, todaysData.dateTime[i].getMonth()+1, todaysData.dateTime[i].getDate());
+                    data.addRow([todaysData.dateTime[i], parseFloat(todaysData.skyTemp[i])]);
+                    console.log(typeof dateObject)
+                }
+                
+
+                var options = {
+                title: 'Sky temperature for ' + dateString,
+                hAxis: {title: 'Time'},
+                vAxis: {title: 'Sky Temperature (C)'},
+                legend: 'none'
+                };
+
+                chart = new google.visualization.ScatterChart(document.getElementById('chart_div'));  
+                chart.draw(data, options);
+                document.getElementById('chartDate').innerText = chartDate;
+            }
+
+            function shiftDay(amount) {
+                console.log("Shift day by", amount);
+                currentDateIndex = currentDateIndex + amount;
+                if (currentDateIndex == availableDates.length) {
+                    currentDateIndex--;
+                    return;
+                }
+                drawChart();
+            }
   
 
 </script>
@@ -190,36 +221,15 @@
     
     <h1>AstroFarm</h1>
     <h2>La Palma</h2>
-    <p><a href="https://goo.gl/maps/B5QmqDhPithRyyS38" target="_new">28°47'09.8"N 17°56'05.0"W</a> (altitude: 1153m)</p>
-    <p>
-        <table border="1">
-            <tr>
-                <td style="font-weight: bold;">Current UTC</td><td><span id="currentUTC">&nbsp;</span></td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold;">Current moon phase</td><td><span id="moonphase">&nbsp;</span></td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold;">Sunset</td><td><span id="sunset">&nbsp;</span></td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold;">Evening twilight</td><td><span id="etwilight">&nbsp;</span></td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold;">Morning twilight</td><td><span id="mtwilight">&nbsp;</span></td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold;">Sunrise</td><td><span id="sunrise">&nbsp;</span></td>
-            </tr>
-        </table>
-    </p>
-
-    <div id='canvasContainer' style="position:absolute; top:0; left:0; z-index:1">  
-    <canvas id="canvas" width="500" height="500"></canvas>
-    <div align="center"><span id="sidereal"></span></div>
-    </div>  
-    <div style="display:none;"><img id="star" src="images/star.png"></div>
-    <div style="display:none;"><img id="cross" src="images/cross.png"></div>
+    <p>site conditions</p>
+    <table>
+        <tr>
+            <td><a onclick="shiftDay(-1)">&lt;&lt;</a></td>
+            <td><span id="chartDate">date</span></td>
+            <td><a onclick="shiftDay(1)">&gt;&gt;</a></td>
+        </tr>
+    </table>
+    <div id="chart_div" style="width: 900px; height: 500px;"></div>
   
     <p id='footer'>
     <span id="hostname">unknown</span>&nbsp;&nbsp;<span id="uptime">&nbsp;</span>
