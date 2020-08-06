@@ -124,6 +124,7 @@
                     cloudData[headerArray[2]].push(parseField(fields[2], "string"));
                         
                     cloudData[headerArray[5]].push(parseField(fields[5], "float"));
+                    cloudData[headerArray[9]].push(parseField(fields[9], "float"));
                 }
                 console.log(cloudData);
 
@@ -147,16 +148,19 @@
                     dayData[d] = {};
                     var dateTimes = [];
                     var skyTemps = [];
+                    var ambientTemps = [];
                     for (var i=0; i<cloudData.dateTime.length; i++) {
                         var dateTimeValue = cloudData.dateTime[i];
                         dateString = formatDate(dateTimeValue);
                         if (dateString==d) {
                             dateTimes.push(dateTimeValue);
                             skyTemps.push(cloudData['Cloud Value'][i]);
+                            ambientTemps.push(cloudData['Ambient Temperature'][i]);
                         }
                     }
                     dayData[d]['dateTime'] = dateTimes;
                     dayData[d]['skyTemp'] = skyTemps;
+                    dayData[d]['ambientTemp'] = ambientTemps;
 
                 }
                 console.log("Day data:", dayData);
@@ -183,19 +187,20 @@
                 var data = new google.visualization.DataTable();
                 data.addColumn('datetime', 'Time of day');
                 data.addColumn('number', 'Sky temperature');
+                data.addColumn('number', 'Ambient temperature');
                 
                 for (var i=0; i<todaysData.dateTime.length; i++) {
-                    var dateObject = new Date(todaysData.dateTime[i].getYear()+1900, todaysData.dateTime[i].getMonth()+1, todaysData.dateTime[i].getDate());
-                    data.addRow([todaysData.dateTime[i], parseFloat(todaysData.skyTemp[i])]);
-                    console.log(typeof dateObject)
+                    data.addRow([todaysData.dateTime[i], parseFloat(todaysData.skyTemp[i]), parseFloat(todaysData.ambientTemp[i])]);
                 }
                 
 
                 var options = {
                 title: 'Sky temperature for ' + dateString,
-                hAxis: {title: 'Time'},
-                vAxis: {title: 'Sky Temperature (C)'},
-                legend: 'none'
+                hAxis: {title: 'Time', format: 'HH:mm' },
+                vAxis: {title: 'Temperature (C)'},
+                legend: { position: 'in' }, 
+                pointSize: 3
+
                 };
 
                 chart = new google.visualization.ScatterChart(document.getElementById('chart_div'));  
