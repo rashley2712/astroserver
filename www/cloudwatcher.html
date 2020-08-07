@@ -42,6 +42,7 @@
             var minutesTimerId = null;
             var cloudData = {};
             var dayData = null;
+            var nightData = null;
             var chartDate = "20200731";
             var availableDates = [];
             var currentDateIndex = -1;
@@ -130,6 +131,7 @@
 
                 combineDateTime(cloudData);
                 dayData = groupIntoDays(cloudData);
+                nightData = groupIntoNights(cloudData);
                 drawChart(chartDate);
                
            }
@@ -167,6 +169,41 @@
                 return dayData;
             }
 
+            function groupIntoNights(cloudData) {
+                var uniqueDates = [];
+                for (var i=0; i<cloudData.dateTime.length; i++) {
+                    var dateTimeValue = cloudData.dateTime[i];
+                    dateString = formatDate(dateTimeValue);
+                    if (!uniqueDates.includes(dateString)) uniqueDates.push(dateString);
+                }
+                availableDates = uniqueDates;
+                console.log("Available dates:", availableDates);
+                nightData = {};
+                for (d of uniqueDates) {
+                    nightData[d] = {};
+                    console.log("finding the day/night data for:", d, "starting at midday and running to the next midday");
+                    var startTime = new Date(parseInt(d.substring(0, 4)), parseInt(d.substring(4, 6))-1, parseInt(d.substring(6, 8)), 12, 0);
+                    var endTime = new Date(startTime.getTime() + 86400*1000);
+                    console.log(startTime, endTime);
+                    var dateTimes = [];
+                    var skyTemps = [];
+                    var ambientTemps = [];
+                    for (var i=0; i<cloudData.dateTime.length; i++ ){
+                        if ((cloudData.dateTime[i]> startTime) && (cloudData.dateTime[i]<endTime)) {
+                            dateTimes.push(cloudData.dateTime[i]);
+                            skyTemps.push(cloudData['Cloud Value'][i]);
+                            ambientTemps.push(cloudData['Ambient Temperature'][i]);
+                        }
+                    }
+                    nightData[d]['dateTime'] = dateTimes;
+                    nightData[d]['skyTemp'] = skyTemps;
+                    nightData[d]['ambientTemp'] = ambientTemps;
+
+                }
+                console.log(nightData);
+                return nightData;
+            }
+
       
 
             function drawChart() {
@@ -181,7 +218,7 @@
 
                 dateString = availableDates[currentDateIndex];
                 chartDate = dateString;
-                todaysData = dayData[dateString];
+                todaysData = nightData[dateString];
                 console.log("Today's data", todaysData);
                 
                 var data = new google.visualization.DataTable();
@@ -195,15 +232,15 @@
                 
 
                 var options = {
-                title: 'Sky temperature for ' + dateString,
-                hAxis: {title: 'Time', format: 'HH:mm' },
+                title: 'Conditions on ' + dateString,
+                hAxis: {title: 'Time', format: 'HH:mm'},
                 vAxis: {title: 'Temperature (C)'},
                 legend: { position: 'in' }, 
                 pointSize: 3
 
                 };
 
-                chart = new google.visualization.ScatterChart(document.getElementById('chart_div'));  
+                chart = new google.visualization.ScatterChart(document.getElementById('chart_temperature'));  
                 chart.draw(data, options);
                 document.getElementById('chartDate').innerText = chartDate;
             }
@@ -234,7 +271,7 @@
             <td><a onclick="shiftDay(1)">&gt;&gt;</a></td>
         </tr>
     </table>
-    <div id="chart_div" style="width: 900px; height: 500px;"></div>
+    <div id="chart_temperature" style="width: 900px; height: 500px;"></div>
   
     <p id='footer'>
     <span id="hostname">unknown</span>&nbsp;&nbsp;<span id="uptime">&nbsp;</span>
