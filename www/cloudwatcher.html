@@ -6,6 +6,7 @@
 		<script language="javascript" type="text/javascript" src="astro.js-master/astro.constants.js"></script>
 		<script language="javascript" type="text/javascript" src="astro.js-master/astro.dates.js"></script>
         <script language="javascript" type="text/javascript" src="astro.js-master/astro.ephem.js"></script>
+        <script language="javascript" type="text/javascript" src="charts.js"></script>
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <script>
           window.dataLayer = window.dataLayer || [];
@@ -110,30 +111,41 @@
                 console.log("Got CSV data");
                 lines = data.split('\n');
                 headers = lines.shift().split(",");
-                console.log(headers);
+                
                 var headerArray = [];
                 for (h of headers) { 
-                    key = h.replace(/['"]+/g, '');
+                    key = h.replace(/['"\r]+/g, '');
                     headerArray.push(key);
                     cloudData[key] = [];
                 }
+                console.log(headerArray);
                 for (line of lines) {
                     if (line.length < 3) continue;
                     fields = line.split(",");
                     cloudData[headerArray[0]].push(parseField(fields[0], "string"));    
                     cloudData[headerArray[1]].push(parseField(fields[1], "string"));
                     cloudData[headerArray[2]].push(parseField(fields[2], "string"));
+                    cloudData[headerArray[20]].push(parseField(fields[20], "string"));
                         
                     cloudData[headerArray[5]].push(parseField(fields[5], "float"));
                     cloudData[headerArray[9]].push(parseField(fields[9], "float"));
                 }
                 console.log(cloudData);
-
                 combineDateTime(cloudData);
+                cloudData['RH Value'] = convertHumidityToNumber(cloudData['RH Value'])
                 dayData = groupIntoDays(cloudData);
                 nightData = groupIntoNights(cloudData);
-                drawChart(chartDate);
+                drawCharts();
                
+           }
+
+           function convertHumidityToNumber(humidityArray) {
+                newValues = [];
+                for (i=0; i<humidityArray.length; i++) {
+                    var value = parseInt(humidityArray[i].replace(/[%]+/g, ''));
+                    newValues.push(value);
+                }
+                return newValues;
            }
 
            function groupIntoDays(cloudData) {
@@ -181,32 +193,33 @@
                 nightData = {};
                 for (d of uniqueDates) {
                     nightData[d] = {};
-                    console.log("finding the day/night data for:", d, "starting at midday and running to the next midday");
                     var startTime = new Date(parseInt(d.substring(0, 4)), parseInt(d.substring(4, 6))-1, parseInt(d.substring(6, 8)), 12, 0);
                     var endTime = new Date(startTime.getTime() + 86400*1000);
-                    console.log(startTime, endTime);
                     var dateTimes = [];
                     var skyTemps = [];
                     var ambientTemps = [];
+                    var relHumids = [];
                     for (var i=0; i<cloudData.dateTime.length; i++ ){
                         if ((cloudData.dateTime[i]> startTime) && (cloudData.dateTime[i]<endTime)) {
                             dateTimes.push(cloudData.dateTime[i]);
                             skyTemps.push(cloudData['Cloud Value'][i]);
                             ambientTemps.push(cloudData['Ambient Temperature'][i]);
+                            relHumids.push(cloudData['RH Value'][i]);
                         }
                     }
                     nightData[d]['dateTime'] = dateTimes;
                     nightData[d]['skyTemp'] = skyTemps;
                     nightData[d]['ambientTemp'] = ambientTemps;
+                    nightData[d]['relativeHumidity'] = relHumids;
 
                 }
-                console.log(nightData);
+                console.log("nightData:", nightData);
                 return nightData;
             }
 
       
 
-            function drawChart() {
+            function drawCharts() {
                 if (currentDateIndex == -1) currentDateIndex = availableDates.length -1;
                 if (!chartLoaded) {
                     console.log("Google stuff not loaded! Will try again in 1 second...");
@@ -216,32 +229,8 @@
                     console.log("Google charts are ready.");
                 }
 
-                dateString = availableDates[currentDateIndex];
-                chartDate = dateString;
-                todaysData = nightData[dateString];
-                console.log("Today's data", todaysData);
-                
-                var data = new google.visualization.DataTable();
-                data.addColumn('datetime', 'Time of day');
-                data.addColumn('number', 'Sky temperature');
-                data.addColumn('number', 'Ambient temperature');
-                
-                for (var i=0; i<todaysData.dateTime.length; i++) {
-                    data.addRow([todaysData.dateTime[i], parseFloat(todaysData.skyTemp[i]), parseFloat(todaysData.ambientTemp[i])]);
-                }
-                
-
-                var options = {
-                title: 'Conditions on ' + dateString,
-                hAxis: {title: 'Time', format: 'HH:mm'},
-                vAxis: {title: 'Temperature (C)'},
-                legend: { position: 'in' }, 
-                pointSize: 3
-
-                };
-
-                chart = new google.visualization.ScatterChart(document.getElementById('chart_temperature'));  
-                chart.draw(data, options);
+                drawTempChart();
+                drawHumidityChart();
                 document.getElementById('chartDate').innerText = chartDate;
             }
 
@@ -252,7 +241,7 @@
                     currentDateIndex--;
                     return;
                 }
-                drawChart();
+                drawCharts();
             }
   
 
@@ -272,9 +261,10 @@
         </tr>
     </table>
     <div id="chart_temperature" style="width: 900px; height: 500px;"></div>
+    <div id="chart_humidity" style="width: 900px; height: 300px;"></div>
   
     <p id='footer'>
-    <span id="hostname">unknown</span>&nbsp;&nbsp;<span id="uptime">&nbsp;</span>
+    
     </p>
 </body>
 <!--  style="border:1px solid #ffffff;-->
