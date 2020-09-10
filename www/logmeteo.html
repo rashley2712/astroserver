@@ -46,6 +46,7 @@
             var currentDateIndex = -1;
             var chartLoaded = false;
             var chart;
+            var dataRefreshTimerId = null;
             console.log(currentTime);
             
             // Import Google Charts
@@ -62,7 +63,7 @@
             function onLoad() {
                 console.log("The page has loaded....");
                 getCSV('meteo.log', parseCSV);
-                 
+                dataRefreshTimerId = setInterval(refreshData, 5*60*1000);
             }
 
             function parseField(field, type) {
@@ -191,7 +192,7 @@
                 } else {
                     console.log("Google charts are ready.");
                 }
-
+                console.log("Drawing the charts...");
                 drawTempChart();
                 drawHumidityChart();
                 drawPressureChart();
@@ -206,6 +207,12 @@
                     return;
                 }
                 drawCharts();
+            }
+
+            function refreshData() {
+                console.log("Refreshing data....");
+                getCSV('meteo.log', parseCSV);
+                // if (currentDateIndex == availableDates.length -1 ) drawCharts();
             }
   
 

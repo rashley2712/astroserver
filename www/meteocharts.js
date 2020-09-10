@@ -2,13 +2,13 @@ function drawTempChart() {
 	dateString = availableDates[currentDateIndex];
 	chartDate = dateString;
 	todaysData = nightData[dateString];
-	console.log("Today's data", todaysData);
+	//console.log("Today's data", todaysData);
 	var startTime = new Date(parseInt(dateString.substring(0, 4)), parseInt(dateString.substring(4, 6))-1, parseInt(dateString.substring(6, 8)), 12, 0);
 	var endTime = new Date(startTime.getTime() + 86400*1000);
 	
 	var data = new google.visualization.DataTable();
 	data.addColumn('datetime', 'Time of day');
-	data.addColumn('number', 'Ambient temperature');
+	data.addColumn('number', 'Ambient temperature (\u00B0C)');
 	
 	for (var i=0; i<todaysData.dateTime.length; i++) {
 		data.addRow([todaysData.dateTime[i], parseFloat(todaysData.ambientTemp[i])]);
@@ -18,7 +18,7 @@ function drawTempChart() {
 	var options = {
 	title: 'Conditions on ' + dateString,
 	hAxis: {title: 'Time', format: 'HH:mm', viewWindow: { min: startTime, max: endTime}},
-	vAxis: {title: 'Temperature (C)' , viewWindow: { min: -30, max:60} },
+	vAxis: {title: 'Temperature (\u00B0C)' , viewWindow: { min: -30, max:60} },
 	legend: { position: 'in' }, 
 	chartArea: {
 		left: "15%",
@@ -40,7 +40,7 @@ function drawHumidityChart() {
 	dateString = availableDates[currentDateIndex];
 	chartDate = dateString;
 	todaysData = nightData[dateString];
-	console.log("Today's data", todaysData);
+	//console.log("Today's data", todaysData);
 	var startTime = new Date(parseInt(dateString.substring(0, 4)), parseInt(dateString.substring(4, 6))-1, parseInt(dateString.substring(6, 8)), 12, 0);
 	var endTime = new Date(startTime.getTime() + 86400*1000);
 
@@ -76,13 +76,13 @@ function drawPressureChart() {
 	dateString = availableDates[currentDateIndex];
 	chartDate = dateString;
 	todaysData = nightData[dateString];
-	console.log("Today's data", todaysData);
+	//console.log("Today's data", todaysData);
 	var startTime = new Date(parseInt(dateString.substring(0, 4)), parseInt(dateString.substring(4, 6))-1, parseInt(dateString.substring(6, 8)), 12, 0);
 	var endTime = new Date(startTime.getTime() + 86400*1000);
 
 	var data = new google.visualization.DataTable();
 	data.addColumn('datetime', 'Time of day');
-	data.addColumn('number', 'Air pressure (hPa))');
+	data.addColumn('number', 'Air pressure (hPa)');
 	
 	for (var i=0; i<todaysData.dateTime.length; i++) {
 		data.addRow([todaysData.dateTime[i], parseFloat(todaysData.airPressure[i])]);
