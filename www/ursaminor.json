@@ -22,7 +22,7 @@
 {
   "name": "Epsilon UMi", 
   "letter": "epsilon",
-  "coordinates": { "RA": "16h 45m 58.16s", "DEC": "+82° 02′ 14.1″" },
+  "coordinates": { "RA": "16:45:58.16", "DEC": "+82:02:14.1" },
   "mag": 4.21 
 },
 {

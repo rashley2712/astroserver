@@ -1,14 +1,34 @@
 const express = require('express')
 const vhost= require('vhost')
 const astronomy = require('./astronomy.js')
+const bodyParser = require('body-parser');
+const fs = require('fs');
 
 const port = 80
 
 var astrofarm = express()
 
+astrofarm.post('/upload', function(request, response) {
+  console.log("Received a post");
+  // Save the data
+  const data = request.body;
+
+  var logString = ""
+  for (line of data.logData) {
+    console.log(line);
+    logString+=line+"\n";
+  }
+  const logFilename = '/var/www/astrofarm/meteo.log';
+  fs.appendFile(logFilename, logString, function (err) {
+    if (err) return console.log(err);
+    console.log('Updated', logFilename);
+  });
+  response.send("SUCCESS");
+})
+
 astrofarm.get('/', function(req, res) {
   // res.send('Welcome to AstroFarm')
-  console.log(req.url)
+  console.log("received a GET for", req.url)
   res.redirect('/index.html')
   })
 
@@ -44,6 +64,7 @@ astrofarm.use(express.static('/var/www/astrofarm'))
 
 
 const app = express()
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(vhost('astrofarm.*', astrofarm))
 
 app.get('/', (req, res) => res.redirect('/index.html'))

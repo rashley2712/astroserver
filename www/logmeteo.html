@@ -1,0 +1,248 @@
+<html>
+    <head>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-52663594-2"></script>
+		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+		<script language="javascript" type="text/javascript" src="meteocharts.js"></script>
+      
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+        
+          gtag('config', 'UA-52663594-2');
+        </script>
+        
+        <title>AstroFarm, Weather information</title>
+        <link rel="stylesheet" type="text/css" href="styles.css"/>
+     	
+        <script src="astrotools.js"></script>
+        
+        <script language="Javascript">
+            function getCSV(url, callback) {
+                var xhr = new XMLHttpRequest();
+                    xhr.open('GET', url, true);
+                    // xhr.responseType = 'json';
+                    xhr.onload = function() {
+                        var status = xhr.status;
+                        if (status === 200) {
+                            callback(null, xhr.response);
+                        } else {
+                            callback(status, xhr.response);
+                        }
+                    };
+                xhr.send();
+            };    
+
+            // Global variables
+            var currentTime = new Date();
+            var secondsTimerId = null;
+            var minutesTimerId = null;
+            var meteoData = {};
+            var dayData = null;
+            var nightData = null;
+            var chartDate = "20200731";
+            var availableDates = [];
+            var currentDateIndex = -1;
+            var chartLoaded = false;
+            var chart;
+            console.log(currentTime);
+            
+            // Import Google Charts
+            google.charts.load('current', {'packages':['corechart', 'timeline']});
+            google.charts.setOnLoadCallback(function() { chartLoaded = true;});
+
+            // Call a function only when the page is fully loaded.
+		    document.addEventListener('readystatechange', event => {
+		        if (event.target.readyState === "complete") {
+			        onLoad();
+		        }
+		    });
+                
+            function onLoad() {
+                console.log("The page has loaded....");
+                getCSV('meteo.log', parseCSV);
+                 
+            }
+
+            function parseField(field, type) {
+                if (!field) return null;
+                var valueStr = field.replace(/['"]+/g, '');
+                if (type=="float") return parseFloat(valueStr);
+                else return valueStr;    
+                    
+            }
+
+            function convertDateTime(meteoData) {
+				var datetimes = meteoData['Date'];
+				var convertedDatetimes = [];
+				for (d of datetimes) {
+					newDate = new Date(d);
+					convertedDatetimes.push(newDate);
+				}
+				meteoData['Date'] = convertedDatetimes;
+			}
+
+            function parseCSV(err, data) {
+                console.log("Got log data");
+                lines = data.split('\n');
+                headers = lines.shift().split("|");
+                
+                var headerArray = [];
+                for (h of headers) { 
+                    key = h.replace(/['"\r]+/g, '');
+                    headerArray.push(key);
+                    meteoData[key] = [];
+                }
+                console.log(headerArray);
+                for (line of lines) {
+                    if (line.length < 3) continue;
+                    fields = line.split("|");
+                    meteoData[headerArray[0]].push(parseField(fields[0], "string"));    
+                    meteoData[headerArray[1]].push(parseField(fields[1], "float"));
+                    meteoData[headerArray[2]].push(parseField(fields[2], "float"));
+                    meteoData[headerArray[3]].push(parseField(fields[3], "float"));
+                    meteoData[headerArray[4]].push(parseField(fields[4], "float"));
+                }
+                console.log(meteoData);
+				convertDateTime(meteoData);
+				console.log(meteoData);
+                // dayData = groupIntoDays(meteoData);
+                nightData = groupIntoNights(meteoData);
+                drawCharts();
+               
+           }
+
+
+           function groupIntoDays(meteoData) {
+                var uniqueDates = [];
+                for (var i=0; i<meteoData.Date.length; i++) {
+                    var dateTimeValue = meteoData.Date[i];
+                    dateString = formatDate(dateTimeValue);
+                    if (!uniqueDates.includes(dateString)) uniqueDates.push(dateString);
+                }
+                console.log("unique dates:", uniqueDates);
+                availableDates = uniqueDates;
+                dayData = {};
+                for (d of uniqueDates) {
+                    dayData[d] = {};
+                    var dateTimes = [];
+                    var ambientTemps = [];
+                    for (var i=0; i<meteoData.Date.length; i++) {
+                        var dateTimeValue = meteoData.Date[i];
+                        dateString = formatDate(dateTimeValue);
+                        if (dateString==d) {
+                            dateTimes.push(dateTimeValue);
+                            ambientTemps.push(meteoData['Temperature'][i]);
+                        }
+                    }
+                    dayData[d]['dateTime'] = dateTimes;
+                    dayData[d]['ambientTemp'] = ambientTemps;
+
+                }
+                console.log("Day data:", dayData);
+                return dayData;
+            }
+
+            function groupIntoNights(cloudData) {
+                var uniqueDates = [];
+                for (var i=0; i<meteoData.Date.length; i++) {
+                    var dateTimeValue = meteoData.Date[i];
+                    dateString = formatDate(dateTimeValue);
+                    if (!uniqueDates.includes(dateString)) uniqueDates.push(dateString);
+                }
+                availableDates = uniqueDates;
+                console.log("Available dates:", availableDates);
+                nightData = {};
+                for (d of uniqueDates) {
+                    nightData[d] = {};
+                    var startTime = new Date(parseInt(d.substring(0, 4)), parseInt(d.substring(4, 6))-1, parseInt(d.substring(6, 8)), 12, 0);
+                    var endTime = new Date(startTime.getTime() + 86400*1000);
+                    var dateTimes = [];
+                    var ambientTemps = [];
+					var relHumids = [];
+					var airPressures = [];
+                    for (var i=0; i<meteoData.Date.length; i++ ){
+                        if ((meteoData.Date[i]> startTime) && (meteoData.Date[i]<endTime)) {
+                            dateTimes.push(meteoData.Date[i]);
+                            ambientTemps.push(meteoData['Temperature'][i]);
+							relHumids.push(meteoData['Relative Humidity'][i]);
+							airPressures.push(meteoData['Pressure'][i]);
+                        }
+                    }
+                    nightData[d]['dateTime'] = dateTimes;
+                    nightData[d]['ambientTemp'] = ambientTemps;
+                    nightData[d]['relativeHumidity'] = relHumids;
+                    nightData[d]['airPressure'] = airPressures;
+
+                }
+                console.log("nightData:", nightData);
+                return nightData;
+            }
+
+      
+
+            function drawCharts() {
+                if (currentDateIndex == -1) currentDateIndex = availableDates.length -1;
+                if (!chartLoaded) {
+                    console.log("Google stuff not loaded! Will try again in 1 second...");
+                    setTimeout(drawChart, 1000, dateString);
+                    return;
+                } else {
+                    console.log("Google charts are ready.");
+                }
+
+                drawTempChart();
+                drawHumidityChart();
+                drawPressureChart();
+                document.getElementById('chartDate').innerText = chartDate;
+            }
+
+            function shiftDay(amount) {
+                console.log("Shift day by", amount);
+                currentDateIndex = currentDateIndex + amount;
+                if (currentDateIndex == availableDates.length) {
+                    currentDateIndex--;
+                    return;
+                }
+                drawCharts();
+            }
+  
+
+</script>
+</head>
+
+<body>
+    
+    <h1>AstroFarm</h1>
+    <h2>La Palma</h2>
+    <table style="width: 700px;">
+        <tr align="center">
+            <td><a onclick="shiftDay(-1)">&lt;&lt;</a></td>
+            <td><span id="chartDate">date</span></td>
+            <td><a onclick="shiftDay(1)">&gt;&gt;</a></td>
+        </tr>
+	</table>
+	<table>
+		<tr>
+			<td>
+				<div id="chart_temperature" style="width: 700px; height: 300px;"></div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div id="chart_humidity" style="width: 700px; height: 200px;"></div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div id="chart_pressure" style="width: 700px; height: 200px;"></div>
+			</td>
+		</tr>
+	</table>
+    <p id='footer'>
+    
+    </p>
+</body>
+<!--  style="border:1px solid #ffffff;-->
+</html>
