@@ -178,6 +178,11 @@
 
                 }
                 console.log("nightData:", nightData);
+                // We need to double-check that the most recent day has any data in it. ie We are before midday of today. 
+                if (nightData[availableDates[availableDates.length - 1]]['dateTime'].length == 0) {
+                    console.log("No data in present day.");
+                    const lastDay = availableDates.pop();
+                }
                 return nightData;
             }
 
