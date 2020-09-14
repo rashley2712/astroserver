@@ -39,7 +39,7 @@ astrofarm.post('/upload', function(request, response) {
     console.log('Updated', logFilename);
   });
   // also update the sqlite db
-  let db = new sqlite3.Database('/var/www/astrofarm/test.db', sqlite3.OPEN_READWRITE, (err, data) => {
+  let db = new sqlite3.Database('/var/www/astrofarm/meteo.db', sqlite3.OPEN_READWRITE, (err, data) => {
     if (err) {
       return console.error(err.message);
     }
@@ -120,7 +120,7 @@ astrofarm.get('/info', function(req, res) {
 })
 
 astrofarm.get('/meteolog', function(req, res) {
-  let db = new sqlite3.Database('/var/www/astrofarm/test.db', sqlite3.OPEN_READWRITE, (err) => {
+  let db = new sqlite3.Database('/var/www/astrofarm/meteo.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
       return console.error(err.message);
     } });
