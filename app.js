@@ -6,6 +6,8 @@ var sqlite3 = require('sqlite3').verbose();
 const fs = require('fs');
 const multer = require('multer');
 const path = require('path');
+const rootPath = "/var/www/astrofarm";
+const sqlDBFile = "meteo.db";
 
 const port = 80
 
@@ -33,13 +35,13 @@ astrofarm.post('/upload', function(request, response) {
     console.log(line.trim());
     logString+=line.trim()+"\n";
   }
-  const logFilename = '/var/www/astrofarm/meteo.log';
+  const logFilename = path.join(rootPath, 'meteo.log');
   fs.appendFile(logFilename, logString, function (err) {
     if (err) return console.log(err);
     console.log('Updated', logFilename);
   });
   // also update the sqlite db
-  let db = new sqlite3.Database('/var/www/astrofarm/meteo.db', sqlite3.OPEN_READWRITE, (err, data) => {
+  let db = new sqlite3.Database(path.join(rootPath, sqlDBFile), sqlite3.OPEN_READWRITE, (err, data) => {
     if (err) {
       return console.error(err.message);
     }
@@ -120,7 +122,7 @@ astrofarm.get('/info', function(req, res) {
 })
 
 astrofarm.get('/meteolog', function(req, res) {
-  let db = new sqlite3.Database('/var/www/astrofarm/meteo.db', sqlite3.OPEN_READWRITE, (err) => {
+  let db = new sqlite3.Database(path.join(rootPath, sqlDBFile), sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
       return console.error(err.message);
     } });
@@ -163,7 +165,7 @@ astrofarm.get('/meteolog', function(req, res) {
   
 });
 
-astrofarm.use(express.static('/var/www/astrofarm'));
+astrofarm.use(express.static(rootPath));
 
 
 const app = express()
