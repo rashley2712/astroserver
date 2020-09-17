@@ -1,0 +1,227 @@
+<html>
+    <head>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-52663594-2"></script>
+		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+		<script language="javascript" type="text/javascript" src="meteodbcharts.js"></script>
+      
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+        
+          gtag('config', 'UA-52663594-2');
+        </script>
+        
+        <title>AstroFarm, Weather information</title>
+        <link rel="stylesheet" type="text/css" href="styles.css"/>
+     	
+        <script src="astrotools.js"></script>
+        
+        <script language="Javascript">
+        	function getJSON(url, callback) {
+                var xhr = new XMLHttpRequest();
+                    xhr.open('GET', url, true);
+                    xhr.responseType = 'json';
+                    xhr.onload = function() {
+                        var status = xhr.status;
+                        if (status === 200) {
+                            callback(null, xhr.response);
+                        } else {
+                            callback(status, xhr.response);
+                        }
+                    };
+                xhr.send();
+            };    
+		    function getCSV(url, callback) {
+                var xhr = new XMLHttpRequest();
+                    xhr.open('GET', url, true);
+                    // xhr.responseType = 'json';
+                    xhr.onload = function() {
+                        var status = xhr.status;
+                        if (status === 200) {
+                            callback(null, xhr.response);
+                        } else {
+                            callback(status, xhr.response);
+                        }
+                    };
+                xhr.send();
+            };    
+
+            // Global variables
+            var currentDate = new Date();
+            var availableDates = null;
+            var secondsTimerId = null;
+			var minutesTimerId = null;
+			var startDate = null;
+			var endDate = null;
+            var meteoData = {};
+            var dayData = null;
+            var prevDayData = null;
+            var currentDateIndex = -1;
+            var chartLoaded = false;
+            var chart;
+            var dataRefreshTimerId = null;
+            
+            // Import Google Charts
+            google.charts.load('current', {'packages':['corechart', 'timeline']});
+            google.charts.setOnLoadCallback(function() { chartLoaded = true;});
+
+            // Call a function only when the page is fully loaded.
+		    document.addEventListener('readystatechange', event => {
+		        if (event.target.readyState === "complete") {
+			        onLoad();
+		        }
+		    });
+                
+            function onLoad() {
+                console.log("The page has loaded....");
+				console.log("Current time is:", currentDate);
+				getJSON("/meteolog?start=dates", getAvailableDays);
+                dataRefreshTimerId = setInterval(refreshData, 5*60*1000);
+            }
+
+            function parseField(field, type) {
+                if (!field) return null;
+                var valueStr = field.replace(/['"]+/g, '');
+                if (type=="float") return parseFloat(valueStr);
+                else return valueStr;    
+                    
+            }
+
+            function castDateTime(dayData) {
+				let count = 0;
+                for (line of dayData) {
+			        line.dateTime = new Date(line.Date);
+                    count++;
+              	}
+                return count;
+			}
+
+            function getAvailableDays(err, data) {
+                availableDates = [];
+                for (var d of data) {
+                    availableDates.push(d.availableDate);
+                }
+                console.log("Available days:", availableDates);
+                currentDateIndex = availableDates.length - 1;
+                cursorDate = availableDates[currentDateIndex];
+                console.log("cursorDate:", cursorDate);
+                console.log(cursorDate.substring(0, 4), cursorDate.substring(5, 7), cursorDate.substring(8, 10));
+                startDate = new Date(parseInt(cursorDate.substring(0, 4)), parseInt(cursorDate.substring(5, 7))-1, parseInt(cursorDate.substring(8, 10)), 12, 0);
+            	endDate = new Date(startDate.getTime() + 86400*1000); 
+				console.log("Start time:", startDate);
+				console.log("End time:", endDate);
+				const queryString = "?start=" + sqlDateTime(startDate) + "&end=" + sqlDateTime(endDate);
+				console.log(queryString);
+				const JSONURL = encodeURI("/meteolog" + queryString);
+				console.log("Making request:", JSONURL);
+				getJSON(JSONURL, parseDay);
+              
+            }
+
+            function getDataForDate(dateString) {
+                startDate = new Date(parseInt(dateString.substring(0, 4)), parseInt(dateString.substring(5, 7))-1, parseInt(dateString.substring(8, 10)), 12, 0);
+            	endDate = new Date(startDate.getTime() + 86400*1000); 
+				console.log("Start date:", startDate);
+				console.log("End date:", endDate);
+				const queryString = "?start=" + sqlDateTime(startDate) + "&end=" + sqlDateTime(endDate);
+				console.log(queryString);
+				const JSONURL = encodeURI("/meteolog" + queryString);
+				console.log("Making request:", JSONURL);
+				getJSON(JSONURL, dataReceived);
+            }
+
+            function parseDay(err, data) {
+                console.log("Got log data");
+                castDateTime(data);
+                dayData = data;
+                drawCharts();
+            }
+
+            function dataReceived(err, data) {
+                rows = castDateTime(data);    
+                console.log("dataReceived().", rows, "rows.");
+                dayData = data;
+                drawCharts();
+            }
+
+            function drawCharts() {
+                if (!chartLoaded) {
+                    console.log("Google stuff not loaded! Will try again in 1 second...");
+                    setTimeout(drawChart, 1000, dateString);
+                    return;
+                } else {
+                    console.log("Google charts are ready.");
+                }
+                console.log("Drawing the charts...");
+                drawTempChart();
+                drawHumidityChart();
+                drawPressureChart();
+                document.getElementById('chartDate').innerText = formatDate(startDate);
+            }
+
+            function shiftDay(amount) {
+                console.log("Shift day by", amount);
+                currentDateIndex = currentDateIndex + amount;
+                if (currentDateIndex<0) currentDateIndex = availableDates.length-1;
+                if (currentDateIndex == availableDates.length) {
+                    currentDateIndex--;
+                    return;
+                }
+                console.log("graphDate:", availableDates[currentDateIndex]);
+                getDataForDate(availableDates[currentDateIndex])
+            }
+
+            function refreshData() {
+                console.log("Refreshing data....");
+                //getCSV('meteo.log', parseDay);
+                // if (currentDateIndex == availableDates.length -1 ) drawCharts();
+                //dayDafetchDataForData()
+			}
+			
+			function togglePrevDay() {
+				console.log("Toggle previous day's data");
+			}
+  
+
+</script>
+</head>
+
+<body>
+    
+    <h1>AstroFarm</h1>
+    <h2>La Palma</h2>
+    <table style="width: 700px;">
+        <tr align="center">
+            <td><a onclick="shiftDay(-1)">&lt;&lt;</a></td>
+            <td><span id="chartDate">date</span></td>
+            <td><a onclick="shiftDay(1)">&gt;&gt;</a></td>
+        </tr>
+		<tr>
+            <td align="right" colspan=3><input onchange="togglePrevDay()" type="checkbox" id="prevday"><label for="prevday">also show previous day's data</label></td>
+        </tr>
+	</table>
+	<table>
+		<tr>
+			<td>
+				<div id="chart_temperature" style="width: 700px; height: 300px;"></div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div id="chart_humidity" style="width: 700px; height: 200px;"></div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div id="chart_pressure" style="width: 700px; height: 200px;"></div>
+			</td>
+		</tr>
+	</table>
+    <p id='footer'>
+    
+    </p>
+</body>
+<!--  style="border:1px solid #ffffff;-->
+</html>
