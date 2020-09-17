@@ -23,6 +23,19 @@ function formatDate(inputDate) {
 	return dateString;
 }
 
+function sqlDateTime(inputDate) {
+	var year, month, day, hours, minutes, seconds;
+	year = inputDate.getYear() + 1900;
+	month = inputDate.getMonth() + 1;
+	day = inputDate.getDate(); 
+	hours = inputDate.getHours();
+ 	minutes = inputDate.getMinutes();
+	seconds = inputDate.getSeconds();
+
+	var dateString = year.toString() + "-" + zeroPad(month)+ "-" + zeroPad(day) + " " + zeroPad(hours) + ":" + zeroPad(minutes) + ":" + zeroPad(seconds);;
+	return dateString;
+}
+
 function formatUTCTime(inputDate) {
 	var hours;
 	var minutes;

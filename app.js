@@ -125,15 +125,21 @@ astrofarm.get('/meteolog', function(req, res) {
       return console.error(err.message);
     } });
 
+  // select distinct(date(Date)) from meteolog;
   console.log('Connected to the test SQlite database.');
   let startDate = req.query.start;
   let endDate = req.query.end;
   console.log("start date:", startDate);
-  var sqlquery ="";
-  if (startDate == null && endDate==null) sqlquery = 'SELECT * from meteolog;';
-  if (startDate != null && endDate==null) sqlquery = 'SELECT * from meteolog WHERE Date > "' + startDate + '";';
-  if (startDate == null && endDate!=null) sqlquery = 'SELECT * from meteolog WHERE Date < "' + endDate + '";';
-  if (startDate != null && endDate!=null) sqlquery = 'SELECT * from meteolog WHERE Date > "' + startDate + '" AND Date < "' + endDate + '";';
+  
+  function makeSQL(startDate, endDate) {
+    if (startDate == null && endDate==null) return 'SELECT * from meteolog;';
+    if (startDate == null && endDate!=null) return 'SELECT * from meteolog WHERE Date < "' + endDate + '";';
+    if (startDate.includes("dates")) return "SELECT DISTINCT(date(Date)) AS availableDate FROM meteolog;";
+    if (endDate==null) return 'SELECT * from meteolog WHERE Date > "' + startDate + '";';
+    return 'SELECT * from meteolog WHERE Date > "' + startDate + '" AND Date < "' + endDate + '";';
+  }
+  var sqlquery = makeSQL(startDate, endDate);
+
   console.log(sqlquery); 
   db.all(sqlquery, [], processDB);
   db.close();
