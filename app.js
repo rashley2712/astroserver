@@ -170,7 +170,7 @@ astrofarm.use(express.static(rootPath));
 
 const app = express()
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(vhost('astrofarm.*', astrofarm))
+app.use(vhost('*.astrofarm.*', astrofarm))
 
 app.get('/', (req, res) => res.redirect('/index.html'))
 app.use(express.static('/var/www'))
