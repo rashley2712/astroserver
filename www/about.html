@@ -62,14 +62,14 @@
                 infoTimerId = setInterval(updateInfo, 10*60*1000);
                 var canvas = document.getElementById('canvasContainer');
                 var canvasWidth = document.getElementById('canvas').width;
-                canvas.style.top = 65;
+                canvas.style.top = 50;
                 canvas.style.left = 400;
             }
 
             window.onresize = function() {
                 var canvas = document.getElementById('canvasContainer');
                 var canvasWidth = document.getElementById('canvas').width;
-                canvas.style.top = 65;
+                canvas.style.top = 50;
                 canvas.style.left = 400;
             }
 
@@ -196,45 +196,15 @@
             </tr>
         </table>
     </div>
-  <p>&nbsp;</p>
     <p>&nbsp;</p>
     <p>&nbsp;</p>
     <p>&nbsp;</p>
     <p>&nbsp;</p>
-    <p><a href="https://goo.gl/maps/B5QmqDhPithRyyS38" target="_new">28°47'09.8"N 17°56'05.0"W</a> (altitude: 1153m)</p>
-    <p>
-        <table border="1">
-            <tr>
-                <td style="font-weight: bold;">Current UTC</td><td><span id="currentUTC">&nbsp;</span></td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold;">Current moon phase</td><td><span id="moonphase">&nbsp;</span></td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold;">Sunset</td><td><span id="sunset">&nbsp;</span></td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold;">Evening twilight</td><td><span id="etwilight">&nbsp;</span></td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold;">Morning twilight</td><td><span id="mtwilight">&nbsp;</span></td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold;">Sunrise</td><td><span id="sunrise">&nbsp;</span></td>
-            </tr>
-        </table>
-    </p>
+    <p>&nbsp;</p>
+	<h1>About us</h1>
 
-    <div id='canvasContainer' style="position:absolute; top:0; left:0; z-index:1">  
-        <canvas id="canvas" width="500" height="500"></canvas>
-        <div style="text-align:center;"><span id="sidereal"></span></div>
-        </div>  
-    
-    <div style="display:none;"><img id="star" src="images/star.png"></div>
-  
-    <p id='footer'>
-    <span id="hostname">unknown</span>&nbsp;&nbsp;<span id="uptime">&nbsp;</span>
-    </p>
+	<p id="longtext"><b>Ovidiu Vaduvescu</b> and <b>Richard Ashley</b> are both employees of the <a href="http://www.ing.iac.es">Isaac Newton Group</a> of telescopes on La Palma and work at the <a href="http://www.ing.iac.es/astronomy/telescopes/wht/">William Herschel</a> and the <a href="http://www.ing.iac.es/astronomy/telescopes/int/">Isaac Newton</a> telescopes regularly. Both are experienced professional astronomers who share a love for the field and are keen backyard astronomers too.</p>
+
+	<p id="longtext"><b>AstroFarm S.L.</b> was created in 2020 as business to bring astro-tourism to La Palma and offer observing and hosting for all people interested in looking at the stars, whether they are professionals, students or hobbyists. </p>
 </body>
-<!--  style="border:1px solid #ffffff;-->
 </html>

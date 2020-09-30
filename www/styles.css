@@ -43,24 +43,17 @@ tr.active {background-color:#aaeeaa;}
 ul {list-style:circle;}
 ol {list-style:decimal;}
 
-/* unvisited link */
-a:link {
-    color: #b08d44;
-}
-
-/* visited link */
-a:visited {
-    color: #b08d44;
-}
-
 /* mouse over link */
-a:hover {
-    color: #cb8571;
+a   { color: #ffffff;
 }
 
-/* selected link */
-a:active {
-    color: #b08d44;
+a:hover {
+    color: #8c99c2;
+}
+
+#longtext {
+    width: 800px;
+
 }
 
 button.timebutton {
