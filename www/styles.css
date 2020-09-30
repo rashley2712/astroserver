@@ -1,15 +1,14 @@
-  html
-{
-font-size:100%;
-font-family:verdana,arial,'sans serif';
-background-color:#151110;
-color:white;
-margin: 0 auto;
-height: 100%;
-background-image: url("images/nightsky.jpg");
-background-position: center;
-background-size: cover;
-background-repeat: no-repeat;
+html {
+    font-size:100%;
+    font-family:verdana,arial,'sans serif';
+    background-color:#151110;
+    color:white;
+    margin: 0 auto;
+    height: 100%;
+    background-image: url("images/nightsky.jpg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
 #footer {
@@ -29,6 +28,17 @@ th {background-color:#ADD8E6;}
 td {vertical-align:top;}
 
 tr.active {background-color:#aaeeaa;}
+
+#menuCell {
+    font-weight: bold; 
+    font-size: large;
+    text-align:center;
+    width: 100px;
+    }
+
+#menuCell:hover {
+    background-color:#8c99c2;    
+}
 
 ul {list-style:circle;}
 ol {list-style:decimal;}

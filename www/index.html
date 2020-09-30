@@ -121,11 +121,11 @@
                 var ctx = canvas.getContext("2d");
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 // Draw some grid lines first
+                const ox = canvas.width/2;
+                const oy = canvas.height/2;
                 for (var ra=0; ra<24; ra=ra+1) {
                     angle = clockAngle + ra*15;
                     r = size*50;
-                    var ox = canvas.width/2;
-                    var oy = canvas.height/2;
                     var x = canvas.width/2 + r * Math.sin(radians(angle));
                     var y = canvas.height/2 - r * Math.cos(radians(angle));
                     ctx.beginPath();
@@ -139,8 +139,6 @@
                 for (var ra=0; ra<24; ra=ra+6) {
                     angle = clockAngle + ra*15;
                     r = size*50;
-                    var ox = canvas.width/2;
-                    var oy = canvas.height/2;
                     var x = canvas.width/2 + r * Math.sin(radians(angle));
                     var y = canvas.height/2 - r * Math.cos(radians(angle));
                     ctx.beginPath();
@@ -150,9 +148,8 @@
                     ctx.stroke();
                     
                 }
+                // Draw the grid circles
                 for (var dec=85; dec>60; dec=dec-5) {
-                    var ox = canvas.width/2;
-                    var oy = canvas.height/2;
                     radius = Math.sin(radians(dec)) * size*(90-dec);
                     ctx.beginPath();
                     ctx.arc(ox, oy, radius, 0, 2 * Math.PI);
@@ -177,7 +174,6 @@
                     
                     ctx.drawImage(star, x - star.width/2, y - star.height/2);
                 }
-                // Draw some grid lines first
             }
 
       
@@ -188,6 +184,14 @@
 
 <body>
     <a href="/"><img src="astrofarmlogo.png" width="300" style="position:absolute; top:0; left:0;"></a>
+    <div id="menu" style="position:absolute; top:10; left:320; z-index:1">
+        <table border='1'>
+            <tr>
+                <td id="menuCell" onclick='window.location="index.html";'>Home</td>
+                <td id="menuCell" onclick='window.location="meteolog.html";'>Meteo</td>
+            </tr>
+        </table>
+    </div>
     <p>&nbsp;</p>
     <p>&nbsp;</p>
     <p>&nbsp;</p>
