@@ -11,7 +11,7 @@ function drawTempChart() {
 	var options = {
 	title: 'Conditions on ' + dateString,
 	hAxis: {title: 'Time', format: 'HH:mm', viewWindow: { min: startDate, max: endDate}},
-	vAxis: {title: 'Temperature (\u00B0C)' , viewWindow: { min: -30, max:60} },
+	vAxis: {title: 'Temperature (\u00B0C)' , viewWindow: { min: 0, max:50} },
 	legend: { position: 'in' }, 
 	chartArea: {
 		left: "15%",

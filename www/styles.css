@@ -54,7 +54,9 @@ a:hover {
 
 #longtext {
     width: 800px;
-
+    background-color: #23343a;
+    background-blend-mode: lighten;
+    opacity: 0.9;
 }
 
 button.timebutton {
