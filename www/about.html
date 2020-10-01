@@ -36,13 +36,6 @@
             };    
 
             // Global variables
-            var currentTime = new Date();
-            var secondsTimerId = null;
-            var minutesTimerId = null;
-            var constellation = null;
-            var clockAngle = 0;
-            var LMSiderealTime; 
-            console.log(currentTime);
             
             // Call a function only when the page is fully loaded.
 		    document.addEventListener('readystatechange', event => {
@@ -54,130 +47,10 @@
               
             function onLoad() {
                 console.log("The page has loaded....");
-                getJSON('info', info);
-                getJSON('ursaminor.json', starsLoaded);
-                updateTime();
-                secondsTimerId = setInterval(updateTime, 1000);
-                minutesTimerId = setInterval(updateClock, 60*1000);
-                infoTimerId = setInterval(updateInfo, 10*60*1000);
-                var canvas = document.getElementById('canvasContainer');
-                var canvasWidth = document.getElementById('canvas').width;
-                canvas.style.top = 50;
-                canvas.style.left = 400;
             }
 
-            window.onresize = function() {
-                var canvas = document.getElementById('canvasContainer');
-                var canvasWidth = document.getElementById('canvas').width;
-                canvas.style.top = 50;
-                canvas.style.left = 400;
-            }
-
-           
-       
-            function info(err, data) {
-                console.log(data);
-                document.getElementById("hostname").innerText = data.system.hostname;
-                document.getElementById("uptime").innerText = "uptime: " + data.system.uptime + "s";
-                document.getElementById("moonphase").innerText = decimalPlacesString(data.moon.illuminated, 2) + "  " + data.moon.mode;
-                document.getElementById("etwilight").innerText = data.sun.etwilight;
-                document.getElementById("mtwilight").innerText = data.sun.mtwilight;
-                document.getElementById("sunset").innerText = data.sun.sunset;
-                document.getElementById("sunrise").innerText = data.sun.sunrise;
-                document.getElementById('currentUTC').innerText = formatUTCTime(currentTime);
-            }
-
-            function updateTime() {
-                currentTime = new Date();
-                LMSiderealTime = astrojs.dates.getLST(currentTime, 342.1184);
-                // console.log(LMSiderealTime);
-                // console.log(timeDecimalToHMS(LMSiderealTime));
-                document.getElementById('currentUTC').innerText = formatUTCTime(currentTime);
-                document.getElementById('sidereal').innerText = "Local Sidereal Time " + timeDecimalToHMS(LMSiderealTime);
-            }
-
-            function updateClock() {
-                clockAngle = 360 - LMSiderealTime*15;
-                console.log("Redrawing siderial clock");
-                drawClock();
-            }
-
-            function updateInfo() {
-                getJSON('info', info);
-            }
-
-            function starsLoaded(err, data) {
-                if (err!=null) { console.log(err);}
-                console.log("Constellation", data);
-                constellation = data;
-                updateClock();
-            }
-
-            function drawClock() {
-                const quiet = true;
-                var canvas = document.getElementById("canvas");
-                const size = canvas.width/2/(90-70);
-                
-                var ctx = canvas.getContext("2d");
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                // Draw some grid lines first
-                const ox = canvas.width/2;
-                const oy = canvas.height/2;
-                for (var ra=0; ra<24; ra=ra+1) {
-                    angle = clockAngle + ra*15;
-                    r = size*50;
-                    var x = canvas.width/2 + r * Math.sin(radians(angle));
-                    var y = canvas.height/2 - r * Math.cos(radians(angle));
-                    ctx.beginPath();
-                    ctx.moveTo(ox, oy);
-                    ctx.lineTo(x, y);
-                    ctx.strokeStyle='#0000aa';
-                    ctx.stroke();
-                    
-                }
-                // Draw stronger grid lines 
-                for (var ra=0; ra<24; ra=ra+6) {
-                    angle = clockAngle + ra*15;
-                    r = size*50;
-                    var x = canvas.width/2 + r * Math.sin(radians(angle));
-                    var y = canvas.height/2 - r * Math.cos(radians(angle));
-                    ctx.beginPath();
-                    ctx.moveTo(ox, oy);
-                    ctx.lineTo(x, y);
-                    ctx.strokeStyle='#0000ff';
-                    ctx.stroke();
-                    
-                }
-                // Draw the grid circles
-                for (var dec=85; dec>60; dec=dec-5) {
-                    radius = Math.sin(radians(dec)) * size*(90-dec);
-                    ctx.beginPath();
-                    ctx.arc(ox, oy, radius, 0, 2 * Math.PI);
-                    ctx.strokeStyle='#0000aa';
-                    ctx.stroke();
-                    
-                }
-                //var cross = document.getElementById('cross')
-                //ctx.drawImage(cross, canvas.width/2 - cross.width/2, canvas.height/2 - cross.height/2);
-                var stars = constellation.stars;
-                var star = document.getElementById('star')
-                for (s of stars) {
-                    if (!quiet) console.log(s.name, s.coordinates.RA, s.coordinates.DEC);
-                    var coords = s.coordinates.RA + " " +  s.coordinates.DEC;
-                    var result = fromSexagesimalString(coords);
-                    if (!quiet) console.log(result);
-                    var r = Math.sin(radians(result.dec)) * size * (90 - result.dec);   // The first term is to correct for the projection on to a flat plane
-                    var angle = clockAngle + result.ra;
-                    var x = canvas.width/2 + r * Math.sin(radians(angle));
-                    var y = canvas.height/2 - r * Math.cos(radians(angle));
-                    if (!quiet) console.log(x, y)
-                    
-                    ctx.drawImage(star, x - star.width/2, y - star.height/2);
-                }
-            }
-
-      
-  
+            
+            
 
 </script>
 </head>
@@ -205,7 +78,8 @@
     <table>
     <tr>
         <td id="longtext">
-            <b>Ovidiu Vaduvescu</b> and <b>Richard Ashley</b> are employees at the <a href="http://www.ing.iac.es">Isaac Newton Group</a> of telescopes on La Palma and work at the <a href="http://www.ing.iac.es/astronomy/telescopes/wht/">William Herschel</a> and the <a href="http://www.ing.iac.es/astronomy/telescopes/int/">Isaac Newton</a> telescopes regularly. Both are experienced professional astronomers who share a love for the field and are keen backyard astronomers too.<br/>
+            <b>Ovidiu Vaduvescu</b> and <b>Richard Ashley</b> are employees at the <a href="http://www.ing.iac.es">Isaac Newton Group</a> of telescopes on La Palma and work at the <a href="http://www.ing.iac.es/astronomy/telescopes/wht/">William Herschel</a> and the <a href="http://www.ing.iac.es/astronomy/telescopes/int/">Isaac Newton</a> telescopes regularly. Both are experienced professional astronomers who share a love for the field and are keen backyard astronomers too.
+            <br/><br/>
             <b>AstroFarm S.L.</b> was created in 2020 as a business to bring astro-tourism to La Palma and offer observing and hosting for all people interested in looking at the stars, whether they are professionals, students or hobbyists. 
         </td>
     </tr>
