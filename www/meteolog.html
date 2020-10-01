@@ -92,7 +92,19 @@
             function castDateTime(dayData) {
 				let count = 0;
                 for (line of dayData) {
-			        line.dateTime = new Date(line.Date);
+			        console.log(line.Date);
+                    let year = parseInt(line.Date.substring(0, 4));
+                    let month = parseInt(line.Date.substring(5, 7));
+                    let day = parseInt(line.Date.substring(8, 10));
+                    let hour = parseInt(line.Date.substring(11, 13));
+                    let minute = parseInt(line.Date.substring(14, 16));
+                    let second = parseFloat(line.Date.substring(17, 25));
+                    console.log("year:", year, "month:", month, "day:", day, "hour:", hour, "minute:", minute, "second:", second);
+                    //line.dateTime = new Date(year, month, day, hour, minute, second);
+                    //line.dateTime = new Date(line.Date);
+                    //console.log(line.dateTime);
+                    line.dateTime = new Date(year, month-1, day, hour, minute, second);
+                    console.log(line.dateTime);
                     count++;
               	}
                 return count;
@@ -190,18 +202,18 @@
 
 <body>
     <a href="/"><img src="astrofarmlogo.png" width="300" style="position:absolute; top:0; left:0;"></a>
-        <div id="menu" style="position:absolute; top:10; left:320; z-index:1">
-            <table border='1'>
-                <tr>
-                    <td id="menuCell" onclick='window.location="index.html";'>Home</td>
-                    <td id="menuCell" onclick='window.location="meteolog.html";'>Meteo</td>
-                    <td id="menuCell" onclick='window.location="about.html";'>About us</td>
-                    <td id="menuCell" onclick='window.location="hosting.html";'>Telescope hosting</td>
-                    <td id="menuCell" onclick='window.location="remote.html";'>Remote observing</td>
-                    <td id="menuCell" onclick='window.location="stargazing.html";'>Stargazing</td>
-                </tr>
-            </table>
-        </div>
+    <div id="menu" style="position:absolute; top:10; left:320; z-index:1">
+        <table border='1'>
+            <tr>
+                <td id="menuCell" onclick='window.location="index.html";'>Home</td>
+                <td id="menuCell" onclick='window.location="meteolog.html";'>Meteo</td>
+                <td id="menuCell" onclick='window.location="about.html";'>About us</td>
+                <td id="menuCell" onclick='window.location="hosting.html";'>Telescope hosting</td>
+                <td id="menuCell" onclick='window.location="remote.html";'>Remote observing</td>
+                <td id="menuCell" onclick='window.location="stargazing.html";'>Stargazing</td>
+            </tr>
+        </table>
+    </div>
     <p>&nbsp;</p>
     <p>&nbsp;</p>
     <p>&nbsp;</p>
