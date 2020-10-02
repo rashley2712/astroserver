@@ -1,11 +1,11 @@
 html {
-    font-size:100%;
+    font-size:medium;
     font-family:verdana,arial,'sans serif';
     background-color:#151110;
     color:white;
     margin: 0 auto;
-    height: 100%;
-    background-image: url("images/nightsky.jpg");
+    width: 100%;
+    background-image: url("images/Viki-Catela-2.jpg");
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;

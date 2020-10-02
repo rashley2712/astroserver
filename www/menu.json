@@ -19,16 +19,12 @@
 		"title": "Remote observing"
 	},	
 	{
-		"title": "Stargazing"
+		"title": "Stargazing",
+		"location": "https://www.airbnb.es/experiences/1353943"
 	},
 	{
-		"title": "Solar viewing"
-	},
-	{
-		"title": "Agro-farming"
-	},
-	{
-		"title": "Education"
+		"title": "Education", 
+		"location": "http://www.astro-travels.com/La-Palma-astro.html"
 	}
 ]
 }
