@@ -127,9 +127,13 @@
 
             function parseDay(err, data) {
                 console.log("Got log data");
-                castDateTime(data);
-                dayData = data;
-                drawCharts();
+                rows = castDateTime(data);
+                console.log("rows received:", rows);
+                if (rows==0) shiftDay(-1);
+                else {
+                    dayData = data;
+                    drawCharts();
+                }
             }
 
             function dataReceived(err, data) {
