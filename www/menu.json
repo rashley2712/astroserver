@@ -1,4 +1,5 @@
-[ 
+{ "width": 6,
+  "links": [ 
 	{
 		"title": "Home",
 		"location": "index.html"
@@ -19,5 +20,15 @@
 	},	
 	{
 		"title": "Stargazing"
+	},
+	{
+		"title": "Solar viewing"
+	},
+	{
+		"title": "Agro-farming"
+	},
+	{
+		"title": "Education"
 	}
 ]
+}

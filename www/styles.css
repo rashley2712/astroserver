@@ -41,6 +41,10 @@ tr.active {background-color:#aaeeaa;}
     background-color:#8c99c2;    
 }
 
+.inactive {
+    color: #aaaaaa;
+}
+
 ul {list-style:circle;}
 ol {list-style:decimal;}
 

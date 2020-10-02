@@ -214,16 +214,21 @@ function convertToGalactic(ra, dec) {
 		// Draws the main menu at the top of the page
 		console.log("Drawing the main menu...");
 		console.log("data received:", data);
+		let links = data.links;
 		let destinationElement = document.getElementById('menu');
-		let numItems = data.length;
-		let menuHTML = "<table border='1'><tr>";
+		let numItems = links.length;
+		let width = data.width;
+		let menuHTML = "<table border='1'>\n";
 		for (var i=0; i<numItems; i++) {
-			if (data[i].location!=null) menuHTML+= "<td id='menuCell' onclick='window.location=\"" + data[i].location + "\";'>"
-			else menuHTML+= "<td id='menuCell'>";
-			menuHTML+= data[i].title;
-			menuHTML+="</td>";
+			if ((i%width) == 0) menuHTML+="\t<tr>\n";
+			if (links[i].location!=null) menuHTML+= "\t\t<td id='menuCell' onclick='window.location=\"" + links[i].location + "\";'>"
+			else menuHTML+= "\t\t<td id='menuCell' class='inactive'>";
+			menuHTML+= links[i].title;
+			menuHTML+="</td>\n";
+			if ((i+1) % width==0) menuHTML+="\t</tr>\n";
 		}
-		menuHTML+= "</tr></table>";
+		if (i%width != 0)  menuHTML+="\t</tr>\n"
+		menuHTML+= "</table>\n";
 		console.log(menuHTML);
 		destinationElement.innerHTML = menuHTML;
 	}
