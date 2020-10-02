@@ -32,9 +32,9 @@ tr.active {background-color:#aaeeaa;}
 #menuCell {
     font-weight: bold; 
     font-size: large;
-    text-align:center;
+    text-align: center;
     width: 100px;
-    text-
+    vertical-align: auto;
     }
 
 #menuCell:hover {

@@ -210,5 +210,22 @@ function convertToGalactic(ra, dec) {
 		xhr.send();
 	};    
 
+	function drawMenu(err, data) {
+		// Draws the main menu at the top of the page
+		console.log("Drawing the main menu...");
+		console.log("data received:", data);
+		let destinationElement = document.getElementById('menu');
+		let numItems = data.length;
+		let menuHTML = "<table border='1'><tr>";
+		for (var i=0; i<numItems; i++) {
+			if (data[i].location!=null) menuHTML+= "<td id='menuCell' onclick='window.location=\"" + data[i].location + "\";'>"
+			else menuHTML+= "<td id='menuCell'>";
+			menuHTML+= data[i].title;
+			menuHTML+="</td>";
+		}
+		menuHTML+= "</tr></table>";
+		console.log(menuHTML);
+		destinationElement.innerHTML = menuHTML;
+	}
 
 

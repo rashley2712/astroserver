@@ -63,7 +63,8 @@
             function onLoad() {
                 console.log("The page has loaded....");
 				console.log("Current time is:", currentDate);
-				getJSON("/meteolog?start=dates", getAvailableDays);
+                getJSON("/meteolog?start=dates", getAvailableDays);
+                getJSON('menu.json', drawMenu);
                 dataRefreshTimerId = setInterval(refreshData, 5*60*1000);
             }
 
@@ -183,16 +184,7 @@
 <body>
     <a href="/"><img src="astrofarmlogo.png" width="300" style="position:absolute; top:0; left:0;"></a>
     <div id="menu" style="position:absolute; top:10; left:320; z-index:1">
-        <table border='1'>
-            <tr>
-                <td id="menuCell" onclick='window.location="index.html";'>Home</td>
-                <td id="menuCell" onclick='window.location="meteolog.html";'>Meteo</td>
-                <td id="menuCell" onclick='window.location="about.html";'>About us</td>
-                <td id="menuCell" onclick='window.location="hosting.html";'>Telescope hosting</td>
-                <td id="menuCell" onclick='window.location="remote.html";'>Remote observing</td>
-                <td id="menuCell" onclick='window.location="stargazing.html";'>Stargazing</td>
-            </tr>
-        </table>
+        ... loading menu ... 
     </div>
     <p>&nbsp;</p>
     <p>&nbsp;</p>

@@ -1,0 +1,23 @@
+[ 
+	{
+		"title": "Home",
+		"location": "index.html"
+	}, 
+	{
+		"title": "Weather",
+		"location": "meteolog.html"
+	}, 
+	{
+		"title": "About us",
+		"location": "about.html"
+	},
+	{
+		"title": "Telescope hosting"
+	},
+	{
+		"title": "Remote observing"
+	},	
+	{
+		"title": "Stargazing"
+	}
+]
