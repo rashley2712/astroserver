@@ -11,7 +11,7 @@ function drawTempChart() {
 	var options = {
 	title: 'Conditions on ' + dateString,
 	hAxis: {title: 'Time', format: 'HH:mm', viewWindow: { min: startDate, max: endDate}},
-	vAxis: {title: 'Temperature (\u00B0C)' , viewWindow: { min: 0, max:50} },
+	vAxis: {title: 'Temperature (\u00B0C)' },
 	legend: { position: 'in' }, 
 	chartArea: {
 		left: "15%",
@@ -86,3 +86,35 @@ function drawPressureChart() {
 	chart.draw(data, options);
 	
 }
+
+function drawCPUChart() {
+	var dateString = formatDate(startDate);
+	var data = new google.visualization.DataTable();
+	data.addColumn('datetime', 'Time of day');
+	data.addColumn('number', 'CPU temperature (\u00B0C)');
+	
+	for (var line of dayData){
+		data.addRow([line.dateTime, line.CPUtemperature]);
+	}
+
+	var options = {
+	title: 'Conditions on ' + dateString,
+	hAxis: {title: 'Time', format: 'HH:mm', viewWindow: { min: startDate, max: endDate}},
+	vAxis: {title: 'Temperature (\u00B0C)'},
+	legend: { position: 'in' }, 
+	chartArea: {
+		left: "15%",
+		top: "5%",
+		height: "80%",
+		width: "75%"
+	},
+	pointSize: 3,
+	colors: ['red']
+
+	};
+
+	chart = new google.visualization.ScatterChart(document.getElementById('chart_CPU'));  
+	chart.draw(data, options);
+	
+}
+

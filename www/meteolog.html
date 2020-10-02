@@ -151,6 +151,7 @@
                 drawTempChart();
                 drawHumidityChart();
                 drawPressureChart();
+                drawCPUChart();
                 document.getElementById('chartDate').innerText = formatDate(startDate);
             }
 
@@ -215,6 +216,11 @@
 		<tr>
 			<td>
 				<div id="chart_pressure" style="width: 700px; height: 200px;"></div>
+			</td>
+        </tr>
+        <tr>
+			<td>
+				<div id="chart_CPU" style="width: 700px; height: 200px;"></div>
 			</td>
 		</tr>
 	</table>
