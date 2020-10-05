@@ -1,12 +1,23 @@
 function drawTempChart() {
 	var dateString = formatDate(startDate);
 	var data = new google.visualization.DataTable();
+	var colourTable = ["#FF0030", "#FF0020", "#FF0010", "#FF0000", "#FF0a00", "#FF1400", "#FF1e00", "#FF2800", "#FF3200", "#FF3c00", "#FF4600", "#FF5000", "#FF5a00", "#FF6400", "#FF6e00", "#FF7800", "#FF8200", "#FF8c00", "#FF9600", "#FFa000", "#FFaa00", "#FFb400", "#FFbe00", "#FFc800", "#FFd200", "#FFdc00", "#FFe600", "#FFf000", "#FFfa00", "#fdff00", "#d7ff00", "#b0ff00", "#8aff00", "#65ff00", "#3eff00", "#17ff00", "#00ff10", "#00ff36", "#00ff5c", "#00ff83", "#00ffa8", "#00ffd0", "#00fff4", "#00e4ff", "#00d4ff", "#00c4ff", "#00b4ff", "#00a4ff", "#0094ff", "#0084ff", "#0074ff", "#0064ff", "#0054ff", "#0044ff", "#0032ff", "#0022ff", "#0012ff", "#0002ff", "#0000ff", "#0100ff", "#0200ff", "#0300ff", "#0400ff", "#0500ff"];
 	data.addColumn('datetime', 'Time of day');
 	data.addColumn('number', 'Ambient temperature (\u00B0C)');
+	data.addColumn({type:'string', role:'style'});
 	
+	let tempStart = 5;
+	let tempEnd = 30;
+	let tempRange = tempEnd - tempStart;
+
 	for (var line of dayData){
-		data.addRow([line.dateTime, line.Temperature]);
-	}
+		colourIndex = Math.round((line.Temperature - tempStart) / tempRange * colourTable.length);
+		if (colourIndex<0) colourIndex = 0;
+		if (colourIndex>colourTable.length - 1) colourIndex = colourTable.length - 1;
+		colourIndex = colourTable.length - 1 - colourIndex;
+		let colorString = 'point { stroke-color:' + colourTable[colourIndex] + '; fill-color:' + colourTable[colourIndex] + ';}';
+		data.addRow([line.dateTime, line.Temperature, colorString]);
+		}
 
 	var options = {
 	title: 'Conditions on ' + dateString,
@@ -26,6 +37,17 @@ function drawTempChart() {
 	chart = new google.visualization.ScatterChart(document.getElementById('chart_temperature'));  
 	chart.draw(data, options);
 	
+}
+
+function decimalToHex(d, padding) {
+    var hex = Number(d).toString(16);
+    padding = typeof (padding) === "undefined" || padding === null ? padding = 2 : padding;
+
+    while (hex.length < padding) {
+        hex = "0" + hex;
+    }
+
+    return hex;
 }
 
 function drawHumidityChart() {

@@ -218,7 +218,7 @@ function convertToGalactic(ra, dec) {
 		let destinationElement = document.getElementById('menu');
 		let numItems = links.length;
 		let width = data.width;
-		let menuHTML = "<table border='1'>\n";
+		let menuHTML = "<table border='0'>\n";
 		for (var i=0; i<numItems; i++) {
 			if ((i%width) == 0) menuHTML+="\t<tr>\n";
 			if (links[i].location!=null) menuHTML+= "\t\t<td id='menuCell' onclick='window.location=\"" + links[i].location + "\";'>"
