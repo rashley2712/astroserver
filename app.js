@@ -15,7 +15,7 @@ var astrofarm = express()
 
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
-      cb(null, '/var/www/uploads/');
+      cb(null, '/var/www/astrofarm/skycam/');
   },
 
   // By default, multer removes file extensions so let's add them back
