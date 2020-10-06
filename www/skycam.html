@@ -1,0 +1,74 @@
+<html>
+    <head>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-52663594-2"></script>
+		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+		<script language="javascript" type="text/javascript" src="meteodbcharts.js"></script>
+      
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+        
+          gtag('config', 'UA-52663594-2');
+        </script>
+        
+        <title>AstroFarm, Weather information</title>
+        <link rel="stylesheet" type="text/css" href="styles.css"/>
+     	
+        <script src="astrotools.js"></script>
+        
+        <script language="Javascript">
+    
+            // Global variables
+            var currentDate = new Date();
+            var availableDates = null;
+            
+            // Call a function only when the page is fully loaded.
+		    document.addEventListener('readystatechange', event => {
+		        if (event.target.readyState === "complete") {
+			        onLoad();
+		        }
+		    });
+                
+            function onLoad() {
+				console.log("The page has loaded....");
+				getJSON('menu.json', drawMenu);
+         
+				console.log("Current time is:", currentDate);
+                getJSON('skycam/skycam.json', showImages);
+			}
+			
+			function showImages (err, data){
+				console.log("Image data:");
+				console.log(data);
+				console.log("latest image is:", data.mostRecent);
+				document.getElementById("skycamimage").src = "skycam/" + data.mostRecent;
+				// aspect ratio 2592 px x 1944 px
+			}
+
+          
+
+</script>
+</head>
+
+<body>
+    <a href="/"><img src="astrofarmlogo.png" width="300" style="position:absolute; top:0; left:0;"></a>
+    <div id="menu" style="position:absolute; top:10; left:320; z-index:1">
+        ... loading menu ... 
+    </div>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+	<div id="skycamholder" style="width: 900px; height: 700px;">
+		<img src="" id="skycamimage" width="900px"/>
+	</div>
+	
+	<p id='footer'>
+    
+    </p>
+</body>
+<!--  style="border:1px solid #ffffff;-->
+</html>

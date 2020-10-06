@@ -9,6 +9,10 @@
 		"location": "meteolog.html"
 	}, 
 	{
+		"title": "SkyCam",
+		"location": "skycam.html"
+	},
+	{
 		"title": "About us",
 		"location": "about.html"
 	},

@@ -13,6 +13,40 @@ const port = 80
 
 var astrofarm = express()
 
+function updateImageFilelist() {
+  // Scans the skycam folder to re-generate the JSON list of skycam images
+  const folderPath = '/var/www/astrofarm/skycam';
+  const JSONFilename = 'skycam.json'
+  fs.readdir(folderPath, function(err, files) {
+    if (err!=null) {console.log("Error!", err); return;}
+    console.log("Files in", folderPath);
+    var fileList = [];
+    for (file of files) {
+      if (file.includes(".jpg")) fileList.push(file);
+    }
+  
+    var skycamData = {};
+    var availableDates = [];
+    for (file of fileList) {
+      let datePortion = file.substring(0, 8);
+      if (!availableDates.includes(datePortion)) availableDates.push(datePortion);
+    }
+    fileList.sort();
+    fileList.reverse();
+    console.log("all dates:", availableDates);
+    skycamData.dates = availableDates;
+    skycamData.mostRecent = fileList[0];
+    skycamData.files = fileList;
+    fileJSON = JSON.stringify(skycamData, null, 2);
+    fs.writeFile(path.join(folderPath, JSONFilename), fileJSON, function (err) {
+      if (err) return console.log(err);
+      console.log('Updated', JSONFilename);
+    });
+  });
+
+}
+  
+
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
       cb(null, '/var/www/astrofarm/skycam/');
@@ -83,6 +117,7 @@ astrofarm.post('/imageUpload', function(req, res) {
 
         // Display uploaded image for user validation
         res.send("SUCCESS");
+        updateImageFilelist();
     });
   })
 
@@ -114,10 +149,10 @@ astrofarm.get('/sun', function(req, res) {
 astrofarm.get('/info', function(req, res) {
   astronomy.info(null, writeout)
   function writeout(err, data) {
-    res.writeHead(200, { 'Content-Type': 'application/json',  'Access-Control-Allow-Origin': '*' })
-    res.write(data)
-    console.log(data)
-    res.end()
+    res.writeHead(200, { 'Content-Type': 'application/json',  'Access-Control-Allow-Origin': '*' });
+    res.write(data);
+    console.log(data);
+    res.end();
   }
 })
 
@@ -159,7 +194,7 @@ astrofarm.get('/meteolog', function(req, res) {
     res.writeHead(200, { 'Content-Type': 'application/json',  'Access-Control-Allow-Origin': '*' });
     res.write(JSON.stringify(data, null, 2));
     res.end();
-  
+    updateImageFilelist();
   }
 
   
