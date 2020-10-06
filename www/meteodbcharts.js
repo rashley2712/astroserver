@@ -2,6 +2,7 @@ function drawTempChart() {
 	//var dateString = formatDate(startDate);
 	var dateString = availableDates[currentDateIndex];
 	var data = new google.visualization.DataTable();
+	var dateFormatter = new google.visualization.DateFormat({pattern: 'dd/MM/yyyy HH:mm'});
 	const colourTable = ["#FF0030", "#FF0020", "#FF0010", "#FF0000", "#FF0a00", "#FF1400", "#FF1e00", "#FF2800", "#FF3200", "#FF3c00", "#FF4600", "#FF5000", "#FF5a00", "#FF6400", "#FF6e00", "#FF7800", "#FF8200", "#FF8c00", "#FF9600", "#FFa000", "#FFaa00", "#FFb400", "#FFbe00", "#FFc800", "#FFd200", "#FFdc00", "#FFe600", "#FFf000", "#FFfa00", "#fdff00", "#d7ff00", "#b0ff00", "#8aff00", "#65ff00", "#3eff00", "#17ff00", "#00ff10", "#00ff36", "#00ff5c", "#00ff83", "#00ffa8", "#00ffd0", "#00fff4", "#00e4ff", "#00d4ff", "#00c4ff", "#00b4ff", "#00a4ff", "#0094ff", "#0084ff", "#0074ff", "#0064ff", "#0054ff", "#0044ff", "#0032ff", "#0022ff", "#0012ff", "#0002ff", "#0000ff", "#0100ff", "#0200ff", "#0300ff", "#0400ff", "#0500ff"];
 	data.addColumn('datetime', 'Time of day');
 	data.addColumn('number', 'Ambient temperature (\u00B0C)');
@@ -56,7 +57,8 @@ function drawTempChart() {
 	}
 
 	
-	console.log(startDate, endDate);
+	dateFormatter.format(data, 0);
+	
 	var options = {
 		title: 'Conditions on ' + dateString,
 		hAxis: {title: 'Time', format: 'HH:mm', viewWindow: { min: startDate, max: endDate}},
