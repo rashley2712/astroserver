@@ -43,7 +43,7 @@
 			var endDate = null;
             var meteoData = {};
             var dayData = null;
-            var prevDayData = null;
+            var prevDayData = false;
             var currentDateIndex = -1;
             var chartLoaded = false;
             var chart;
@@ -168,19 +168,41 @@
                     return;
                 }
                 console.log("graphDate:", availableDates[currentDateIndex]);
-                getDataForDate(availableDates[currentDateIndex])
+                //getDataForDate(availableDates[currentDateIndex])
+                getChartData();
             }
 
             function refreshData() {
                 console.log("Refreshing data....");
-                //getCSV('meteo.log', parseDay);
-                // if (currentDateIndex == availableDates.length -1 ) drawCharts();
-                //dayDafetchDataForData()
+                
 			}
+
+            function getChartData() {
+                dateString = availableDates[currentDateIndex];
+
+                startDate = new Date(parseInt(dateString.substring(0, 4)), parseInt(dateString.substring(5, 7))-1, parseInt(dateString.substring(8, 10)), 12, 0);
+                endDate = new Date(startDate.getTime() + 86400*1000); 
+				console.log("Start date:", startDate);
+				console.log("End date:", endDate);
+				let queryString = "?start=" + sqlDateTime(startDate) + "&end=" + sqlDateTime(endDate);
+				if (prevDayData) {
+                    var queryStartDate = new Date(startDate.getTime() - 86400*1000);
+                    console.log("Query start date:", queryStartDate);
+                    queryString = "?start=" + sqlDateTime(queryStartDate) + "&end=" + sqlDateTime(endDate);
+                }
+                console.log(queryString);
+				const JSONURL = encodeURI("/meteolog" + queryString);
+				console.log("Making request:", JSONURL);
+				getJSON(JSONURL, dataReceived);
+            
+ 
+            }
 			
 			function togglePrevDay() {
 				console.log("Toggle previous day's data");
-			}
+                if (prevDayData) prevDayData = false; else prevDayData = true;
+                getChartData();
+            }
   
 
 </script>
@@ -197,14 +219,15 @@
     <p>&nbsp;</p>
     <p>&nbsp;</p>
     <table style="width: 700px;">
+        <tr>
+            <td align="right" colspan=3><input onchange="togglePrevDay()" type="checkbox" id="prevday"><label for="prevday">overlay previous day's data</label></td>
+        </tr>
         <tr align="center">
-            <td><a onclick="shiftDay(-1)">&lt;&lt;</a></td>
-            <td><span id="chartDate">date</span></td>
-            <td><a onclick="shiftDay(1)">&gt;&gt;</a></td>
+            <td id="menuCell" onclick="shiftDay(-1)">&lt;&lt;</td>
+            <td id="menuCell"><span id="chartDate">date</span></td>
+            <td id="menuCell" onclick="shiftDay(1)">&gt;&gt;</td>
         </tr>
-		<tr>
-            <td align="right" colspan=3><input onchange="togglePrevDay()" type="checkbox" id="prevday"><label for="prevday">also show previous day's data</label></td>
-        </tr>
+		
 	</table>
 	<table>
 		<tr>
