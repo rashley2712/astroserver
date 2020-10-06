@@ -23,7 +23,8 @@
             // Global variables
             var currentDate = new Date();
             var availableDates = null;
-            
+            var imageList = [];
+            var imageIndex = 0;
             // Call a function only when the page is fully loaded.
 		    document.addEventListener('readystatechange', event => {
 		        if (event.target.readyState === "complete") {
@@ -43,9 +44,18 @@
 				console.log("Image data:");
 				console.log(data);
 				console.log("latest image is:", data.mostRecent);
-				document.getElementById("skycamimage").src = "skycam/" + data.mostRecent;
-				// aspect ratio 2592 px x 1944 px
-			}
+                imageList = data.files;
+                imageIndex = 0;
+				document.getElementById("skycamimage").src = "skycam/" + imageList[imageIndex];
+                // aspect ratio 2592 px x 1944 px
+            }
+            
+            function changeImage(delta) {
+                imageIndex-= delta;
+                if (imageIndex<0) imageIndex=0;
+                if (imageIndex>=imageList.length) imageIndex=0;
+                document.getElementById("skycamimage").src = "skycam/" + imageList[imageIndex];
+            }
 
           
 
@@ -62,10 +72,20 @@
     <p>&nbsp;</p>
     <p>&nbsp;</p>
     <p>&nbsp;</p>
-	<div id="skycamholder" style="width: 900px; height: 700px;">
-		<img src="" id="skycamimage" width="900px"/>
-	</div>
-	
+    <table >
+        <tr>
+            <td id="menuCell" onclick="changeImage(-1)" style="width: 40px;">&lt;&lt;</td>
+        
+            <td>
+                <div id="skycamholder" style="width: 900px; height: 675px;">
+                    <img src="" id="skycamimage" width="900px"/>
+                </div>
+            </td>
+        
+            <td id="menuCell" onclick="changeImage(1)" style="width: 40px;">&gt;&gt;</td>
+        
+    </tr>
+    </table>
 	<p id='footer'>
     
     </p>
