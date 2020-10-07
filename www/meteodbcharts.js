@@ -9,8 +9,8 @@ function drawTempChart() {
 	data.addColumn({type:'string', role:'style'});
 	if (prevDayData) data.addColumn('number', 'Previous day (\u00B0C)');
 	
-	let tempStart = 5;
-	let tempEnd = 30;
+	let tempStart = 0;
+	let tempEnd = 40;
 	let tempRange = tempEnd - tempStart;
 	console.log("Datestring", dateString);
 	
