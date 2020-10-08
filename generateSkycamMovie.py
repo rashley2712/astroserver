@@ -110,14 +110,15 @@ if __name__ == "__main__":
 
 	# Now generate an animated gif from the mp4
 	# ffmpeg -i 20200622.mp4 -filter_complex "[0:v] split [a][b];[a] palettegen [p];[b][p] paletteuse" out.gif
-
-	ffmpegCommand = ['ffmpeg']
-	ffmpegCommand.append('-y')
-	ffmpegCommand.append('-i')
-	ffmpegCommand.append(listFilename + ".mp4")
-	ffmpegCommand.append('-filter_complex')
-	ffmpegCommand.append('[0:v] split [a][b];[a] palettegen [p];[b][p] paletteuse')
-	ffmpegCommand.append(listFilename + '.gif')
-	print(ffmpegCommand)
-	subprocess.call(ffmpegCommand)
+	# only do a gif for the 'latest' movies
+	if args.latest is not None:
+		ffmpegCommand = ['ffmpeg']
+		ffmpegCommand.append('-y')
+		ffmpegCommand.append('-i')
+		ffmpegCommand.append(listFilename + ".mp4")
+		ffmpegCommand.append('-filter_complex')
+		ffmpegCommand.append('[0:v] split [a][b];[a] palettegen [p];[b][p] paletteuse')
+		ffmpegCommand.append(listFilename + '.gif')
+		print(ffmpegCommand)
+		subprocess.call(ffmpegCommand)
 
