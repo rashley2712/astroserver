@@ -24,6 +24,7 @@ if __name__ == "__main__":
 		print(e)
 		config = {}
 		config['imagePath'] = args.imagePath
+		config['timeZone'] = 0
 	if args.imagePath != ".": config['imagePath'] = args.imagePath
 	
 	if args.date is not None:
@@ -53,6 +54,7 @@ if __name__ == "__main__":
 		endTime = startTime + datetime.timedelta(days=1)
 	else:
 		endTime = datetime.datetime.now()
+		endTime = endTime + datetime.timedelta(hours=config['timeZone'])
 		startTime = endTime - datetime.timedelta(hours=args.latest) 
 	
 	print("startTime:", startTime)
