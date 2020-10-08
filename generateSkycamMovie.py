@@ -81,6 +81,10 @@ if __name__ == "__main__":
 		listFile.write("%s\n"%f)
 	listFile.close()
 
+	if len(eligibleFiles)==0: 
+		print("No files qualify for that date range. Exiting")
+		sys.exit()
+	
 	listFilename = os.path.splitext(listFilename)[0]
 	user = os.getlogin()
 	ffmpegCommand = ["/home/%s/bin/pipeFFMPEG.bash"%user]
