@@ -33,7 +33,7 @@ function updateImageFilelist() {
     }
     fileList.sort();
     fileList.reverse();
-    console.log("all dates:", availableDates);
+    // console.log("all dates:", availableDates);
     skycamData.dates = availableDates;
     skycamData.mostRecent = fileList[0];
     skycamData.files = fileList;
@@ -194,7 +194,6 @@ astrofarm.get('/meteolog', function(req, res) {
     res.writeHead(200, { 'Content-Type': 'application/json',  'Access-Control-Allow-Origin': '*' });
     res.write(JSON.stringify(data, null, 2));
     res.end();
-    updateImageFilelist();
   }
 
   

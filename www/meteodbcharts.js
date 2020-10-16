@@ -7,6 +7,7 @@ function drawTempChart() {
 	data.addColumn('datetime', 'Time of day');
 	data.addColumn('number', 'Ambient temperature (\u00B0C)');
 	data.addColumn({type:'string', role:'style'});
+	data.addColumn('number', 'Sky temperature (\u00B0C)');
 	if (prevDayData) data.addColumn('number', 'Previous day (\u00B0C)');
 	
 	let tempStart = 0;
@@ -45,7 +46,7 @@ function drawTempChart() {
 		colourIndex = colourTable.length - 1 - colourIndex;
 		let colorString = 'point { stroke-color:' + colourTable[colourIndex] + '; fill-color:' + colourTable[colourIndex] + ';}';
 		if (!prevDayData) {
-			data.addRow([line.dateTime, line.Temperature, colorString]); 
+			data.addRow([line.dateTime, line.Temperature, colorString, line.IRSky]); 
 			//console.log(line);
 		} else data.addRow([line.dateTime, line.Temperature, colorString, null]);
 		}
@@ -170,9 +171,10 @@ function drawCPUChart() {
 	var data = new google.visualization.DataTable();
 	data.addColumn('datetime', 'Time of day');
 	data.addColumn('number', 'CPU temperature (\u00B0C)');
+	data.addColumn('number', 'Cabinet temperature (\u00B0C)');
 	
 	for (var line of dayData){
-		data.addRow([line.dateTime, line.CPUtemperature]);
+		data.addRow([line.dateTime, line.CPUtemperature, line.IRAmbient]);
 	}
 
 	var options = {
