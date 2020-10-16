@@ -75,9 +75,7 @@ if __name__ == "__main__":
 			eligibleFiles.append(f)
 	eligibleFiles = sorted(eligibleFiles)
 	
-	listFilename = "%s.list"%dateString
-	if args.latest is not None:
-		listFilename = "latest_%02d.list"%args.latest
+	listFilename = "tmpVideo.list"
 	listFile = open(os.path.join(folder, listFilename), 'wt')
 	for f in eligibleFiles:
 		listFile.write("%s\n"%f)
@@ -89,7 +87,7 @@ if __name__ == "__main__":
 	
 	listFilename = os.path.splitext(listFilename)[0]
 	user = os.getlogin()
-	ffmpegCommand = ["/home/%s/bin/pipeFFMPEG.bash"%user]
+	ffmpegCommand = ["nice", "/home/%s/bin/pipeFFMPEG.bash"%user]
 	ffmpegCommand.append(listFilename)
 	print("Running:", ffmpegCommand)
 	from subprocess import Popen, PIPE
@@ -97,7 +95,16 @@ if __name__ == "__main__":
 	os.chdir(folder)
 	subprocess.call(ffmpegCommand)
 
-
+	#
+	# 
+	#
+	finalFilename = "%s.mp4"%dateString 
+	if args.latest is not None:
+		finalFilename = "latest_%02d.mp4"%args.latest
+	finalFilename = os.path.join(folder, finalFilename)
+	tmpMovie = listFilename + ".mp4"
+	print("Moving %s to %s"%(tmpMovie, finalFilename))
+	os.rename(listFilename + ".mp4", finalFilename)
 
 
 
