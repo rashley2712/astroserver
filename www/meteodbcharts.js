@@ -71,7 +71,8 @@ function drawTempChart() {
 			height: "80%",
 			width: "75%"
 		},
-		pointSize: 3,
+		pointSize: 2,
+		colors: ['green', 'grey']
 
 	};
 
@@ -128,7 +129,7 @@ function drawHumidityChart() {
 		height: "80%",
 		width: "75%"
 	},
-	pointSize: 3
+	pointSize: 2
 	};
 
 	chart = new google.visualization.ScatterChart(document.getElementById('chart_humidity'));  
@@ -158,7 +159,7 @@ function drawPressureChart() {
 		height: "80%",
 		width: "75%"
 	},
-	pointSize: 3
+	pointSize: 2
 	};
 
 	chart = new google.visualization.ScatterChart(document.getElementById('chart_pressure'));  
@@ -188,8 +189,8 @@ function drawCPUChart() {
 		height: "80%",
 		width: "75%"
 	},
-	pointSize: 3,
-	colors: ['red']
+	pointSize: 2,
+	colors: ['red', 'grey']
 
 	};
 
