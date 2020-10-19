@@ -32,6 +32,7 @@
             var currentDateIndex = -1;
             var chartLoaded = false;
             var chart;
+            var lastJSONURL;
             var dataRefreshTimerId = null;
             
             // Import Google Charts
@@ -106,7 +107,8 @@
 				const queryString = "?start=" + sqlDateTime(startDate) + "&end=" + sqlDateTime(endDate);
 				console.log(queryString);
 				const JSONURL = encodeURI("/meteolog" + queryString);
-				console.log("Making request:", JSONURL);
+                console.log("Making request:", JSONURL);
+                lastJSONURL = JSONURL;
 				getJSON(JSONURL, dataReceived);
             }
 
@@ -159,7 +161,7 @@
 
             function refreshData() {
                 console.log("Refreshing data....");
-                
+                getJSON(lastJSONURL, dataReceived);
 			}
 
             function getChartData() {
@@ -177,7 +179,8 @@
                 }
                 console.log(queryString);
 				const JSONURL = encodeURI("/meteolog" + queryString);
-				console.log("Making request:", JSONURL);
+                console.log("Making request:", JSONURL);
+                lastJSONURL = JSONURL;
 				getJSON(JSONURL, dataReceived);
             
  

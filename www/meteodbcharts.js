@@ -8,35 +8,14 @@ function drawTempChart() {
 	data.addColumn('number', 'Ambient temperature (\u00B0C)');
 	data.addColumn({type:'string', role:'style'});
 	data.addColumn('number', 'Sky temperature (\u00B0C)');
-	if (prevDayData) data.addColumn('number', 'Previous day (\u00B0C)');
+	data.addColumn('number', 'Dew point (\u00B0C)');
 	
 	let tempStart = 0;
 	let tempEnd = 40;
 	let tempRange = tempEnd - tempStart;
 	console.log("Datestring", dateString);
 	
-	var today = [];
-	var prevDay = [];
-	if (prevDayData) {
-		// Split the data
-		let year = parseInt(dateString.substring(0, 4));
-        let month = parseInt(dateString.substring(5, 7));
-        let day = parseInt(dateString.substring(8, 10));
-        var splitDateTime = new Date(year, month-1, day, 12, 0, 0);
-		for (line of dayData) {
-			if (line.dateTime<splitDateTime) {
-				prevDay.push(line);
-			} else {
-				today.push(line);
-			}
-		}
-		console.log("Today has", today.length, " datapoints");
-		console.log("Yesterday has", prevDay.length, " datapoints");
-		for (line of prevDay) {
-			console.log(line);
-			line.dateTime = new Date(line.dateTime.getTime() + 86400*1000); 
-		}
-	} else today = dayData;
+	var today = dayData;
 	console.log("Today has", today.length, " datapoints");
 		
 	for (var line of today){
@@ -45,18 +24,15 @@ function drawTempChart() {
 		if (colourIndex>colourTable.length - 1) colourIndex = colourTable.length - 1;
 		colourIndex = colourTable.length - 1 - colourIndex;
 		let colorString = 'point { stroke-color:' + colourTable[colourIndex] + '; fill-color:' + colourTable[colourIndex] + ';}';
-		if (!prevDayData) {
-			data.addRow([line.dateTime, line.Temperature, colorString, line.IRSky]); 
-			//console.log(line);
-		} else data.addRow([line.dateTime, line.Temperature, colorString, null]);
-		}
-
-	if (prevDayData) {
-		for (var line of prevDay){
-			data.addRow([line.dateTime, null, null, line.Temperature]); 
-		}
+		kelvin = line.Temperature + 273.15
+		let Es = 0.611 * Math.exp(5423 * (1/273 - 1/kelvin))
+		let E = line.RelativeHumidity/100 * Es
+		let dewpoint = 1 / (1/273 - Math.log(E/0.611)/5423)  - 273.15
+		//let dewpoint = line.Temperature - (100-line.RelativeHumidity)/5;
+		data.addRow([line.dateTime, line.Temperature, colorString, line.IRSky, dewpoint]);
+		//console.log("IRSky", line.IRSky, "Dew point:", dewpoint, dewpoint2);
+		
 	}
-
 	
 	dateFormatter.format(data, 0);
 	
@@ -72,14 +48,9 @@ function drawTempChart() {
 			width: "75%"
 		},
 		pointSize: 2,
-		colors: ['green', 'grey']
+		colors: ['green', 'grey', 'lightgrey']
 
 	};
-
-	if (prevDayData) options.series =  {
-											0: {pointSize: 3},
-											1: {color: "#999999", pointSize: 1}
-										};
 
 	chart = new google.visualization.ScatterChart(document.getElementById('chart_temperature'));  
 	chart.draw(data, options);
