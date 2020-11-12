@@ -47,13 +47,13 @@ if __name__ == "__main__":
 	print("Running the fetch at:",nowString)
 
 	params = [  {	"query": 'temp_act_',
-					"store_as" : 'temperature',
+					"store_as" : 'temperature'
 			 	}, 
 				{	"query": 'hum_act_',
-					"store_as" : 'humidity',
+					"store_as" : 'humidity'
 				},
 				{	"query": 'cloud_act_',
-					"store_as" : 'cloud',
+					"store_as" : 'cloud'
 				}
 			]
 	for param in params: 
@@ -72,7 +72,7 @@ if __name__ == "__main__":
 		param['map'] = data['map']['map_url']
 		param['overlay'] = data['map']['overlay_url']
 		param['time'] = data['record_found'][:-6]
-		print("truncated time string", param['time'])
+		#print("truncated time string", param['time'])
 		timeStamp = datetime.datetime.strptime(param['time'], '%Y-%m-%dT%H:%M:%S')
 		timeString = timeStamp.strftime("%Y%m%d_%H%M")
 		param['timeString'] = timeString
@@ -163,4 +163,4 @@ if __name__ == "__main__":
 	logfile.close()
 
 
-	print("Written updates to %s and files to %s"%(config['dbFile'], destinationFolder))
+	print("Written updates to %s and copied images to %s.\nThe SQLite db at %s has been updated."%(config['dbFile'], destinationFolder, config['sqldb']))
