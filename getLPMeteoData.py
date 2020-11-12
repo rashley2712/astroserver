@@ -133,6 +133,7 @@ if __name__ == "__main__":
 	connection = sqlite3.connect(config['sqldb'])
 	# Clean out the DB! 
 	if args.clean:
+		
 		for param in params:
 			SQLstring = "DROP table %s;"%param['store_as']
 			try:
