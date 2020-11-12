@@ -28,6 +28,7 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='Opens up a URL for the La Palma Meteo site and downloads images and data.')
 	parser.add_argument('--show', action='store_true', help='Show the images in a window on the desktop.')
 	parser.add_argument('-c','--config', type=str, default="autometeo.cfg", help='The config file.')
+	parser.add_argument('--clean', action="store_true", help="Clean out the sqllite database.")
 	args = parser.parse_args()
 	
 	configFile = open(args.config, 'rt')
@@ -124,6 +125,31 @@ if __name__ == "__main__":
 		
 		
 	db.set("lastCrawl", nowString)
+	print("Fetched the data ok...")
+	
+	# Update the sql database
+	import sqlite3
+	connection = sqlite3.connect(config['sqldb'])
+	# Clean out the DB! 
+	if args.clean:
+		for param in params:
+			SQLstring = "DROP table %s;"%param['store_as']
+			try:
+				connection.execute(SQLstring)
+			except sqlite3.OperationalError as e:
+				print(e)
+			SQLstring =  "CREATE table %s ( Date TEXT unique, value REAL);"%param['store_as']
+			connection.execute(SQLstring)
+		connection.commit()
+	# Write the values to the SQL database
+	for param in params:
+		SQLstring = "INSERT or IGNORE INTO %s VALUES ('%s',%s);"%(param['store_as'], param['timeString'], param['value'])
+		print(SQLstring)
+		connection.execute(SQLstring)
+
+	connection.commit()
+	connection.close()
+
 
 	# Also write the text information to a simple log file...
 	outline = "%s"%timeString
@@ -136,5 +162,4 @@ if __name__ == "__main__":
 	logfile.close()
 
 
-	print("Fetched the data ok...")
 	print("Written updates to %s and files to %s"%(config['dbFile'], destinationFolder))

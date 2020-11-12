@@ -21,10 +21,7 @@ class WEBdb:
 		jsonFile.close()
 
 	def set(self, property, value):
-		print("property, value", property, value)
 		if type(value) is dict:
-			print("adding a nested property.")
-			print("Current root level keys", self.db.keys())
 			if property not in self.db.keys():
 				self.db[property] = {}
 			for key in value.keys():
