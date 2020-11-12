@@ -34,7 +34,7 @@ if __name__ == "__main__":
 	configFile = open(args.config, 'rt')
 	config = json.loads(configFile.read())
 	print(config)
-
+	
 	db = webdb.WEBdb()
 	db.filename = config['dbFile']
 	db.load()
@@ -71,8 +71,9 @@ if __name__ == "__main__":
 		param['value'] = data['poi']['value']
 		param['map'] = data['map']['map_url']
 		param['overlay'] = data['map']['overlay_url']
-		param['time'] = data['record_found']
-		timeStamp = datetime.datetime.strptime(param['time'], '%Y-%m-%dT%H:%M:%S%z')
+		param['time'] = data['record_found'][:-6]
+		print("truncated time string", param['time'])
+		timeStamp = datetime.datetime.strptime(param['time'], '%Y-%m-%dT%H:%M:%S')
 		timeString = timeStamp.strftime("%Y%m%d_%H%M")
 		param['timeString'] = timeString
 
