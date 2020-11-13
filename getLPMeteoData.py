@@ -68,17 +68,20 @@ if __name__ == "__main__":
 		data = json.loads(responseData)
 		response.close()
 
-		param['value'] = data['poi']['value']
-		param['map'] = data['map']['map_url']
-		param['overlay'] = data['map']['overlay_url']
-		param['time'] = data['record_found'][:-6]
-		#print("truncated time string", param['time'])
-		timeStamp = datetime.datetime.strptime(param['time'], '%Y-%m-%dT%H:%M:%S')
-		timeString = timeStamp.strftime("%Y%m%d_%H%M")
-		param['timeString'] = timeString
-
+		print(data)
+		try:
+			param['value'] = data['poi']['value']
+			param['map'] = data['map']['map_url']
+			param['overlay'] = data['map']['overlay_url']
+			param['time'] = data['record_found'][:-6]
+			timeStamp = datetime.datetime.strptime(param['time'], '%Y-%m-%dT%H:%M:%S')
+			timeString = timeStamp.strftime("%Y%m%d_%H%M")
+			param['timeString'] = timeString
+		except KeyError:
+			param['value'] = -1
 		
 	for param in params:
+		if param['value']==-1: continue
 		# Get the map image first
 		imageURL = param['map']
 		mapOutput = os.path.join(config['tmpPath'], "%s_%s.png"%(param['store_as'], param['timeString']))
@@ -145,6 +148,7 @@ if __name__ == "__main__":
 		connection.commit()
 	# Write the values to the SQL database
 	for param in params:
+		if param['value']==-1: continue
 		SQLstring = "INSERT or IGNORE INTO %s VALUES ('%s',%s);"%(param['store_as'], param['timeString'], param['value'])
 		print(SQLstring)
 		connection.execute(SQLstring)
