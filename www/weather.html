@@ -55,8 +55,12 @@
 
 			function dataUpdate(err, data) {
 				console.log(data);
-				document.getElementById("temperature").innerText = data.temperature.value;
-				document.getElementById("humidity").innerText = data.humidity.value;
+				document.getElementById("temperature").innerHTML = decimalPlacesFloat(data.temperature.value,1) + " &deg;C";
+				document.getElementById("humidity").innerText = data.humidity.value + " %";
+				document.getElementById("cloud").innerText = data.cloud.value + " %";
+				document.getElementById("temperatureMap").src = data.temperature.image;
+				document.getElementById("humidityMap").src = data.humidity.image;
+				document.getElementById("cloudMap").src = data.cloud.image;
 			}
       
 
@@ -74,11 +78,17 @@
     <p>&nbsp;</p>
 	<p>&nbsp;</p>
 	<p>Current local weather</p>
-	<table style="width: 900px;" border="1">
-		<tr>
-			<td>Temperature <span id="temperature">--</span>&deg;C</td>
-			<td>Relative humidity <span id="humidity">--</span>%</td>
-		</tr>
+	<table style="width: 900px;">
+	<tr>
+		<td><button class="button" id="temperature">--</button></td>
+        <td><button class="button" id="humidity" >--</button></td>
+		<td><button class="button" id="cloud" >--</button></td>
+	</tr>
+	<tr>
+		<td><img id="temperatureMap" src=""></td>
+		<td><img id="humidityMap" src=""></td>
+		<td><img id="cloudMap" src=""></td>
+	</tr>
 	</table>
 	<table style="width: 900px;">
         <!--<tr>

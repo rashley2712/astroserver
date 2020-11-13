@@ -17,6 +17,19 @@ html {
    font-size:80%
 }
 
+.button {
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 32px;
+    margin: 4px 2px;
+  }
+
 h1 {font-size:200%;}
 h2 {font-size:140%;}
 h3 {font-size:110%;}
