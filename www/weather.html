@@ -124,10 +124,10 @@
 	    <i>data source: <a href="http://lp.hdmeteo.com" target="_new">HDmeteo.com</a></i>
 	</p>
 	<table style="width: 900px;">
-	<tr>
-		<td><button class="button" id="temperature">--</button></td>
-        <td><button class="button" id="humidity" >--</button></td>
-		<td><button class="button" id="cloud" >--</button></td>
+	<tr align="center">
+		<td><button class="button" id="temperature">00.0 &deg;C</button></td>
+        <td><button class="button" id="humidity" >00.0 %</button></td>
+		<td><button class="button" id="cloud" >00 %</button></td>
 	</tr>
 	<tr>
 		<td><img id="temperatureMap" src=""><br/>updated: <span id="temperatureUpdate"></span></td>
@@ -137,12 +137,9 @@
 	</tr>
 	</table>
 	<table style="width: 900px;">
-        <!--<tr>
-            <td align="right" colspan=3><input onchange="togglePrevDay()" type="checkbox" id="prevday"><label for="prevday">overlay previous day's data</label></td>
-        </tr>-->
         <tr align="center">
             <td id="menuCell" onclick="shiftDay(-1)">&lt;&lt;</td>
-            <td id="menuCell"><span id="chartDate">date</span></td>
+            <td id="menuCell"><span id="chartDate">Last 24 hours</span></td>
             <td id="menuCell" onclick="shiftDay(1)">&gt;&gt;</td>
         </tr>
 		
