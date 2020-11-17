@@ -199,6 +199,52 @@ astrofarm.get('/meteolog', function(req, res) {
   
 });
 
+
+astrofarm.get('/lpmeteo', function(req, res) {
+  LPdatabase = "LPmeteo/lpmeteo.db";
+  let db = new sqlite3.Database(path.join(rootPath, LPdatabase), sqlite3.OPEN_READWRITE, (err) => {
+    if (err) {
+      return console.error(err.message);
+    } });
+
+  // select distinct(date(Date)) from meteolog;
+  console.log('Connected to the LP meteo SQLite database.');
+  let startDate = req.query.start;
+  let endDate = req.query.end;
+  console.log("start date:", startDate);
+  
+  function makeSQL(startDate, endDate) {
+    if (startDate == null && endDate==null) return 'SELECT * from temperature;';
+    if (startDate == null && endDate!=null) return 'SELECT * from temperature WHERE Date < "' + endDate + '";';
+    if (startDate.includes("dates")) return "SELECT DISTINCT(substr(Date, 0, 9)) AS availableDate FROM temperature;";
+    if (endDate==null) return 'SELECT * from temperature WHERE Date > "' + startDate + '";';
+    return 'SELECT * from temperature WHERE Date > "' + startDate + '" AND Date < "' + endDate + '";';
+  }
+  var sqlquery = makeSQL(startDate, endDate);
+
+  console.log(sqlquery); 
+  db.all(sqlquery, [], processDB);
+  db.close();
+
+  
+  function processDB(err, rows) {
+    console.log("In process DB");
+    var data = [];
+    var count=0;
+    for (row of rows) {
+      data.push(row);
+      count++;
+    }
+    console.log("Sent back", count, "rows.");
+    res.writeHead(200, { 'Content-Type': 'application/json',  'Access-Control-Allow-Origin': '*' });
+    res.write(JSON.stringify(data, null, 2));
+    res.end();
+  }
+
+  
+});
+
+
 astrofarm.use(express.static(rootPath));
 
 

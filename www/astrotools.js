@@ -212,8 +212,9 @@ function convertToGalactic(ra, dec) {
 
 	function drawMenu(err, data) {
 		// Draws the main menu at the top of the page
-		console.log("Drawing the main menu...");
-		console.log("data received:", data);
+		let debug = false;
+		if (debug) console.log("Drawing the main menu...");
+		if (debug) console.log("data received:", data);
 		let links = data.links;
 		let destinationElement = document.getElementById('menu');
 		let numItems = links.length;
@@ -229,7 +230,7 @@ function convertToGalactic(ra, dec) {
 		}
 		if (i%width != 0)  menuHTML+="\t</tr>\n"
 		menuHTML+= "</table>\n";
-		console.log(menuHTML);
+		if (debug) console.log(menuHTML);
 		destinationElement.innerHTML = menuHTML;
 	}
 

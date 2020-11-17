@@ -3,7 +3,7 @@
         <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-52663594-2"></script>
 		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-		<script language="javascript" type="text/javascript" src="meteodbcharts.js"></script>
+		<script language="javascript" type="text/javascript" src="weathercharts.js"></script>
       
         <script>
             window.dataLayer = window.dataLayer || [];
@@ -34,7 +34,7 @@
             var chart;
             var lastJSONURL;
 			var dataRefreshTimerId = null;
-			const blueRed = ["#FF0030", "#FF0020", "#FF0010", "#FF0000", "#FF0a00", "#FF1400", "#FF1e00", "#FF2800", "#FF3200", "#FF3c00", "#FF4600", "#FF5000", "#FF5a00", "#FF6400", "#FF6e00", "#FF7800", "#FF8200", "#FF8c00", "#FF9600", "#FFa000", "#FFaa00", "#FFb400", "#FFbe00", "#FFc800", "#FFd200", "#FFdc00", "#FFe600", "#FFf000", "#FFfa00", "#fdff00", "#d7ff00", "#b0ff00", "#8aff00", "#65ff00", "#3eff00", "#17ff00", "#00ff10", "#00ff36", "#00ff5c", "#00ff83", "#00ffa8", "#00ffd0", "#00fff4", "#00e4ff", "#00d4ff", "#00c4ff", "#00b4ff", "#00a4ff", "#0094ff", "#0084ff", "#0074ff", "#0064ff", "#0054ff", "#0044ff", "#0032ff", "#0022ff", "#0012ff", "#0002ff", "#0000ff", "#0100ff", "#0200ff", "#0300ff", "#0400ff", "#0500ff"];
+			const redBlue = ["#FF0030", "#FF0020", "#FF0010", "#FF0000", "#FF0a00", "#FF1400", "#FF1e00", "#FF2800", "#FF3200", "#FF3c00", "#FF4600", "#FF5000", "#FF5a00", "#FF6400", "#FF6e00", "#FF7800", "#FF8200", "#FF8c00", "#FF9600", "#FFa000", "#FFaa00", "#FFb400", "#FFbe00", "#FFc800", "#FFd200", "#FFdc00", "#FFe600", "#FFf000", "#FFfa00", "#fdff00", "#d7ff00", "#b0ff00", "#8aff00", "#65ff00", "#3eff00", "#17ff00", "#00ff10", "#00ff36", "#00ff5c", "#00ff83", "#00ffa8", "#00ffd0", "#00fff4", "#00e4ff", "#00d4ff", "#00c4ff", "#00b4ff", "#00a4ff", "#0094ff", "#0084ff", "#0074ff", "#0064ff", "#0054ff", "#0044ff", "#0032ff", "#0022ff", "#0012ff", "#0002ff", "#0000ff", "#0100ff", "#0200ff", "#0300ff", "#0400ff", "#0500ff"];
             
             // Import Google Charts
             google.charts.load('current', {'packages':['corechart', 'timeline']});
@@ -52,16 +52,56 @@
 				console.log("Current time is:", currentDate);
 				getJSON('menu.json', drawMenu);
 				getJSON("/LPmeteo/meteodb.json", dataUpdate);
-            }
+				getLast24hours();
+			}
+			
+			function sqlDateFormatter(inputDate) {
+				var year, month, day, hours, minutes, seconds;
+				year = inputDate.getYear() + 1900;
+				month = inputDate.getMonth() + 1;
+				day = inputDate.getDate(); 
+				hours = inputDate.getHours();
+				minutes = inputDate.getMinutes();
+				seconds = inputDate.getSeconds();
+
+				var dateString = year.toString() + zeroPad(month) + zeroPad(day) + "_" + zeroPad(hours) + zeroPad(minutes);
+				return dateString;
+			}
+
+
+			function getLast24hours() {
+				var now = new Date();
+				var before24 = new Date(now.getTime() - 86400*1000);  
+				var querystring = "lpmeteo?start=" + sqlDateFormatter(before24) + "&end=" + sqlDateFormatter(now);
+				console.log("query", querystring);
+				getJSON(querystring, plotData);
+			}
+
+			function plotData(err, data) {
+				console.log("weather data...");
+				console.log(data);
+				drawTempChart(data);
+			}
 
 			function dataUpdate(err, data) {
 				console.log(data);
-				document.getElementById("temperature").innerHTML = decimalPlacesFloat(data.temperature.value,1) + " &deg;C";
+				liveTemp = data.temperature.value;
+				document.getElementById("temperature").innerHTML = decimalPlacesFloat(liveTemp,1) + " &deg;C";
+				let hotTemp = 40;
+				let coldTemp = 0;
+				let temperatureIndex = Math.round( redBlue.length / (hotTemp - coldTemp) * (liveTemp - coldTemp) );
+				if (temperatureIndex<0) temperatureIndex=0;
+				if (temperatureIndex>redBlue.length-1) temperatureIndex = redBlue.length-1;
+				console.log("index:", temperatureIndex, redBlue.length);
+				document.getElementById("temperature").style.backgroundColor = redBlue[redBlue.length - 1 -temperatureIndex];
 				document.getElementById("humidity").innerText = data.humidity.value + " %";
 				document.getElementById("cloud").innerText = data.cloud.value + " %";
 				document.getElementById("temperatureMap").src = data.temperature.image;
 				document.getElementById("humidityMap").src = data.humidity.image;
 				document.getElementById("cloudMap").src = data.cloud.image;
+				document.getElementById("temperatureUpdate").innerText = data.temperature.update;
+				document.getElementById("humidityUpdate").innerText = data.humidity.update;
+				document.getElementById("cloudUpdate").innerText = data.cloud.update;
 			}
       
 
@@ -89,9 +129,10 @@
 		<td><button class="button" id="cloud" >--</button></td>
 	</tr>
 	<tr>
-		<td><img id="temperatureMap" src=""></td>
-		<td><img id="humidityMap" src=""></td>
-		<td><img id="cloudMap" src=""></td>
+		<td><img id="temperatureMap" src=""><br/>updated: <span id="temperatureUpdate"></span></td>
+		
+		<td><img id="humidityMap" src=""><br/>updated: <span id="humidityUpdate"></span></td>
+		<td><img id="cloudMap" src=""><br/>updated: <span id="cloudUpdate"></span></td>
 	</tr>
 	</table>
 	<table style="width: 900px;">
