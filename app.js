@@ -214,11 +214,11 @@ astrofarm.get('/lpmeteo', function(req, res) {
   console.log("start date:", startDate);
   
   function makeSQL(startDate, endDate) {
-    if (startDate == null && endDate==null) return 'SELECT * from temperature;';
-    if (startDate == null && endDate!=null) return 'SELECT * from temperature WHERE Date < "' + endDate + '";';
+    let baseSQL = "select temperature.Date as Date, temperature.value as temperature, humidity.value as humidity from temperature INNER JOIN humidity on humidity.Date = temperature.Date"; 
+    if (startDate == null && endDate==null) return baseSQL;
     if (startDate.includes("dates")) return "SELECT DISTINCT(substr(Date, 0, 9)) AS availableDate FROM temperature;";
-    if (endDate==null) return 'SELECT * from temperature WHERE Date > "' + startDate + '";';
-    return 'SELECT * from temperature WHERE Date > "' + startDate + '" AND Date < "' + endDate + '";';
+    if (endDate==null) return baseSQL + ' WHERE temperature.Date > "' + startDate + '";';
+    return baseSQL + ' WHERE temperature.Date > "' + startDate + '" AND temperature.Date < "' + endDate + '";';
   }
   var sqlquery = makeSQL(startDate, endDate);
 
