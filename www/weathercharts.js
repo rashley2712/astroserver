@@ -37,7 +37,7 @@ function drawTempChart(temperatureData) {
 	
 	var options = {
 		title: 'Conditions for the last 24 hours',
-		hAxis: {title: 'Time', format: 'HH:mm', viewWindow: { min: startDate, max: endDate}},
+		hAxis: {title: 'Time', viewWindow: { min: startDate, max: endDate}},
 		vAxis: {title: 'Temperature (\u00B0C)' },
 		legend: { position: 'in' }, 
 		chartArea: {
@@ -50,6 +50,9 @@ function drawTempChart(temperatureData) {
 		colors: ['green', 'grey', 'lightgrey']
 
 	};
+	if (hoursBack<30) options.hAxis.format="HH:mm";
+	else options.hAxis.format="dd/MM/yyyy";
+	
 
 	chart = new google.visualization.ScatterChart(document.getElementById('chart_temperature'));  
 	chart.draw(data, options);
@@ -112,6 +115,9 @@ function drawHumidityChart(humidityData) {
 	pointSize: 4
 	};
 
+	if (hoursBack<30) options.hAxis.format="HH:mm";
+	else options.hAxis.format="dd/MM/yyyy";
+	
 	chart = new google.visualization.ScatterChart(document.getElementById('chart_humidity'));  
 	chart.draw(data, options);
 	
@@ -124,7 +130,7 @@ function drawHumidityHistogram(humidityData) {
 	
 
 	for (var line of humidityData){
-		console.log(line);
+		//console.log(line);
 		data.addRow([line.bin_floor, line.count]);
 	}
 

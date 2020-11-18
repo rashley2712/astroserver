@@ -82,19 +82,19 @@
 				var now = new Date();
 				var before = new Date(now.getTime() - hoursBack * 3600 * 1000);  
 				var querystring = "lpmeteo?start=" + sqlDateFormatter(before) + "&end=" + sqlDateFormatter(now);
-				console.log("query", querystring);
+				//console.log("query", querystring);
 				getJSON(querystring, plotData);
 			}
 
 			function getHumidityStats() {
 				var querystring = "lpmeteo?start=humiditystats";
-				console.log("query", querystring);
+				//console.log("query", querystring);
 				getJSON(querystring, plotHumidityStats);
 			}
 
 			function plotHumidityStats(err, data) {
-				console.log("humidity stats...");
-				console.log(data);
+				//console.log("humidity stats...");
+				//console.log(data);
 				drawHumidityHistogram(data);
 			}
 
