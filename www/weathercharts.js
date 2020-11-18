@@ -10,7 +10,7 @@ function drawTempChart(temperatureData) {
 	let tempEnd = 40;
 	let tempRange = tempEnd - tempStart;
 	
-	console.log("temperature data has", temperatureData.length, "datapoints");
+	//console.log("temperature data has", temperatureData.length, "datapoints");
 	
 	// Add proper datetimes to the incoming data
 	for (var line of temperatureData) {
@@ -73,7 +73,7 @@ function drawHumidityChart(humidityData) {
 	let humEnd = 100;
 	let humRange = humEnd - humStart;
 	
-	console.log("humidity data has", humidityData.length, "datapoints");
+	//console.log("humidity data has", humidityData.length, "datapoints");
 	
 	var data = new google.visualization.DataTable();
 	data.addColumn('datetime', 'Time of day');
@@ -113,68 +113,6 @@ function drawHumidityChart(humidityData) {
 	};
 
 	chart = new google.visualization.ScatterChart(document.getElementById('chart_humidity'));  
-	chart.draw(data, options);
-	
-}
-
-function drawPressureChart() {
-	var dateString = formatDate(startDate);
-
-
-	var data = new google.visualization.DataTable();
-	data.addColumn('datetime', 'Time of day');
-	data.addColumn('number', 'Air pressure (hPa)');
-	
-	for (var line of dayData){
-		data.addRow([line.dateTime, line.Pressure]);
-	}
-
-	var options = {
-	hAxis: { title: 'Time', format: 'HH:mm', viewWindow: { min: startDate, max: endDate}},
-	vAxis: { title: 'Air pressure (hPa)'},
-	legend: { position: 'in' }, 
-	chartArea: {
-		left: "15%",
-		top: "5%",
-		height: "80%",
-		width: "75%"
-	},
-	pointSize: 2
-	};
-
-	chart = new google.visualization.ScatterChart(document.getElementById('chart_pressure'));  
-	chart.draw(data, options);
-	
-}
-
-function drawCPUChart() {
-	var dateString = formatDate(startDate);
-	var data = new google.visualization.DataTable();
-	data.addColumn('datetime', 'Time of day');
-	data.addColumn('number', 'CPU temperature (\u00B0C)');
-	data.addColumn('number', 'Cabinet temperature (\u00B0C)');
-	
-	for (var line of dayData){
-		data.addRow([line.dateTime, line.CPUtemperature, line.IRAmbient]);
-	}
-
-	var options = {
-	title: 'Conditions on ' + dateString,
-	hAxis: {title: 'Time', format: 'HH:mm', viewWindow: { min: startDate, max: endDate}},
-	vAxis: {title: 'Temperature (\u00B0C)'},
-	legend: { position: 'in' }, 
-	chartArea: {
-		left: "15%",
-		top: "5%",
-		height: "80%",
-		width: "75%"
-	},
-	pointSize: 2,
-	colors: ['red', 'grey']
-
-	};
-
-	chart = new google.visualization.ScatterChart(document.getElementById('chart_CPU'));  
 	chart.draw(data, options);
 	
 }
