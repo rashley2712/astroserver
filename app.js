@@ -217,6 +217,7 @@ astrofarm.get('/lpmeteo', function(req, res) {
     let baseSQL = "select temperature.Date as Date, temperature.value as temperature, humidity.value as humidity from temperature INNER JOIN humidity on humidity.Date = temperature.Date"; 
     if (startDate == null && endDate==null) return baseSQL;
     if (startDate.includes("dates")) return "SELECT DISTINCT(substr(Date, 0, 9)) AS availableDate FROM temperature;";
+    if (startDate.includes("humiditystats")) return "select cast(value/10 as int)*10 as bin_floor, count(Date) as count from humidity group by bin_floor;"
     if (endDate==null) return baseSQL + ' WHERE temperature.Date > "' + startDate + '";';
     return baseSQL + ' WHERE temperature.Date > "' + startDate + '" AND temperature.Date < "' + endDate + '";';
   }

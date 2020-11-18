@@ -117,3 +117,25 @@ function drawHumidityChart(humidityData) {
 	
 }
 
+function drawHumidityHistogram(humidityData) {
+	var data = new google.visualization.DataTable();
+	data.addColumn('number', 'percent');
+	data.addColumn('number', 'Relative Humidity (%)');
+	
+
+	for (var line of humidityData){
+		console.log(line);
+		data.addRow([line.bin_floor, line.count]);
+	}
+
+	var options = {
+	vAxis: { title: 'Frequency'},
+	hAxis: { title: 'Relative Humidity (%)', viewWindow: { min: 0, max:100} },
+	legend: {position: 'none'}
+	};
+
+	chart = new google.visualization.ColumnChart(document.getElementById('chart_humidity_stats'));  
+	chart.draw(data, options);
+	
+}
+

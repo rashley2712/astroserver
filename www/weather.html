@@ -54,6 +54,7 @@
 				getJSON('menu.json', drawMenu);
 				getJSON("/LPmeteo/meteodb.json", dataUpdate);
 				getLastHours();
+				getHumidityStats();
 			}
 			
 			function sqlDateFormatter(inputDate) {
@@ -83,6 +84,18 @@
 				var querystring = "lpmeteo?start=" + sqlDateFormatter(before) + "&end=" + sqlDateFormatter(now);
 				console.log("query", querystring);
 				getJSON(querystring, plotData);
+			}
+
+			function getHumidityStats() {
+				var querystring = "lpmeteo?start=humiditystats";
+				console.log("query", querystring);
+				getJSON(querystring, plotHumidityStats);
+			}
+
+			function plotHumidityStats(err, data) {
+				console.log("humidity stats...");
+				console.log(data);
+				drawHumidityHistogram(data);
 			}
 
 			function plotData(err, data) {
@@ -166,15 +179,10 @@
 		</tr>
 		<tr>
 			<td>
-				<div id="chart_pressure" style="width: 900px; height: 250px;"></div>
+				<div id="chart_humidity_stats" style="width: 300px; height: 300px;"></div>
 			</td>
         </tr>
-        <tr>
-			<td>
-				<div id="chart_CPU" style="width: 900px; height: 250px;"></div>
-			</td>
-		</tr>
-	</table>
+     </table>
     <p id='footer'>
     
     </p>
