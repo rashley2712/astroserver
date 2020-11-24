@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const express = require('express')
 const vhost= require('vhost')
 const astronomy = require('./astronomy.js')
@@ -9,7 +11,7 @@ const path = require('path');
 const rootPath = "/var/www/astrofarm";
 const sqlDBFile = "meteo.db";
 
-const port = 80
+const port = 3001
 
 var astrofarm = express()
 
@@ -253,8 +255,15 @@ const app = express()
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(vhost('*.astrofarm.*', astrofarm))
 app.use(vhost('astrofarm.*', astrofarm))
+app.use(vhost('localhost', astrofarm))
 
-app.get('/', (req, res) => res.redirect('/index.html'))
+app.get('/', (req, res) => {
+	console.log(req);
+
+	res.send("Hello world");
+});
+
+	// => res.redirect('/index.html'))
 app.use(express.static('/var/www'))
 app.listen(port, ()=> console.log('astroserver listening on port',  port))
 
