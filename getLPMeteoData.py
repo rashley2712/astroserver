@@ -54,6 +54,9 @@ if __name__ == "__main__":
 				},
 				{	"query": 'cloud_act_',
 					"store_as" : 'cloud'
+				},
+				{	"query": 'wind_act_',
+					"store_as" : 'wind'
 				}
 			]
 	for param in params: 
@@ -149,7 +152,11 @@ if __name__ == "__main__":
 	# Write the values to the SQL database
 	for param in params:
 		if param['value']==-1: continue
-		SQLstring = "INSERT or IGNORE INTO %s VALUES ('%s',%s);"%(param['store_as'], param['timeString'], param['value'])
+		if param['store_as'] == "wind":
+			windValues = param['value']
+			SQLstring = "INSERT or IGNORE INTO %s VALUES ('%s',%s, %s, %s);"%(param['store_as'], param['timeString'], windValues[0], windValues[1], windValues[2])
+		else:
+			SQLstring = "INSERT or IGNORE INTO %s VALUES ('%s',%s);"%(param['store_as'], param['timeString'], param['value'])
 		print(SQLstring)
 		connection.execute(SQLstring)
 
@@ -160,7 +167,12 @@ if __name__ == "__main__":
 	# Also write the text information to a simple log file...
 	outline = "%s"%timeString
 	for param in params:
-		outline+=", %.1f"%param['value']
+		if type(param['value']) == list:
+			for val in param['value']:
+				outline+=", %.1f"%val
+
+		else:
+			outline+=", %.1f"%param['value']
 	print(outline)
 	outline+="\n"
 	logfile = open(config['logfile'], "at")
