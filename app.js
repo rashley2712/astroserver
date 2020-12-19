@@ -258,8 +258,6 @@ app.use(vhost('astrofarm.*', astrofarm))
 app.use(vhost('localhost', astrofarm))
 
 app.get('/', (req, res) => {
-	console.log(req);
-
 	res.send("Hello world");
 });
 
