@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import sys
 import ephem
@@ -34,7 +34,7 @@ if __name__ == "__main__":
 	########################### SYSTEM ############################
 	sysInfo = os.uname()
 	sysJSON = {
-		'hostname' : sysInfo.nodename,
+		'hostname' : "astrofarm ops",
 		'uptime' : get_uptime(),
 		'hostutc': str(datetime.datetime.utcnow())
 	}

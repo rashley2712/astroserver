@@ -18,7 +18,7 @@ function info(inputDate, callback) {
 function callPython(pythonScript, callback) {
 	var spawn = require("child_process").spawn;
 	pythonScript.push("--json")
-	var pythonCall = spawn('python3', pythonScript);
+	var pythonCall = spawn('python', pythonScript);
 	pythonResponse = ""
 	pythonCall.stdout.on('data', function (data){
 		pythonResponse+= data
