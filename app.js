@@ -11,9 +11,9 @@ const path = require('path');
 const rootPath = "/var/www/astrofarm";
 const sqlDBFile = "meteo.db";
 
-const port = 3001
+var port = 3001;
 
-var astrofarm = express()
+var astrofarm = express();
 
 function updateImageFilelist() {
   // Scans the skycam folder to re-generate the JSON list of skycam images
@@ -202,35 +202,73 @@ astrofarm.get('/meteolog', function(req, res) {
 });
 
 
-astrofarm.get('/lpmeteo', function(req, res) {
+astrofarm.get('/lpmeteo', function(request, response) {
+
+  // Capture the SQL command requested by the JS client 
+  let command = request.query.cmd;
+  if (command == null) {
+    console.log("In lpmeteo... bad request detected. Sent back HTTP 400.");
+    response.writeHead(400, { 'Content-Type': 'text/plain',  'Access-Control-Allow-Origin': '*' });
+    response.write("Could not understand your request parameters.\n");
+    response.write("You need to specify a 'cmd' parameter in the query string.");
+    response.end();
+    return;
+  }
+
   LPdatabase = "LPmeteo/lpmeteo.db";
   let db = new sqlite3.Database(path.join(rootPath, LPdatabase), sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
+      response.writeHead(500, { 'Content-Type': 'text/plain',  'Access-Control-Allow-Origin': '*' });
+      response.write("The server had a problem connecting to the database.");
+      response.write("Error: " + err.message);
+      response.end();
       return console.error(err.message);
     } });
 
-  // select distinct(date(Date)) from meteolog;
-  console.log('Connected to the LP meteo SQLite database.');
-  let startDate = req.query.start;
-  let endDate = req.query.end;
+  let startDate = request.query.start;
+  let endDate = request.query.end;
   console.log("start date:", startDate);
   
-  function makeSQL(startDate, endDate) {
-    let baseSQL = "select temperature.Date as Date, temperature.value as temperature, humidity.value as humidity from temperature INNER JOIN humidity on humidity.Date = temperature.Date"; 
-    if (startDate == null && endDate==null) return baseSQL;
-    if (startDate.includes("dates")) return "SELECT DISTINCT(substr(Date, 0, 9)) AS availableDate FROM temperature;";
-    if (startDate.includes("humiditystats")) return "select cast(value/10 as int)*10 as bin_floor, count(Date) as count from humidity group by bin_floor;"
-    if (endDate==null) return baseSQL + ' WHERE temperature.Date > "' + startDate + '";';
-    return baseSQL + ' WHERE temperature.Date > "' + startDate + '" AND temperature.Date < "' + endDate + '";';
+  // select distinct(date(Date)) from meteolog;
+  console.log('Connected to the LP meteo SQLite database.');
+  var sqlquery = "";
+  switch(command) {
+    case 'sql':
+      sqlquery = request.query.sql.replace(/'/g, ''); 
+      break;
+    case 'temphumidity':
+      sqlquery = "select temperature.Date as Date, temperature.value as temperature, humidity.value as humidity from temperature INNER JOIN humidity on humidity.Date = temperature.Date"; 
+      if (startDate!=null && endDate!=null) sqlquery += ' WHERE temperature.Date > "' + startDate + '" AND temperature.Date < "' + endDate + '";';
+      if (startDate==null && endDate!=null) sqlquery += ' WHERE temperature.Date < "' + endDate + '";';
+      if (startDate!=null && endDate==null) sqlquery += ' WHERE temperature.Date > "' + startDate + '";';
+      break;
+    case 'dates': 
+      sqlquery = "SELECT DISTINCT(substr(Date, 0, 9)) AS availableDate FROM temperature;";
+      break;
+    case 'wind':
+      sqlquery = "SELECT * from wind";
+      if (startDate!=null && endDate!=null) sqlquery += ' WHERE Date > "' + startDate + '" AND Date < "' + endDate + '";';
+      if (startDate==null && endDate!=null) sqlquery += ' WHERE Date < "' + endDate + '";';
+      if (startDate!=null && endDate==null) sqlquery += ' WHERE Date > "' + startDate + '";';
+      break;
+    case 'humiditystats':
+      sqlquery = "select cast(value/10 as int)*10 as bin_floor, count(Date) as count from humidity group by bin_floor;";
+      break;
+    default:
+      console.log("No valid query selected");
+      response.writeHead(400, { 'Content-Type': 'text/plain',  'Access-Control-Allow-Origin': '*' });
+      response.write("Request a valid 'cmd' type. { sql | temphumidity | dates | wind }. ");
+      response.end();
+      return;
   }
-  var sqlquery = makeSQL(startDate, endDate);
+  console.log("Raw SQL query is: ", sqlquery);
 
   console.log(sqlquery); 
-  db.all(sqlquery, [], processDB);
+  db.all(sqlquery, [], returnJSON);
   db.close();
 
   
-  function processDB(err, rows) {
+  function returnJSON(err, rows) {
     console.log("In process DB");
     var data = [];
     var count=0;
@@ -239,9 +277,9 @@ astrofarm.get('/lpmeteo', function(req, res) {
       count++;
     }
     console.log("Sent back", count, "rows.");
-    res.writeHead(200, { 'Content-Type': 'application/json',  'Access-Control-Allow-Origin': '*' });
-    res.write(JSON.stringify(data, null, 2));
-    res.end();
+    response.writeHead(200, { 'Content-Type': 'application/json',  'Access-Control-Allow-Origin': '*' });
+    response.write(JSON.stringify(data, null, 2));
+    response.end();
   }
 
   
@@ -262,7 +300,15 @@ app.get('/', (req, res) => {
 });
 
 	// => res.redirect('/index.html'))
-app.use(express.static('/var/www'))
-app.listen(port, ()=> console.log('astroserver listening on port',  port))
+app.use(express.static('/var/www'));
+console.log(process.argv);
+let requestedPort = parseInt(process.argv[2]);
+if (isNaN(requestedPort)) {
+  console.log("Invalid port requested. Using default:", port)
+} else {
+  port = requestedPort;
+  console.log("Requested port is:", port);
+}
+app.listen(port, ()=> console.log('astroserver listening on port',  port));
 
 

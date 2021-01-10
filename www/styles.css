@@ -36,9 +36,20 @@ h3 {font-size:110%;}
 
 table {font-size:100%;}
 th {background-color:#ADD8E6;}
-td {vertical-align:center;}
+td {
+    vertical-align:center;
+    text-align:center;
+}
 
 tr.active {background-color:#aaeeaa;}
+
+table.calendar { width: 350px; }
+
+tr.monthHeader { 
+    background-color:#41403f;
+    font-weight: bold;
+}
+
 
 #menuCell {
     font-weight: bold; 

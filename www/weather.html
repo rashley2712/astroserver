@@ -20,7 +20,9 @@
         
         <script language="Javascript">
             // Global variables
-            var currentDate = new Date();
+			var currentDate = new Date();
+			var currentMonth = currentDate.getMonth();
+			var dateCursor = currentDate;
             var availableDates = null;
             var secondsTimerId = null;
 			var minutesTimerId = null;
@@ -50,11 +52,14 @@
                 
             function onLoad() {
                 console.log("The page has loaded....");
-				console.log("Current time is:", currentDate);
+				console.log("Current date-time is:", currentDate);
+				console.log("Current month is", currentMonth);
 				getJSON('menu.json', drawMenu);
 				getJSON("/LPmeteo/meteodb.json", dataUpdate);
 				getLastHours();
-				getHumidityStats();
+				getAllDates();
+				drawCalendar();
+				// getHumidityStats();
 			}
 			
 			function sqlDateFormatter(inputDate) {
@@ -81,9 +86,86 @@
 			function getLastHours() {
 				var now = new Date();
 				var before = new Date(now.getTime() - hoursBack * 3600 * 1000);  
-				var querystring = "lpmeteo?start=" + sqlDateFormatter(before) + "&end=" + sqlDateFormatter(now);
+				var querystring = "lpmeteo?cmd=temphumidity&start=" + sqlDateFormatter(before) + "&end=" + sqlDateFormatter(now);
 				//console.log("query", querystring);
 				getJSON(querystring, plotData);
+			}
+
+			function getAllDates() {
+				var querystring = "lpmeteo?cmd=dates";
+				getJSON(querystring, gotDates);
+			}
+
+			function gotDates(err, data) {
+				console.log("Available dates:");
+				availableDates = [];
+				for (d of data) {
+					availableDates.push(d.availableDate);
+				}
+				console.log(availableDates);
+				return;
+			}
+
+			function drawCalendar() {
+				calendarYear = dateCursor.getFullYear();
+				calendarDay = dateCursor.getDate();
+				calendarMonth = dateCursor.getMonth();
+				console.log("Current day:", calendarDay);
+				console.log("Current month:", calendarMonth);
+				console.log("Current year:", calendarYear);
+				
+				let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+				let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+				let monthString = months[calendarMonth];
+				let firstDay = new Date(calendarYear, calendarMonth, 1);
+				let lastDay = new Date(calendarYear, calendarMonth+1, 0).getDate();
+				dayOfWeek = firstDay.getDay();
+				console.log(firstDay);
+				console.log(lastDay);
+				console.log("First day is a", days[dayOfWeek]);
+				tableHTML = "<table border=\"1\" class=\"calendar\">\n";
+				tableHTML+="\t<tr class=\"monthHeader\"><td><span onclick=\"shiftMonth(-1)\">&lt;&lt;</span></td><td colspan=\"5\">" + monthString + " " + calendarYear + "</td><td><span onclick=\"shiftMonth(1)\">&gt;&gt;</span></td></tr>\n";
+				tableHTML+="\t<tr>\n";
+				tableHTML+="\t\t<td>S</td><td>M</td><td>T</td><td>W</td><td>T</td><td>F</td><td>S</td>\n";	
+				tableHTML+="\t</tr>\n";
+				tableHTML+="\t<tr>\n";
+				for (var i=0; i<dayOfWeek;i++) { 
+					let day = new Date(firstDay.getTime() - 86400*1000 * (dayOfWeek-i));
+					let dayNumber = day.getDate();
+					tableHTML+="\t\t<td>" + dayNumber + "</td>\n"; 
+					}
+				var dayCounter = 0;
+				for (var i=dayOfWeek; i<7; i++) {
+					let day = new Date(firstDay.getTime() + dayCounter * 86400*1000);
+					let dayNumber = day.getDate();
+					tableHTML+="\t\t<td><b>" + dayNumber + "<b></td>\n"; 
+					dayCounter++;
+				}
+				tableHTML+="\t</tr>\n";
+				while (dayCounter<lastDay) {
+					tableHTML+="\t<tr>\n";
+					for (var i=0; i<7; i++) {
+						let day = new Date(firstDay.getTime() + dayCounter * 86400*1000);
+						let dayNumber = day.getDate();
+						if (dayCounter<lastDay)
+							tableHTML+="\t\t<td><b>" + dayNumber + "</b></td>\n";
+						else  
+							tableHTML+="\t\t<td>" + dayNumber + "</td>\n";
+						dayCounter++;
+					}
+					tableHTML+="\t</tr>\n";
+				}
+				
+				tableHTML+= "</table>";
+				// console.log(tableHTML);
+				document.getElementById("monthView").innerHTML = tableHTML;
+				// Build a table showing weather stats
+			}
+
+			function shiftMonth(amount) {
+				console.log("Shifting month by", amount);
+				dateCursor.setMonth(dateCursor.getMonth() + amount);
+				drawCalendar();
 			}
 
 			function getHumidityStats() {
@@ -109,22 +191,24 @@
 			function dataUpdate(err, data) {
 				//console.log(data);
 				liveTemp = data.temperature.value;
-				document.getElementById("temperature").innerHTML = decimalPlacesFloat(liveTemp,1) + " &deg;C";
+				document.getElementById("temperatureValue").innerHTML = decimalPlacesFloat(liveTemp,1);
 				let hotTemp = 40;
 				let coldTemp = 0;
 				let temperatureIndex = Math.round( redBlue.length / (hotTemp - coldTemp) * (liveTemp - coldTemp) );
+				let humidityIndex = Math.round( redBlue.length / 100 * data.humidity.value );
 				if (temperatureIndex<0) temperatureIndex=0;
 				if (temperatureIndex>redBlue.length-1) temperatureIndex = redBlue.length-1;
 				//console.log("index:", temperatureIndex, redBlue.length);
-				document.getElementById("temperature").style.backgroundColor = redBlue[redBlue.length - 1 -temperatureIndex];
-				document.getElementById("humidity").innerText = data.humidity.value + " %";
-				document.getElementById("cloud").innerText = data.cloud.value + " %";
-				document.getElementById("temperatureMap").src = data.temperature.image;
-				document.getElementById("humidityMap").src = data.humidity.image;
-				document.getElementById("cloudMap").src = data.cloud.image;
-				document.getElementById("temperatureUpdate").innerText = data.temperature.update;
-				document.getElementById("humidityUpdate").innerText = data.humidity.update;
-				document.getElementById("cloudUpdate").innerText = data.cloud.update;
+				document.getElementById("temperatureButton").style.backgroundColor = redBlue[redBlue.length - 1 -temperatureIndex];
+				document.getElementById("humidityValue").innerText = data.humidity.value;
+				document.getElementById("humidityButton").style.backgroundColor = redBlue[humidityIndex];
+				//document.getElementById("cloud").innerText = data.cloud.value + " %";
+				//document.getElementById("temperatureMap").src = data.temperature.image;
+				//document.getElementById("humidityMap").src = data.humidity.image;
+				//document.getElementById("cloudMap").src = data.cloud.image;
+				//document.getElementById("temperatureUpdate").innerText = data.temperature.update;
+				//document.getElementById("humidityUpdate").innerText = data.humidity.update;
+				//document.getElementById("cloudUpdate").innerText = data.cloud.update;
 			}
       
 
@@ -145,26 +229,20 @@
 		<h1>Current local weather</h1>
 	    <i>data source: <a href="http://lp.hdmeteo.com" target="_new">HDmeteo.com</a></i>
 	</p>
+	<p>
+		<button class="button" id="temperatureButton"><img src="images/temperature.png" width="30px"><span id="temperatureValue">0.0</span> &deg;C</button>
+		<button class="button" id="humidityButton" ><img src="images/humidity.png" width="30px">&nbsp;<span id="humidityValue">00.0</span> %</button>
+	
+	</p>
+	<div style="position:absolute; top:130; left:400; z-index:1;" id="weatherSummary">
+		<span id="monthView"></span>
+	</div>
 	<table style="width: 900px;">
-	<tr align="center">
-		<td><button class="button" id="temperature">00.0 &deg;C</button></td>
-        <td><button class="button" id="humidity" >00.0 %</button></td>
-		<td><button class="button" id="cloud" >00 %</button></td>
-	</tr>
-	<tr>
-		<td><img id="temperatureMap" src=""><br/>updated: <span id="temperatureUpdate"></span></td>
-		
-		<td><img id="humidityMap" src=""><br/>updated: <span id="humidityUpdate"></span></td>
-		<td><img id="cloudMap" src=""><br/>updated: <span id="cloudUpdate"></span></td>
-	</tr>
-	</table>
-	<table style="width: 900px;">
-        <tr align="center">
+    	<tr align="center">
             <td id="menuCell" onclick="shiftDay(-1)">&lt;&lt;</td>
             <td id="menuCell"><button onclick="changeHours(-24)">-</button> <span id="chartDate">Last 24 hours</span> <button onclick="changeHours(24)">+</button></td>
             <td id="menuCell" onclick="shiftDay(1)">&gt;&gt;</td>
         </tr>
-		
 	</table>
 	<table>
 		<tr>
@@ -182,7 +260,23 @@
 				<div id="chart_humidity_stats" style="width: 300px; height: 300px;"></div>
 			</td>
         </tr>
-     </table>
+	</table>
+	<!-- Move the maps to another page 
+	<table style="width: 900px;">
+	<tr align="center">
+		<td><button class="button" id="temperature">00.0 &deg;C</button></td>
+        <td><button class="button" id="humidity" >00.0 %</button></td>
+		<td><button class="button" id="cloud" >00 %</button></td>
+	</tr>
+	<tr>
+		<td><img id="temperatureMap" src=""><br/>updated: <span id="temperatureUpdate"></span></td>
+		
+		<td><img id="humidityMap" src=""><br/>updated: <span id="humidityUpdate"></span></td>
+		<td><img id="cloudMap" src=""><br/>updated: <span id="cloudUpdate"></span></td>
+	</tr>
+	</table>
+	
+    -->
     <p id='footer'>
     
     </p>
