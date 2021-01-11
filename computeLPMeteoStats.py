@@ -8,6 +8,7 @@ import urllib.request
 import sys
 import json, datetime
 import webdb
+import numpy
 
 from PIL import Image
 		
@@ -76,7 +77,6 @@ if __name__ == "__main__":
 		print(rowDate)
 		total = 0
 		for row in rows:
-			print(row)
 			bucket = row[0]
 			bucketString = "%d0-%d9"%(int(bucket/10), int(bucket/10))
 			if bucketString=="100-109": bucketString = "90-100"
@@ -90,8 +90,25 @@ if __name__ == "__main__":
 			total+= row[1]
 
 		rowEntry["total"] = total
-		histograms.append(rowEntry)
 		
+		# Now get the median humidity for the day
+		print("rowDate:", rowDate)
+		SQLstring = "select value from humidity WHERE Date > \"" + rowDate + "_0000" + "\" AND Date<\"" + rowDate + "_2359" "\";"
+		print(SQLstring)
+		try:
+			cursor = connection.cursor()	
+			cursor.execute(SQLstring)
+			rows = cursor.fetchall()
+		except sqlite3.OperationalError as e:
+			print(e)
+			sys.exit()
+		values = []
+		for row in rows:
+			values.append(float(row[0]))
+		print(values)
+		rowEntry["median"] = numpy.median(values)
+		histograms.append(rowEntry)
+	
 	for h in histograms:
 		print(h)
 
@@ -99,7 +116,7 @@ if __name__ == "__main__":
 	try:
 		SQLstring = "DROP table IF EXISTS humidityhistograms;"
 		connection.execute(SQLstring)
-		SQLstring =  "CREATE table humidityhistograms ( Date TEXT unique, bin00 INTEGER, bin10 INTEGER, bin20 INTEGER, bin30 INTEGER, bin40 INTEGER, bin50 INTEGER, bin60 INTEGER, bin70 INTEGER, bin80 INTEGER, bin90 INTEGER);"
+		SQLstring =  "CREATE table humidityhistograms ( Date TEXT unique, median REAL, bin00 INTEGER, bin10 INTEGER, bin20 INTEGER, bin30 INTEGER, bin40 INTEGER, bin50 INTEGER, bin60 INTEGER, bin70 INTEGER, bin80 INTEGER, bin90 INTEGER);"
 		connection.execute(SQLstring)
 		
 	except sqlite3.OperationalError as e:
@@ -109,7 +126,7 @@ if __name__ == "__main__":
 		# Import the data
 		try:
 			SQLstring = "INSERT INTO humidityhistograms VALUES ("
-			SQLstring+= "'" + str(h['date']) + "'"
+			SQLstring+= "'" + str(h['date']) + "', " + str(h['median']) 
 			for bin in h['histogram']:
 				SQLstring+= ", " + str(bin)
 			SQLstring+= ");"
