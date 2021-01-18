@@ -202,6 +202,22 @@ astrofarm.get('/meteolog', function(req, res) {
 });
 
 
+astrofarm.post('/diagnostics', function(request, response) {
+  const data = request.body;
+
+  var logString = ""
+  console.log(data);
+  response.send("SUCCESS");
+  var logString = JSON.stringify(data) + "\n";
+  const logFilename = path.join(rootPath, 'diagnostics.log');
+  fs.appendFile(logFilename, logString, function (err) {
+    if (err) return console.log(err);
+    console.log('Updated', logFilename);
+  });
+  // also update the sqlite db
+  
+})
+
 astrofarm.get('/lpmeteo', function(request, response) {
 
   // Capture the SQL command requested by the JS client 
