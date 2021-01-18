@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import ephem
@@ -6,6 +6,8 @@ import datetime
 import argparse
 import json
 import os
+import socket
+import shutil
 
 def get_uptime():
     with open('/proc/uptime', 'r') as f:
@@ -32,11 +34,16 @@ if __name__ == "__main__":
 
 	
 	########################### SYSTEM ############################
-	sysInfo = os.uname()
+	sysname, nodename, release, version, machine =  os.uname()
+	total, used, free = shutil.disk_usage("/")
 	sysJSON = {
-		'hostname' : "astrofarm ops",
+		'release' : release,
+		'hostname' : socket.gethostname(),
 		'uptime' : get_uptime(),
-		'hostutc': str(datetime.datetime.utcnow())
+		'hostutc': str(datetime.datetime.utcnow()),
+		'disktotal' : total // (2**30),
+		'diskused' : used // (2**30),
+		'diskfree' : free // (2**30)
 	}
 
 	responseJSON['system'] = sysJSON

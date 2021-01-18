@@ -309,11 +309,23 @@ const app = express()
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(vhost('*.astrofarm.*', astrofarm))
 app.use(vhost('astrofarm.*', astrofarm))
-app.use(vhost('localhost', astrofarm))
+// app.use(vhost('localhost', astrofarm))
 
 app.get('/', (req, res) => {
-	res.send("Hello world");
+  res.redirect("/index.html");
+	//res.send("Hello world");
 });
+
+app.get('/info', (req, res) => {
+  astronomy.info(null, writeout)
+  function writeout(err, data) {
+    res.writeHead(200, { 'Content-Type': 'application/json',  'Access-Control-Allow-Origin': '*' });
+    res.write(data);
+    console.log(data);
+    res.end();
+  }
+});
+
 
 	// => res.redirect('/index.html'))
 app.use(express.static('/var/www'));

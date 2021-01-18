@@ -44,7 +44,6 @@ td {
 tr.active {background-color:#aaeeaa;}
 
 table.calendar { width: 350px; }
-
 tr.monthHeader { 
     background-color:#41403f;
     font-weight: bold;
