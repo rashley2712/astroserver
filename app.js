@@ -310,7 +310,7 @@ const app = express()
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(vhost('*.astrofarm.*', astrofarm))
 app.use(vhost('astrofarm.*', astrofarm))
-// app.use(vhost('localhost', astrofarm))
+app.use(vhost('localhost', astrofarm))
 
 app.get('/', (req, res) => {
   res.redirect("/index.html");
