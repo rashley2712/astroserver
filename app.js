@@ -86,8 +86,9 @@ astrofarm.post('/upload', function(request, response) {
 
   for (line of data.logData) {
     var fields = line.trim().split('|');
+    console.log("line:", line)
     console.log(fields);
-    sqlquery = "INSERT INTO meteolog VALUES ('" + fields[0].toString() + "', " + parseFloat(fields[1]) + ", " + parseFloat(fields[2]) + ", " + parseFloat(fields[3]) + ", " + parseFloat(fields[4]) + ", " + parseFloat(fields[5]) + ", " + parseFloat(fields[6]) + ");";
+    sqlquery = "INSERT INTO meteolog VALUES ('" + fields[0].toString() + "', '" + fields[1].toString() + "', " + parseFloat(fields[2]) + ", " + parseFloat(fields[3]) + ", " + parseFloat(fields[4]) + ", " + parseFloat(fields[5]) + ", " + parseFloat(fields[6]) + ", " + parseFloat(fields[7]) + ");";
     console.log(sqlquery); 
     db.run(sqlquery);
   }
