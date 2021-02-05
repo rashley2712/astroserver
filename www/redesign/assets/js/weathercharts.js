@@ -9,7 +9,7 @@ function drawTempChart(temperatureData) {
 	
     var colourLookup = function(temperature) {
         let tempStart = 0;
-	    let tempEnd = 20;
+	    let tempEnd = 35;
         let tempRange = tempEnd - tempStart;
         let colourIndex = Math.round((temperature - tempStart) / tempRange * colourTable.length);
         if (colourIndex<0) colourIndex = 0;
