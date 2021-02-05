@@ -26,20 +26,59 @@ logo background colour is #003e52 -->
 
   </head>
 
+<script src="assets/js/astrotools.js"></script>
+<script src="assets/js/weathercharts.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	
 <script language="JavaScript">
+    // Global variables...
     var currentDate = new Date();
     var currentMonth = currentDate.getMonth();// Call a function only when the page is fully loaded.
+    var chartLoaded = false;
+    var startDate = null;
+	var endDate = null;
+    var hoursBack = 240;
+    let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+	let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+	// ... end of global variables
+    
     document.addEventListener('readystatechange', event => {
         if (event.target.readyState === "complete") {
             onLoad();
         }
     });
+
+    // Import Google Charts
+    google.charts.load('current', {'packages':['corechart', 'timeline']});
+    google.charts.setOnLoadCallback(function() { chartLoaded = true;});
+
       
     function onLoad() {
         console.log("The page has loaded....");
         console.log("Current date-time is:", currentDate);
         console.log("Current month is", currentMonth);
+        getLastHours();
     }
+
+    function getLastHours() {
+    	var now = new Date();
+		var before = new Date(now.getTime() - hoursBack * 3600 * 1000);  
+		var querystring = "/lpmeteo?cmd=temphumidity&start=" + sqlDateFormatter(before) + "&end=" + sqlDateFormatter(now);
+		console.log("query", querystring);
+		getJSON(querystring, plotData);
+        }
+        
+    function plotData(err, data) {
+        // console.log("Got the following data from the astrofarm server....");
+        // console.log(data);
+        if (!chartLoaded) return;   // Change this to a retry
+		drawTempChart(data);
+		drawHumidityChart(data);
+		// document.getElementById("chartDate").innerText = "Most recent " + hoursBack + " hours";
+		}
+
+    
+
 </script>
 
 <body class="is-preload">
@@ -66,7 +105,10 @@ logo background colour is #003e52 -->
                         <div class="col-md-12">
                           <h1>Weather</h1>
                           <p>
-                              Current weather conditions are...
+                            <div id="chart_temperature" style="width: 700px; height: 434px;"></div>
+                          </p>
+                          <p>
+                            <div id="chart_humidity" style="width: 700px; height: 434px;"></div>
                           </p>
                         </div>
                       </div>

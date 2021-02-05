@@ -59,7 +59,7 @@ button {
 .primary-button a:hover,
 button:hover {
 	color: #fff;
-	background-color: rgba(83,91,160,1);
+	background-color: rgba(0,62,82,1);
 }
 
 section#search {
@@ -399,7 +399,7 @@ section.contact-form {
 
 .contact-form button:hover {
     color: #fff;
-    background-color: rgba(83,91,160,1);
+    background-color: rgba(0,62,82,1);
 }
 
 
@@ -708,11 +708,11 @@ section.buttons .container-fluid {
     color: #fff;
     border: 2px solid #003e52;
     transition: all 0.5s;
-    background-color: rgba(83,91,160,1);
+    background-color: rgba(0,62,82,1);
 }
 .filled-rectangle-button a:hover {
     color: #003e52;
-    background-color: rgba(83,91,160,0.25);
+    background-color: rgba(0,62,82,0.25);
 }
 
 .border-rectangle-button {
@@ -730,11 +730,11 @@ section.buttons .container-fluid {
     color: #003e52;
     border: 2px solid #003e52;
     transition: all 0.5s;
-    background-color: rgba(83,91,160,0.0);
+    background-color: rgba(0,62,82,0.0);
 }
 .border-rectangle-button a:hover {
     color: #fff;
-    background-color: rgba(83,91,160,1);
+    background-color: rgba(0,62,82,1);
 }
 
 .filled-radius-button {
@@ -752,12 +752,12 @@ section.buttons .container-fluid {
     color: #fff;
     border: 2px solid #003e52;
     transition: all 0.5s;
-    background-color: rgba(83,91,160,1);
+    background-color: rgba(0,62,82,1);
     border-radius: 5px;
 }
 .filled-radius-button a:hover {
     color: #fff;
-    background-color: rgba(83,91,160,0.25);
+    background-color: rgba(0,62,82,0.25);
 }
 
 .border-radius-button {
@@ -775,12 +775,12 @@ section.buttons .container-fluid {
     color: #003e52;
     border: 2px solid #003e52;
     transition: all 0.5s;
-    background-color: rgba(83,91,160,0.0);
+    background-color: rgba(0,62,82,0.0);
     border-radius: 5px;
 }
 .border-radius-button a:hover {
     color: #fff;
-    background-color: rgba(83,91,160,1);
+    background-color: rgba(0,62,82,1);
 }
 
 .filled-rounded-button {
@@ -798,12 +798,12 @@ section.buttons .container-fluid {
     color: #fff;
     border: 2px solid #003e52;
     transition: all 0.5s;
-    background-color: rgba(83,91,160,1);
+    background-color: rgba(0,62,82,1);
     border-radius: 20px;
 }
 .filled-rounded-button a:hover {
     color: #fff;
-    background-color: rgba(83,91,160,0.25);
+    background-color: rgba(0,62,82,0.25);
 }
 
 .border-rounded-button {
@@ -821,12 +821,12 @@ section.buttons .container-fluid {
     color: #003e52;
     border: 2px solid #003e52;
     transition: all 0.5s;
-    background-color: rgba(83,91,160,0.0);
+    background-color: rgba(0,62,82,0.0);
     border-radius: 20px;
 }
 .border-rounded-button a:hover {
     color: #fff;
-    background-color: rgba(83,91,160,1);
+    background-color: rgba(0,62,82,1);
 }
 
 .filled-icon-button {
@@ -847,12 +847,12 @@ section.buttons .container-fluid {
     color: #fff;
     border: 2px solid #003e52;
     transition: all 0.5s;
-    background-color: rgba(83,91,160,1);
+    background-color: rgba(0,62,82,1);
     border-radius: 20px;
 }
 .filled-icon-button a:hover {
     color: #fff;
-    background-color: rgba(83,91,160,0.25);
+    background-color: rgba(0,62,82,0.25);
 }
 
 .border-icon-button {
@@ -873,12 +873,12 @@ section.buttons .container-fluid {
     color: #003e52;
     border: 2px solid #003e52;
     transition: all 0.5s;
-    background-color: rgba(83,91,160,0.0);
+    background-color: rgba(0,62,82,0.0);
     border-radius: 20px;
 }
 .border-icon-button a:hover {
     color: #fff;
-    background-color: rgba(83,91,160,1);
+    background-color: rgba(0,62,82,1);
 }
 
 /* Page Heading */
@@ -1126,7 +1126,7 @@ section.buttons .container-fluid {
     	background-color: transparent;
     }
     #sidebar .toggle:after {
-        background: rgba(83, 91, 160, 0.90);
+        background: rgba(0,62,82, 0.90);
         border-radius: 5px;
         content: '';
         height: 60px;
