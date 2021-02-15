@@ -35,6 +35,7 @@ if __name__ == "__main__":
 	config = json.loads(configFile.read())
 	print(config)
 
+	debug = False
 	dbFilename = config['sqldb']
 
 	print("Database is:", dbFilename)
@@ -58,7 +59,7 @@ if __name__ == "__main__":
 		rowDate = str(row[0])
 		allDates.append(rowDate)
 
-	print(allDates)
+	if debug: print(allDates)
 
 	histograms = []
 	for rowDate in allDates:
@@ -74,17 +75,17 @@ if __name__ == "__main__":
 			print(e)
 			sys.exit()
 
-		print(rowDate)
+		if debug: print(rowDate)
 		total = 0
 		for row in rows:
 			bucket = row[0]
 			bucketString = "%d0-%d9"%(int(bucket/10), int(bucket/10))
 			if bucketString=="100-109": bucketString = "90-100"
 			if bucketString=="90-99": bucketString = "90-100"
-			print(bucketString)
+			if debug: print(bucketString)
 			rowEntry[bucketString]+=row[1]
 			bucket = int(row[0]/10) 
-			print(bucket)
+			if debug: print(bucket)
 			if bucket==10: bucket = 9 
 			rowEntry['histogram'][bucket]+=row[1]
 			total+= row[1]
@@ -92,9 +93,9 @@ if __name__ == "__main__":
 		rowEntry["total"] = total
 		
 		# Now get the median humidity for the day
-		print("rowDate:", rowDate)
+		if debug: print("rowDate:", rowDate)
 		SQLstring = "select value from humidity WHERE Date > \"" + rowDate + "_0000" + "\" AND Date<\"" + rowDate + "_2359" "\";"
-		print(SQLstring)
+		if debug: print(SQLstring)
 		try:
 			cursor = connection.cursor()	
 			cursor.execute(SQLstring)
@@ -105,12 +106,12 @@ if __name__ == "__main__":
 		values = []
 		for row in rows:
 			values.append(float(row[0]))
-		print(values)
+		if debug: print(values)
 		rowEntry["median"] = numpy.median(values)
 		histograms.append(rowEntry)
 	
 	for h in histograms:
-		print(h)
+		if debug: print(h)
 
 	# Rebuild the database tables
 	try:
@@ -130,12 +131,32 @@ if __name__ == "__main__":
 			for bin in h['histogram']:
 				SQLstring+= ", " + str(bin)
 			SQLstring+= ");"
-			print(SQLstring)
+			if debug: print(SQLstring)
 			connection.execute(SQLstring)
 			
 		except sqlite3.OperationalError as e:
 			print(e)
 		
 	connection.commit()
+
+	debug = True
+
+	def runSELECT(query):
+		SQLstring = "select * from temperature;"
+		if debug: print(SQLstring)
+		try:
+			cursor = connection.cursor()	
+			cursor.execute(SQLstring)
+			rows = cursor.fetchall()
+		except sqlite3.OperationalError as e:
+			print(e)
+			sys.exit()
+		return rows
+
+	# Now try some time binning
+	binningFactor = 30 # Time binning period in minutes
+	# Get the start and end times
+	rows = runSELECT("test")
+	print(rows)
 	connection.close()
 	

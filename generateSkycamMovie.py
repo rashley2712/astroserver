@@ -49,7 +49,7 @@ if __name__ == "__main__":
 		year = int(dateString[0:4])
 		month = int(dateString[4:6])
 		day = int(dateString[6:8])
-		#print("year:", year, "month", month, "day:", day)
+		print("year:", year, "month", month, "day:", day)
 		startTime = datetime.datetime(year=year, month=month, day=day, hour=12, minute=0, second=0)
 		endTime = startTime + datetime.timedelta(days=1)
 	else:
