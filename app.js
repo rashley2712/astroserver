@@ -10,6 +10,7 @@ const multer = require('multer');
 const path = require('path');
 const rootPath = "/var/www/astrofarm";
 const sqlDBFile = "meteo.db";
+const { spawn } = require('child_process');
 
 var port = 3001;
 
@@ -23,8 +24,14 @@ function updateImageFilelist() {
     if (err!=null) {console.log("Error!", err); return;}
     console.log("Files in", folderPath);
     var fileList = [];
-    for (file of files) {
-      if (file.includes(".jpg")) fileList.push(file);
+	var fileListSmall = [];
+    let fullImage = /^[0-9]{8}_[0-9]{6}.jpg/
+	let smallImage = /^[0-9]{8}_[0-9]{6}_small.jpg/ 
+	for (file of files) {
+	  let found = file.match(fullImage);
+	  if (found) fileList.push(file);
+	  found = file.match(smallImage);
+	  if (found) fileListSmall.push(file);
     }
   
     var skycamData = {};
@@ -35,10 +42,13 @@ function updateImageFilelist() {
     }
     fileList.sort();
     fileList.reverse();
+	fileListSmall.sort();
+    fileListSmall.reverse();
+	
     // console.log("all dates:", availableDates);
     skycamData.dates = availableDates;
-    skycamData.mostRecent = fileList[0];
-    skycamData.files = fileList;
+    skycamData.mostRecent = fileListSmall[0];
+    skycamData.files = fileListSmall;
     fileJSON = JSON.stringify(skycamData, null, 2);
     fs.writeFile(path.join(folderPath, JSONFilename), fileJSON, function (err) {
       if (err) return console.log(err);
@@ -46,6 +56,25 @@ function updateImageFilelist() {
     });
   });
 
+}
+
+function scaleFile(path) {
+	console.log("going to rescale the file:", path);
+	output = path.split('.')[0] + "_small." + path.split('.')[1];
+	console.log("output will be:", output);
+	const resize = spawn('convert', [path, '-resize', '1014', output]);
+	resize.stdout.on('data', (data) => {
+		console.log(`stdout: ${data}`);
+	  });
+	  
+	  resize.stderr.on('data', (data) => {
+		console.error(`stderr: ${data}`);
+	  });
+	  
+	  resize.on('close', (code) => {
+		console.log(`child process exited with code ${code}`);
+		updateImageFilelist();
+	  });
 }
   
 
@@ -95,7 +124,7 @@ astrofarm.post('/upload', function(request, response) {
   
   db.close();
   response.send("SUCCESS");
-})
+});
 
 astrofarm.post('/imageUpload', function(req, res) {
     // 'profile_pic' is the name of our file input field in the HTML form
@@ -120,7 +149,8 @@ astrofarm.post('/imageUpload', function(req, res) {
 
         // Display uploaded image for user validation
         res.send("SUCCESS");
-        updateImageFilelist();
+     
+		scaleFile(req.file.path);
     });
   })
 

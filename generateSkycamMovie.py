@@ -41,7 +41,7 @@ if __name__ == "__main__":
 	fileCollection = []
 	files = os.listdir(folder)
 	for f in files:
-		if ".jpg" in f:
+		if "_small.jpg" in f:
 			fileCollection.append(f)
 
 	# Determine the start and end date for the video
