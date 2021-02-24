@@ -48,7 +48,7 @@ logo background colour is #003e52 -->
 		console.log("The page has loaded....");
  
 		console.log("Current time is:", currentDate);
-		getJSON('skycam/skycam.json', showImages);
+		getJSON('../skycam/skycam.json', showImages);
 	}
 	
 	function showImages (err, data){
@@ -57,7 +57,7 @@ logo background colour is #003e52 -->
 		console.log("latest image is:", data.mostRecent);
 		imageList = data.files;
 		imageIndex = 0;
-		document.getElementById("skycamimage").src = "skycam/" + imageList[imageIndex];
+		document.getElementById("skycamimage").src = "../skycam/" + imageList[imageIndex];
 		// aspect ratio 2592 px x 1944 px
 	}
 	
@@ -65,7 +65,7 @@ logo background colour is #003e52 -->
 		imageIndex-= delta;
 		if (imageIndex<0) imageIndex=0;
 		if (imageIndex>=imageList.length) imageIndex=0;
-		document.getElementById("skycamimage").src = "skycam/" + imageList[imageIndex];
+		document.getElementById("skycamimage").src = "../skycam/" + imageList[imageIndex];
 	}
 
   

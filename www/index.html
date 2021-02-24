@@ -1,219 +1,308 @@
-<html>
-    <head>
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-52663594-2"></script>
-        <script language="javascript" type="text/javascript" src="astro.js-master/astro.js"></script>
-		<script language="javascript" type="text/javascript" src="astro.js-master/astro.constants.js"></script>
-		<script language="javascript" type="text/javascript" src="astro.js-master/astro.dates.js"></script>
-		<script language="javascript" type="text/javascript" src="astro.js-master/astro.ephem.js"></script>
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-        
-          gtag('config', 'UA-52663594-2');
-        </script>
-        
-        <title>AstroFarm, La Palma</title>
-        <link rel="stylesheet" type="text/css" href="styles.css"/>
-     	
-        <script src="astrotools.js"></script>
-        
-        <script language="Javascript">
-    
-            // Global variables
-            var currentTime = new Date();
-            var secondsTimerId = null;
-            var minutesTimerId = null;
-            var constellation = null;
-            var clockAngle = 0;
-            var LMSiderealTime; 
-            console.log(currentTime);
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700" rel="stylesheet">
+
+    <title>AstroFarm - Astronomy on the Canary Islands</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+<!--
+Ramayana CSS Template
+https://templatemo.com/tm-529-ramayana
+logo background colour is #003e52 -->
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="assets/css/fontawesome.css">
+    <link rel="stylesheet" href="assets/css/templatemo-style.css">
+    <link rel="stylesheet" href="assets/css/owl.css">
+
+  </head>
+
+<body class="is-preload">
             
-            // Call a function only when the page is fully loaded.
-		    document.addEventListener('readystatechange', event => {
-		        if (event.target.readyState === "complete") {
-			        onLoad();
-		        }
-		    });
-  
+    <!-- Wrapper -->
+    <div id="wrapper">
+
+      <!-- Main -->
+        <div id="main">
+          <div class="inner">
+            
+            <!-- Header -->
+            <header id="header">
+              <div class="logo"> 
+                <a href="index.html">AstroFarm</a><img src="assets/images/AstroFarm_map_small.png" style="vertical-align:top; width:auto;height:90px;">
+              </div>
+             
+            </header>
+
+		    <!-- Banner -->
+            <section class="main-banner">
+			  <div class="container-fluid">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="banner-content">
+                      <div class="row">
+                        <div class="col-md-12">
+                          <div class="banner-caption">
+                            <h4>Welcome to <em>AstroFarm</em></h4> 
+                            <span>ASTRO-TOURISM &amp; ASTRO-HOSTING</span>
+                            <p>We are an astronomy tourism and telescope hosting site situated on the island of <em>La Palma</em> in the <em>Canary Islands</em>.</p>
+                            <div class="primary-button">
+                              <a href="aboutus.html">Read more about us...</a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+               <!-- Contact Form -->
+               <section class="contact-form">
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <form id="contact" action="" method="post">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <fieldset>
+                              <input name="name" type="text" class="form-control" id="name" placeholder="Your name..." required="">
+                            </fieldset>
+                          </div>
+                          <div class="col-md-12">
+                            <fieldset>
+                              <input name="email" type="text" class="form-control" id="email" placeholder="Your email..." required="">
+                            </fieldset>
+                          </div>
+                          <div class="col-md-12">
+                            <fieldset>
+                              <textarea name="message" rows="6" class="form-control" id="message" placeholder="Your message..." required=""></textarea>
+                            </fieldset>
+                          </div>
+                          <div class="col-md-12">
+                            <fieldset>
+                              <button type="submit" id="form-submit" class="button">Send Message</button>
+                            </fieldset>
+                          </div>
+                        </div>
+                      </form> 
+                    </div>
+                    <div class="col-md-6">
+                      <div id="map">
+                      <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d83821.90733928495!2d-17.990243347445755!3d28.792810184830692!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x7dce5876ab5d86f8!2sAstroFarm%2C%20La%20Palma!5e0!3m2!1sen!2ses!4v1612460410079!5m2!1sen!2ses" width="100%" height="450" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+            <!-- Services -->
+            <section class="services">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="service-item first-item">
+                      <div class="icon"></div>
+                      <h4>Web Design</h4>
+                      <p>Credit goes to <a rel="nofollow" href="https://www.pexels.com">Pexels</a> and <a rel="nofollow" href="https://www.rawpixel.com">Raw Pixel</a> for images used in this template. Thank you.</p>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="service-item second-item">
+                      <div class="icon"></div>
+                      <h4>Bootstrap 4</h4>
+                      <p>Proin aliquam facilisis ante interdum. Sed nulla feugiat tempus aliquam.</p>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="service-item third-item">
+                      <div class="icon"></div>
+                      <h4>HTML CSS</h4>
+                      <p>Proin aliquam facilisis ante interdum. Sed nulla feugiat tempus aliquam.</p>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="service-item fourth-item">
+                      <div class="icon"></div>
+                      <h4>Download Free</h4>
+                      <p>We have many free to use CSS web templates on our site for you.</p>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="service-item fivth-item">
+                      <div class="icon"></div>
+                      <h4>Get in touch</h4>
+                      <p>You can get the fastest response from <a rel="nofollow" href="https://www.facebook.com/templatemo">templatemo</a> facebook page.</p>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="service-item sixth-item">
+                      <div class="icon"></div>
+                      <h4>Spread a word</h4>
+                      <p>Please tell your friends about our website. This is very helpful.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Top Image -->
+            <section class="top-image">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-md-12">
+                    <img src="assets/images/top-image.jpg" alt="">
+                    <div class="down-content">
+                      <h4>Ante Interdum Chambray</h4>
+                      <p>Lorem ipsum dolor amet raclette chambray bitters, hammock celiac slow-carb flexitarian four dollar toast food truck health goth. Air plant brunch food truck vegan scenester organic crucifix irony pour-over pop-up austin hexagon kitsch swag. Godard literally humblebrag cloud bread vice master cleanse chambray typewriter put a bird on it brooklyn forage.</p>
+                      <div class="primary-button">
+                        <a href="#">Read More</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Left Image -->
+            <section class="left-image">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-md-6">
+                    <img src="assets/images/left-image.jpg" alt="">
+                  </div>
+                  <div class="col-md-6">
+                    <div class="right-content">
+                      <h4>Ante Interdum Raclette</h4>
+                      <p>Lorem ipsum dolor amet raclette chambray bitters, hammock celiac slow-carb flexitarian four dollar toast food truck health goth. Air plant brunch food truck vegan scenester organic crucifix irony pour-over pop-up austin hexagon kitsch swag. Godard literally humblebrag cloud bread vice master cleanse chambray typewriter put a bird on it brooklyn forage.<br><br>Air plant brunch food truck vegan scenester organic crucifix irony pour-over pop-up austin hexagon kitsch swag. Godard literally humblebrag cloud bread vice master cleanse chambray typewriter put bird brooklyn</p>
+                      <div class="primary-button">
+                        <a href="#">Read More</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Right Image -->
+            <section class="right-image">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="left-content">
+                      <h4>Ante Interdum Raclette</h4>
+                      <p>Lorem ipsum dolor amet raclette chambray bitters, hammock celiac slow-carb flexitarian four dollar toast food truck health goth. Air plant brunch food truck vegan scenester organic crucifix irony pour-over pop-up austin hexagon kitsch swag. Godard literally humblebrag cloud bread vice master cleanse chambray typewriter put a bird on it brooklyn forage.<br><br>Air plant brunch food truck vegan scenester organic crucifix irony pour-over pop-up austin hexagon kitsch swag. Godard literally humblebrag cloud bread vice master cleanse chambray typewriter put bird brooklyn</p>
+                      <div class="primary-button">
+                        <a href="#">Read More</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <img src="assets/images/right-image.jpg" alt="">
+                  </div>
+                </div>
+              </div>
+            </section>
+
+          </div>
+        </div>
+
+      <!-- Sidebar -->
+        <div id="sidebar">
+
+          <div class="inner">
+
+            <!-- Search Box -->
+            <section id="search" class="alt">
+              <form method="get" action="#">
+                <input type="text" name="search" id="search" placeholder="Search..." />
+              </form>
+            </section>
               
-            function onLoad() {
-                console.log("The page has loaded....");
-                getJSON('info', info);
-                getJSON('ursaminor.json', starsLoaded);
-                getJSON('menu.json', drawMenu);
-                updateTime();
-                secondsTimerId = setInterval(updateTime, 1000);
-                minutesTimerId = setInterval(updateClock, 60*1000);
-                infoTimerId = setInterval(updateInfo, 10*60*1000);
-                var canvas = document.getElementById('canvasContainer');
-                var canvasWidth = document.getElementById('canvas').width;
-                canvas.style.top = 110;
-                canvas.style.left = 400;
-            }
+            <!-- Menu -->
+			<nav id="menu">
+				<ul>
+				  <li><a href="index.html">Home</a></li>
+				  <li><a href="aboutus.html">About us</a></li>
+				  <li><a href="weather.html">Weather</a></li>
+				  <li>
+					<span class="opener">Experiments</span>
+					<ul>
+					  <li><a href="skycam.html">SkyCam</a></li>
+					  <li><a href="#">Meteo logger</a></li>
+					</ul>
+				  </li>
+		 
+				  <li><a href="https://www.airbnb.es/experiences/1353943" target="_new">Stargazing trips</a></li>
+				  <li><a href="http://www.astro-travels.com/La-Palma-astro.html" target="_new">Education</a></li>
+				  
+			  </ul>
+			  </nav>
 
-            window.onresize = function() {
-                var canvas = document.getElementById('canvasContainer');
-                var canvasWidth = document.getElementById('canvas').width;
-                canvas.style.top = 110;
-                canvas.style.left = 400;
-            }
 
-           
-       
-            function info(err, data) {
-                console.log(data);
-                document.getElementById("hostname").innerText = data.system.hostname;
-                document.getElementById("uptime").innerText = "uptime: " + data.system.uptime + "s";
-                document.getElementById("moonphase").innerText = decimalPlacesString(data.moon.illuminated, 2) + "  " + data.moon.mode;
-                document.getElementById("etwilight").innerText = data.sun.etwilight;
-                document.getElementById("mtwilight").innerText = data.sun.mtwilight;
-                document.getElementById("sunset").innerText = data.sun.sunset;
-                document.getElementById("sunrise").innerText = data.sun.sunrise;
-                document.getElementById('currentUTC').innerText = formatUTCTime(currentTime);
-            }
 
-            function updateTime() {
-                currentTime = new Date();
-                LMSiderealTime = astrojs.dates.getLST(currentTime, 342.1184);
-                // console.log(LMSiderealTime);
-                // console.log(timeDecimalToHMS(LMSiderealTime));
-                document.getElementById('currentUTC').innerText = formatUTCTime(currentTime);
-                document.getElementById('sidereal').innerText = "Local Sidereal Time " + timeDecimalToHMS(LMSiderealTime);
-            }
 
-            function updateClock() {
-                clockAngle = 360 - LMSiderealTime*15;
-                console.log("Redrawing siderial clock");
-                drawClock();
-            }
+            <!-- Featured Posts -->
+            <div class="featured-posts">
+              <div class="heading">
+                <h2>Featured Posts</h2>
+              </div>
+              <div class="owl-carousel owl-theme">
+                <a href="#">
+                  <div class="featured-item">
+                    <img src="assets/images/featured_post_01.jpg" alt="featured one">
+                    <p>Aliquam egestas convallis eros sed gravida. Curabitur consequat sit.</p>
+                  </div>
+                </a>
+                <a href="#">
+                  <div class="featured-item">
+                    <img src="assets/images/featured_post_01.jpg" alt="featured two">
+                    <p>Donec a scelerisque massa. Aliquam non iaculis quam. Duis arcu turpis.</p>
+                  </div>
+                </a>
+                <a href="#">
+                  <div class="featured-item">
+                    <img src="assets/images/featured_post_01.jpg" alt="featured three">
+                    <p>Suspendisse ac convallis urna, vitae luctus ante. Donec sit amet.</p>
+                  </div>
+                </a>
+              </div>
+            </div>
 
-            function updateInfo() {
-                getJSON('info', info);
-            }
+            <!-- Footer -->
+            <footer id="footer">
+              <p class="copyright">Copyright &copy; 2021 AstroFarm S.L.
+              <br>CSS design taken from <a rel="nofollow" href="https://www.facebook.com/templatemo">Template Mo</a></p>
+            </footer>
 
-            function starsLoaded(err, data) {
-                if (err!=null) { console.log(err);}
-                console.log("Constellation", data);
-                constellation = data;
-                updateClock();
-            }
+          </div>
+        </div>
 
-            function drawClock() {
-                const quiet = true;
-                var canvas = document.getElementById("canvas");
-                const size = canvas.width/2/(90-70);
-                
-                var ctx = canvas.getContext("2d");
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                // Draw some grid lines first
-                const ox = canvas.width/2;
-                const oy = canvas.height/2;
-                for (var ra=0; ra<24; ra=ra+1) {
-                    angle = clockAngle + ra*15;
-                    r = size*50;
-                    var x = canvas.width/2 + r * Math.sin(radians(angle));
-                    var y = canvas.height/2 - r * Math.cos(radians(angle));
-                    ctx.beginPath();
-                    ctx.moveTo(ox, oy);
-                    ctx.lineTo(x, y);
-                    ctx.strokeStyle='#0000aa';
-                    ctx.stroke();
-                    
-                }
-                // Draw stronger grid lines 
-                for (var ra=0; ra<24; ra=ra+6) {
-                    angle = clockAngle + ra*15;
-                    r = size*50;
-                    var x = canvas.width/2 + r * Math.sin(radians(angle));
-                    var y = canvas.height/2 - r * Math.cos(radians(angle));
-                    ctx.beginPath();
-                    ctx.moveTo(ox, oy);
-                    ctx.lineTo(x, y);
-                    ctx.strokeStyle='#0000ff';
-                    ctx.stroke();
-                    
-                }
-                // Draw the grid circles
-                for (var dec=85; dec>60; dec=dec-5) {
-                    radius = Math.sin(radians(dec)) * size*(90-dec);
-                    ctx.beginPath();
-                    ctx.arc(ox, oy, radius, 0, 2 * Math.PI);
-                    ctx.strokeStyle='#0000aa';
-                    ctx.stroke();
-                    
-                }
-                //var cross = document.getElementById('cross')
-                //ctx.drawImage(cross, canvas.width/2 - cross.width/2, canvas.height/2 - cross.height/2);
-                var stars = constellation.stars;
-                var star = document.getElementById('star')
-                for (s of stars) {
-                    if (!quiet) console.log(s.name, s.coordinates.RA, s.coordinates.DEC);
-                    var coords = s.coordinates.RA + " " +  s.coordinates.DEC;
-                    var result = fromSexagesimalString(coords);
-                    if (!quiet) console.log(result);
-                    var r = Math.sin(radians(result.dec)) * size * (90 - result.dec);   // The first term is to correct for the projection on to a flat plane
-                    var angle = clockAngle + result.ra;
-                    var x = canvas.width/2 + r * Math.sin(radians(angle));
-                    var y = canvas.height/2 - r * Math.cos(radians(angle));
-                    if (!quiet) console.log(x, y)
-                    
-                    ctx.drawImage(star, x - star.width/2, y - star.height/2);
-                }
-            }
-
-      
-  
-
-</script>
-</head>
-
-<body>
-    <a href="/"><img src="astrofarmlogo.png" width="300" style="position:absolute; top:0; left:0;"></a>
-    <div id="menu" style="position:absolute; top:10; left:320; z-index:2">
-        ...loading menu...
     </div>
-  <p>&nbsp;</p>
-    <p>&nbsp;</p>
-    <p>&nbsp;</p>
-    <p>&nbsp;</p>
-    <p>&nbsp;</p>
-    <p><a href="https://goo.gl/maps/B5QmqDhPithRyyS38" target="_new">28°47'09.8"N 17°56'05.0"W</a> (altitude: 1153m)</p>
-    <p>
-        <table border="1">
-            <tr>
-                <td style="font-weight: bold;">Current UTC</td><td><span id="currentUTC">&nbsp;</span></td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold;">Current moon phase</td><td><span id="moonphase">&nbsp;</span></td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold;">Sunset</td><td><span id="sunset">&nbsp;</span></td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold;">Evening twilight</td><td><span id="etwilight">&nbsp;</span></td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold;">Morning twilight</td><td><span id="mtwilight">&nbsp;</span></td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold;">Sunrise</td><td><span id="sunrise">&nbsp;</span></td>
-            </tr>
-        </table>
-    </p>
 
-    <div id='canvasContainer' style="position:absolute; top:0; left:0; z-index:1">  
-        <canvas id="canvas" width="500" height="500"></canvas>
-        <div style="text-align:center;"><span id="sidereal"></span></div>
-        </div>  
-    
-    <div style="display:none;"><img id="star" src="images/star.png"></div>
-  
-    <div id="spacer" style="height:400px"></div>
-    <p id='footer'>
-    <span id="hostname">unknown</span>&nbsp;&nbsp;<span id="uptime">&nbsp;</span>
-    </p>
+  <!-- Scripts -->
+  <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/transition.js"></script>
+    <script src="assets/js/owl-carousel.js"></script>
+    <script src="assets/js/custom.js"></script>
 </body>
-<!--  style="border:1px solid #ffffff;-->
+
+
+  </body>
+
 </html>
