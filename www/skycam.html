@@ -97,26 +97,51 @@ logo background colour is #003e52 -->
 					  <div class="row">
 						<div class="col-md-12">
 							<h1>SkyCam</h1>
-						<table>
-							<tr>
-								<td id="menuCell" onclick="changeImage(-1)" style="width: 40px;">&lt;&lt;</td>
+							<table>
+								<tr>
+									<td id="menuCell" onclick="changeImage(-1)" style="width: 40px;">&lt;&lt;</td>
 							
-								<td>
-									<div id="skycamholder" style="width: 900px; height: 675px;">
-										<img src="../skycam/camera.jpg" id="skycamimage" width="900px"/>
-									</div>
-								</td>
+									<td align="center">
+										<div id="skycamholder">
+											<img src="../skycam/camera.jpg" id="skycamimage"/> 
+										</div>
+									</td>
 							
-								<td id="menuCell" onclick="changeImage(1)" style="width: 40px;">&gt;&gt;</td>
+									<td id="menuCell" onclick="changeImage(1)" style="width: 40px;">&gt;&gt;</td>
 							
-							</tr>
-						</table>
+								</tr>
+							</table>
 						</div>
 					  </div>
 					</div>
 				  </section>					  
 					 
-         
+          		<!-- Simple Post -->
+				  <section class="simple-post">
+					<div class="container-fluid">
+					  <div class="row">
+						<div class="col-md-12">
+							<h4>Videos</h4>
+							<table>
+								<tr>
+									<td id="menuCell" onclick="changeVideo(-1)" style="width: 40px;">&lt;&lt;</td>
+							
+									<td align="center">
+										<div id="videoholder">
+											<video autoplay controls>
+												<source src="skycam/videos/latest_04.mp4" type="video/mp4">
+											</video>
+										</div>
+									</td>
+							
+									<td id="menuCell" onclick="changeVideo(1)" style="width: 40px;">&gt;&gt;</td>
+							
+								</tr>
+							</table>
+						</div>
+					  </div>
+					</div>
+				  </section>	
           </div>
         </div>
 

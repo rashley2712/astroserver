@@ -36,6 +36,7 @@ if __name__ == "__main__":
 		dateString = now.strftime("%Y%m%d")
 
 	folder = config['imagePath']
+	videoFolder = config['videoPath']
 
 	# Generate the list of files in the specified folder
 	fileCollection = []
@@ -101,19 +102,10 @@ if __name__ == "__main__":
 	finalFilename = "%s.mp4"%dateString 
 	if args.latest is not None:
 		finalFilename = "latest_%02d.mp4"%args.latest
-	finalFilename = os.path.join(folder, finalFilename)
-	tmpMovie = listFilename + ".mp4"
+	finalFilename = os.path.join(videoFolder, finalFilename)
+	tmpMovie = os.path.join(folder, listFilename + ".mp4")
 	print("Moving %s to %s"%(tmpMovie, finalFilename))
 	os.rename(listFilename + ".mp4", finalFilename)
-
-
-
-
-
-
-
-
-	# os.rename(os.path.join(archiveFolder, yesterdayString+".mp4"), os.path.join(args.outputpath, yesterdayString + ".mp4"))
 
 
 
