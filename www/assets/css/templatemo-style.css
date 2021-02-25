@@ -49,6 +49,14 @@ img {
 	overflow: hidden;
 }
 
+
+video {
+	width: 100%;
+	overflow: hidden;
+}
+
+
+
 #menuCell:hover {
     background-color:#8c99c2;    
 }
