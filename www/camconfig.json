@@ -1,0 +1,4 @@
+{ "expTime" : 10,
+  "nightParams": "-md 3 -dg 4 -ag 8 -st --awb off --drc off -ex off",
+  "annotation" : "dg3"
+}
