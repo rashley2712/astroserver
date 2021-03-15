@@ -200,16 +200,25 @@ astrofarm.get('/meteolog', function(req, res) {
   let startDate = req.query.start;
   let endDate = req.query.end;
   console.log("start date:", startDate);
-  
-  function makeSQL(startDate, endDate) {
-    if (startDate == null && endDate==null) return 'SELECT * from meteolog;';
-    if (startDate == null && endDate!=null) return 'SELECT * from meteolog WHERE Date < "' + endDate + '";';
-    if (startDate.includes("dates")) return "SELECT DISTINCT(date(Date)) AS availableDate FROM meteolog;";
-    if (endDate==null) return 'SELECT * from meteolog WHERE Date > "' + startDate + '";';
-    return 'SELECT * from meteolog WHERE Date > "' + startDate + '" AND Date < "' + endDate + '";';
+  var sqlquery = "";
+  switch (startDate) {
+	case "dates": 
+	  sqlquery= "SELECT DISTINCT(date(Date)) AS availableDate FROM meteolog;";
+	  break;
+	case 'recent':
+		sqlquery = "SELECT * from meteodetail order by Date DESC limit 1;"
+		break;
+	default: sqlquery = makeSQL(startDate, endDate);
   }
-  var sqlquery = makeSQL(startDate, endDate);
 
+  function makeSQL(startDate, endDate) {
+    if (startDate == null && endDate==null) return 'SELECT * from meteodetail;';
+    if (startDate == null && endDate!=null) return 'SELECT * from meteodetail WHERE Date < "' + endDate + '";';
+    // if (startDate.includes("dates")) return "SELECT DISTINCT(date(Date)) AS availableDate FROM meteolog;";
+    if (endDate==null) return 'SELECT * from meteodetail WHERE Date > "' + startDate + '";';
+    return 'SELECT * from meteodetail WHERE Date > "' + startDate + '" AND Date < "' + endDate + '";';
+  }
+  
   console.log(sqlquery); 
   db.all(sqlquery, [], processDB);
   db.close();

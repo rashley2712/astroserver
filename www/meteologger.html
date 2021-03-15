@@ -27,7 +27,6 @@ logo background colour is #003e52 -->
   </head>
 
 <script src="assets/js/astrotools.js"></script>
-<script src="assets/js/weathercharts.js"></script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	
 <script language="Javascript">
@@ -46,26 +45,21 @@ logo background colour is #003e52 -->
 		
 	function onLoad() {
 		console.log("The page has loaded....");
- 
 		console.log("Current time is:", currentDate);
-		getJSON('skycam/skycam.json', showImages);
+		getJSON("/meteolog?start=dates", getAvailableDays);
+		getJSON("/meteolog?start=recent", recentData);
 	}
-	
-	function showImages (err, data){
-		console.log("Image data:");
+
+	function getAvailableDays(err, data) {
+		console.log("Available logger days are:");
 		console.log(data);
-		console.log("latest image is:", data.mostRecent);
-		imageList = data.files;
-		imageIndex = 0;
-		document.getElementById("skycamimage").src = "skycam/" + imageList[imageIndex];
-		// aspect ratio 2592 px x 1944 px
 	}
-	
-	function changeImage(delta) {
-		imageIndex-= delta;
-		if (imageIndex<0) imageIndex=0;
-		if (imageIndex>=imageList.length) imageIndex=0;
-		document.getElementById("skycamimage").src = "skycam/" + imageList[imageIndex];
+
+	function recentData(err, data) {
+		console.log("Most recent data point:", data);
+		document.getElementById("exttemp").innerText = data[0].exttemp;
+		document.getElementById("exthumidity").innerText = data[0].exthumidity;
+		document.getElementById("extpressure").innerText = data[0].extpressure;
 	}
 
   
@@ -91,57 +85,28 @@ logo background colour is #003e52 -->
 
 		
 
-				  <!-- Simple Post -->
-				  <section class="simple-post">
+				  <!-- Latest weather update -->
+				  <section class="tables">
 					<div class="container-fluid">
 					  <div class="row">
 						<div class="col-md-12">
-							<h1>SkyCam</h1>
-							<table>
-								<tr>
-									<td id="menuCell" onclick="changeImage(-1)" style="width: 40px;">&lt;&lt;</td>
-							
-									<td align="center">
-										<div id="skycamholder">
-											<img src="assets/images/imageloading.png" id="skycamimage"/> 
-										</div>
-									</td>
-							
-									<td id="menuCell" onclick="changeImage(1)" style="width: 40px;">&gt;&gt;</td>
-							
-								</tr>
-							</table>
-						</div>
+							<h1>Meteo logger</h1>
+							<div class="default-table">
+								<table>
+								  <tbody>
+									<tr>
+									  <td align="center"><img src="assets/images/temperature.png" style="width: 30px;"> <span id="exttemp">--</span> &deg;C</td>
+									  <td align="center"><img src="assets/images/humidity.png" style="width: 30px;"> <span id="exthumidity">--</span> %</td>
+									  <td align="center"><img src="assets/images/pressure.png" style="width: 30px;"> <span id="extpressure">--</span> hPa</td>
+									</tr>
+								  </tbody>
+								</table> 
+							</div>
 					  </div>
 					</div>
 				  </section>					  
 					 
-          		<!-- Simple Post -->
-				  <section class="simple-post">
-					<div class="container-fluid">
-					  <div class="row">
-						<div class="col-md-12">
-							<h4>Videos</h4>
-							<table>
-								<tr>
-									<td id="menuCell" onclick="changeVideo(-1)" style="width: 40px;">&lt;&lt;</td>
-							
-									<td align="center">
-										<div id="videoholder">
-											<video autoplay controls>
-												<source src="skycam/videos/latest_04.mp4" type="video/mp4">
-											</video>
-										</div>
-									</td>
-							
-									<td id="menuCell" onclick="changeVideo(1)" style="width: 40px;">&gt;&gt;</td>
-							
-								</tr>
-							</table>
-						</div>
-					  </div>
-					</div>
-				  </section>	
+          		
           </div>
         </div>
 
@@ -167,8 +132,8 @@ logo background colour is #003e52 -->
                   <span class="opener">Experiments</span>
                   <ul>
                     <li><a href="skycam.html">SkyCam</a></li>
-					<li><a href="meteologger.html">Meteo logger</a></li>
-				  </ul>
+                    <li><a href="meteologger.html">Meteo logger</a></li>
+                  </ul>
                 </li>
        
 				<li><a href="https://www.airbnb.es/experiences/1353943" target="_new">Stargazing trips</a></li>
