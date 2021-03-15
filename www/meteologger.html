@@ -60,6 +60,7 @@ logo background colour is #003e52 -->
 		document.getElementById("exttemp").innerText = data[0].exttemp;
 		document.getElementById("exthumidity").innerText = data[0].exthumidity;
 		document.getElementById("extpressure").innerText = data[0].extpressure;
+		document.getElementById("devicedate").innerText = data[0].Date.split('.')[0];
 	}
 
   
@@ -71,25 +72,21 @@ logo background colour is #003e52 -->
     <!-- Wrapper -->
     <div id="wrapper">
 
-      <!-- Main -->
+        <!-- Main -->
         <div id="main">
-          <div class="inner">
-            
-            <!-- Header -->
-            <header id="header">
-              <div class="logo"> 
-				<a href="index.html">AstroFarm</a><img src="assets/images/AstroFarm_map_small.png" style="vertical-align:top; width:auto;height:90px;">
-			  </div>
-             
-            </header>
+            <div class="inner"> 
+            	<!-- Header -->
+				<header id="header">
+					<div class="logo"> 
+						<a href="index.html">AstroFarm</a><img src="assets/images/AstroFarm_map_small.png" style="vertical-align:top; width:auto;height:90px;">
+					</div>
+				</header>
 
 		
-
+			<div class="page-heading">
 				  <!-- Latest weather update -->
-				  <section class="tables">
 					<div class="container-fluid">
-					  <div class="row">
-						<div class="col-md-12">
+					  	<div class="col-md-12">
 							<h1>Meteo logger</h1>
 							<div class="default-table">
 								<table>
@@ -99,13 +96,15 @@ logo background colour is #003e52 -->
 									  <td align="center"><img src="assets/images/humidity.png" style="width: 30px;"> <span id="exthumidity">--</span> %</td>
 									  <td align="center"><img src="assets/images/pressure.png" style="width: 30px;"> <span id="extpressure">--</span> hPa</td>
 									</tr>
+									<tr>
+										<td colspan="3" align="right">Latest update: <span id="devicedate"></span> UT</td>
+									</tr>
 								  </tbody>
 								</table> 
 							</div>
 					  </div>
 					</div>
-				  </section>					  
-					 
+				</div>		 
           		
           </div>
         </div>
@@ -166,7 +165,5 @@ logo background colour is #003e52 -->
     <script src="assets/js/custom.js"></script>
 </body>
 
-
-  </body>
 
 </html>
