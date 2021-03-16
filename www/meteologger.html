@@ -27,6 +27,7 @@ logo background colour is #003e52 -->
   </head>
 
 <script src="assets/js/astrotools.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	
@@ -102,12 +103,12 @@ logo background colour is #003e52 -->
 
 	function drawGraph(data) {
 		var ctx = document.getElementById('temperatureChart').getContext('2d');
-		var chartData = [];
-
-		var count = 0;
+	
+		var temperature = [];
+		var inttemperature = [];
 		for (d of data) {
-			chartData.push( {x: new Date(d.Date), y: d.exttemp});
-			count++;
+			temperature.push( {x: new Date(d.Date), y: d.exttemp});
+			inttemperature.push( {x: new Date(d.Date), y: d.inttemp});
 		}
 		chartObject =  {
 			type: 'scatter',
@@ -115,16 +116,19 @@ logo background colour is #003e52 -->
 				datasets: [{
 					label: 'Temperature',
 					pointBackgroundColor: 'rgba(0, 0, 0, 0.5)',
-					data: chartData,
+					data: temperature
+				}, { 
+					label: 'Enclosure temperature', 
+					pointBackgroundColor: 'rgba(0, 200, 0, 0.5)',
+					data: inttemperature
 				}]
 			},
 			options: {
 				
 				scales: {
-					yAxes: [{
-						ticks: {
-							beginAtZero: true
-						}
+					xAxes: [{
+						type: 'time', 
+						distribution: 'series'
 					}]
 				}
 			}
