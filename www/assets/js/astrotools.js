@@ -13,6 +13,28 @@ function zeroPad(input) {
 	return input.toString();
 }
 
+function formatUTCDateTime(inputDate) {
+	var date;
+	var month;
+	var year;
+	var hours;
+	var minutes;
+	var seconds;
+	var timeString;
+	
+	hours = inputDate.getUTCHours();
+ 	minutes = inputDate.getUTCMinutes();
+	seconds = inputDate.getUTCSeconds();
+	date = inputDate.getUTCDate();
+ 	month = inputDate.getUTCMonth();
+	year = inputDate.getUTCFullYear();
+		
+	timeString = year + "-" + zeroPad(month+1) + "-" + zeroPad(date) + " " + zeroPad(hours) + ":" + zeroPad(minutes) + ":" + zeroPad(seconds);
+	return timeString;
+
+}
+
+
 function formatDate(inputDate) {
 	var year, month, day;
 	year = inputDate.getYear() + 1900;
@@ -232,3 +254,20 @@ function convertToGalactic(ra, dec) {
         var dateString = year.toString() + zeroPad(month) + zeroPad(day) + "_" + zeroPad(hours) + zeroPad(minutes);
         return dateString;
     }
+
+
+	function castDateTime(dayData) {
+		let count = 0;
+		for (line of dayData) {
+			let year = parseInt(line.Date.substring(0, 4));
+			let month = parseInt(line.Date.substring(5, 7));
+			let day = parseInt(line.Date.substring(8, 10));
+			let hour = parseInt(line.Date.substring(11, 13));
+			let minute = parseInt(line.Date.substring(14, 16));
+			let second = parseFloat(line.Date.substring(17, 25));
+			line.dateTime = new Date(year, month-1, day, hour, minute, second);
+			count++;
+		  }
+		return count;
+	}
+

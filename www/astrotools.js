@@ -36,6 +36,21 @@ function sqlDateTime(inputDate) {
 	return dateString;
 }
 
+function formatUTCDateTime(inputDate) {
+	var hours;
+	var minutes;
+	var seconds;
+	var timeString;
+	
+	hours = inputDate.getUTCHours();
+ 	minutes = inputDate.getUTCMinutes();
+	seconds = inputDate.getUTCSeconds();
+		
+	timeString = zeroPad(hours) + ":" + zeroPad(minutes) + ":" + zeroPad(seconds);
+	return timeString;
+
+}
+
 function formatUTCTime(inputDate) {
 	var hours;
 	var minutes;

@@ -27,6 +27,7 @@ logo background colour is #003e52 -->
   </head>
 
 <script src="assets/js/astrotools.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	
 <script language="Javascript">
@@ -36,6 +37,7 @@ logo background colour is #003e52 -->
 	var availableDates = null;
 	var imageList = [];
 	var imageIndex = 0;
+	var mode = "latest24";
 	// Call a function only when the page is fully loaded.
 	document.addEventListener('readystatechange', event => {
 		if (event.target.readyState === "complete") {
@@ -48,6 +50,7 @@ logo background colour is #003e52 -->
 		console.log("Current time is:", currentDate);
 		getJSON("/meteolog?start=dates", getAvailableDays);
 		getJSON("/meteolog?start=recent", recentData);
+		downloadData();
 	}
 
 	function getAvailableDays(err, data) {
@@ -63,6 +66,73 @@ logo background colour is #003e52 -->
 		document.getElementById("devicedate").innerText = data[0].Date.split('.')[0];
 	}
 
+	function graphDataReceived(err, data) {
+		let length = castDateTime(data);
+		console.log(" ", length, "data points received.");
+		console.log(data);
+		drawGraph(data);
+	} 
+
+
+	function downloadData() {
+		console.log("downloading mode: ", mode);
+		switch (mode) {
+			case 'latest24': 
+				console.log("Getting most recent 24 hours...");
+				var now = new Date();
+				var startDate = new Date(now.getTime() - 86400*1000);
+				console.log(now);
+				var date = now.getUTCDate();
+				var year = now.getUTCFullYear();
+				var month = now.getUTCMonth();
+				var hour = now.getUTCHours();
+				var minutes = now.getUTCMinutes();
+				var endDate = now;
+
+				console.log("startDate (UTC):", formatUTCDateTime(startDate));
+				console.log("endDate (UTC):", formatUTCDateTime(now));
+				const queryString = "?start=" + formatUTCDateTime(startDate) + "&end=" + formatUTCDateTime(endDate);
+				console.log(queryString);
+				const JSONURL = encodeURI("/meteolog" + queryString);
+				console.log(JSONURL);
+				getJSON(JSONURL, graphDataReceived);
+				break;
+		}
+	}
+
+	function drawGraph(data) {
+		var ctx = document.getElementById('temperatureChart').getContext('2d');
+		var chartData = [];
+
+		var count = 0;
+		for (d of data) {
+			chartData.push( {x: new Date(d.Date), y: d.exttemp});
+			count++;
+		}
+		chartObject =  {
+			type: 'scatter',
+			data: {
+				datasets: [{
+					label: 'Temperature',
+					pointBackgroundColor: 'rgba(0, 0, 0, 0.5)',
+					data: chartData,
+				}]
+			},
+			options: {
+				
+				scales: {
+					yAxes: [{
+						ticks: {
+							beginAtZero: true
+						}
+					}]
+				}
+			}
+		};
+		var myChart = new Chart(ctx, chartObject);
+	}
+
+	
   
 
 </script>
@@ -105,6 +175,7 @@ logo background colour is #003e52 -->
 					  </div>
 					</div>
 				</div>		 
+				<canvas id="temperatureChart"></canvas>
           		
           </div>
         </div>
@@ -163,6 +234,7 @@ logo background colour is #003e52 -->
     <script src="assets/js/transition.js"></script>
     <script src="assets/js/owl-carousel.js"></script>
     <script src="assets/js/custom.js"></script>
+
 </body>
 
 
