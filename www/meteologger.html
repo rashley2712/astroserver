@@ -102,38 +102,189 @@ logo background colour is #003e52 -->
 	}
 
 	function drawGraph(data) {
-		var ctx = document.getElementById('temperatureChart').getContext('2d');
-	
+		
 		var temperature = [];
 		var inttemperature = [];
+		
+		// Copy the data 
 		for (d of data) {
 			temperature.push( {x: new Date(d.Date), y: d.exttemp});
 			inttemperature.push( {x: new Date(d.Date), y: d.inttemp});
 		}
-		chartObject =  {
-			type: 'scatter',
+
+		var chartObject =  {
+			type: 'line',
 			data: {
 				datasets: [{
 					label: 'Temperature',
 					pointBackgroundColor: 'rgba(0, 0, 0, 0.5)',
+					pointBorderColor: 'rgba(0, 0, 0, 0.5)',
+					pointRadius: 4,
+					pointStyle: 'rect',
 					data: temperature
 				}, { 
 					label: 'Enclosure temperature', 
 					pointBackgroundColor: 'rgba(0, 200, 0, 0.5)',
+					pointBorderColor: 'rgba(0, 200, 0, 0.5)',
+					pointRadius: 4,
+					pointStyle: 'triangle',
 					data: inttemperature
 				}]
 			},
 			options: {
-				
+				legend: {
+					display: true,
+					labels: {
+						fontColor: 'rgb(0, 0, 0)',
+						usePointStyle: true
+					}
+				},
 				scales: {
 					xAxes: [{
 						type: 'time', 
-						distribution: 'series'
-					}]
+						distribution: 'series',
+						scaleLabel: {
+        					display: true,
+        					labelString: 'Time of day'
+      					}
+					}],
+					yAxes: [{
+      					scaleLabel: {
+        					display: true,
+        					labelString: 'Temperature \u00B0C'
+      					}
+    				}]
 				}
 			}
 		};
-		var myChart = new Chart(ctx, chartObject);
+		// Render the chart
+		var ctx = document.getElementById('temperatureChart').getContext('2d');
+		var temperatureChart = new Chart(ctx, chartObject);
+
+		//
+		// HUMIDITY chart
+		//
+		// Copy the data
+		var humidity = [];
+		var inthumidity = [];
+		for (d of data) {
+			humidity.push( {x: new Date(d.Date), y: d.exthumidity});
+			inthumidity.push( {x: new Date(d.Date), y: d.inthumidity});
+		}
+		// Define the chart
+		chartObject =  {
+			type: 'line',
+			data: {
+				datasets: [{
+					label: 'Humidity',
+					pointBackgroundColor: 'rgba(0, 0, 0, 0.5)',
+					pointBorderColor: 'rgba(0, 0, 0, 0.5)',
+					pointRadius: 4,
+					pointStyle: 'rect',
+					data: humidity
+				}, { 
+					label: 'Enclosure humidity', 
+					pointBackgroundColor: 'rgba(0, 200, 0, 0.5)',
+					pointBorderColor: 'rgba(0, 200, 0, 0.5)',
+					pointRadius: 4,
+					pointStyle: 'triangle',
+					data: inthumidity
+				}]
+			},
+			options: {
+				legend: {
+					display: true,
+					labels: {
+						fontColor: 'rgb(0, 0, 0)',
+						usePointStyle: true
+					}
+				},
+				scales: {
+					xAxes: [{
+						type: 'time', 
+						distribution: 'series',
+						scaleLabel: {
+        					display: true,
+        					labelString: 'Time of day'
+      					}
+					}],
+					yAxes: [{
+      					scaleLabel: {
+        					display: true,
+        					labelString: 'Humidity %'
+      					},
+						ticks: {
+                    		min: 0,
+							max: 100
+                		}
+            		}]
+				}
+			}
+		};
+		// Render the chart
+		ctx = document.getElementById('humidityChart').getContext('2d');
+		var humidityChart = new Chart(ctx, chartObject);
+		//
+		// PRESSURE chart
+		//
+		// Copy the data
+		var pressure = [];
+		var intpressure = [];
+		for (d of data) {
+			pressure.push( {x: new Date(d.Date), y: d.extpressure});
+			intpressure.push( {x: new Date(d.Date), y: d.intpressure});
+		}
+		// Define the chart
+		chartObject =  {
+			type: 'line',
+			data: {
+				datasets: [{
+					label: 'Pressure',
+					pointBackgroundColor: 'rgba(0, 0, 0, 0.5)',
+					pointBorderColor: 'rgba(0, 0, 0, 0.5)',
+					pointRadius: 4,
+					pointStyle: 'rect',
+					data: pressure
+				}, { 
+					label: 'Enclosure Pressure', 
+					pointBackgroundColor: 'rgba(0, 200, 0, 0.5)',
+					pointBorderColor: 'rgba(0, 200, 0, 0.5)',
+					pointRadius: 4,
+					pointStyle: 'triangle',
+					data: intpressure
+				}]
+			},
+			options: {
+				legend: {
+					display: true,
+					labels: {
+						fontColor: 'rgb(0, 0, 0)',
+						usePointStyle: true
+					}
+				},
+				scales: {
+					xAxes: [{
+						type: 'time', 
+						distribution: 'series',
+						scaleLabel: {
+        					display: true,
+        					labelString: 'Time of day'
+      					}
+					}],
+					yAxes: [{
+      					scaleLabel: {
+        					display: true,
+        					labelString: 'Pressure hPa'
+      					},
+					
+            		}]
+				}
+			}
+		};
+		// Render the chart
+		ctx = document.getElementById('pressureChart').getContext('2d');
+		var humidityChart = new Chart(ctx, chartObject);		
+
 	}
 
 	
@@ -180,6 +331,8 @@ logo background colour is #003e52 -->
 					</div>
 				</div>		 
 				<canvas id="temperatureChart"></canvas>
+				<canvas id="humidityChart"></canvas>
+				<canvas id="pressureChart"></canvas>
           		
           </div>
         </div>
