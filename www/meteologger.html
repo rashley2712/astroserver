@@ -39,7 +39,13 @@ logo background colour is #003e52 -->
 	var imageList = [];
 	var imageIndex = 0;
 	var mode = "latest24";
+	var stepAmount = 86400;    // Step size in seconds
+	var timeCursor = null;     // current position of the right hand side of the chart
 	// Call a function only when the page is fully loaded.
+	var temperatureChart = null;
+	var humidityChart = null;
+	var pressureChart = null;
+
 	document.addEventListener('readystatechange', event => {
 		if (event.target.readyState === "complete") {
 			onLoad();
@@ -77,48 +83,60 @@ logo background colour is #003e52 -->
 
 	function downloadData() {
 		console.log("downloading mode: ", mode);
+		var queryString = "";
+		var JSONURL = "";
 		switch (mode) {
 			case 'latest24': 
 				console.log("Getting most recent 24 hours...");
 				var now = new Date();
+				timeCursor = now;
 				var startDate = new Date(now.getTime() - 86400*1000);
 				console.log(now);
-				var date = now.getUTCDate();
-				var year = now.getUTCFullYear();
-				var month = now.getUTCMonth();
-				var hour = now.getUTCHours();
-				var minutes = now.getUTCMinutes();
 				var endDate = now;
 
 				console.log("startDate (UTC):", formatUTCDateTime(startDate));
-				console.log("endDate (UTC):", formatUTCDateTime(now));
-				const queryString = "?start=" + formatUTCDateTime(startDate) + "&end=" + formatUTCDateTime(endDate);
+				console.log("endDate (UTC):", formatUTCDateTime(endDate));
+				queryString = "?start=" + formatUTCDateTime(startDate) + "&end=" + formatUTCDateTime(endDate);
 				console.log(queryString);
-				const JSONURL = encodeURI("/meteolog" + queryString);
-				console.log(JSONURL);
-				getJSON(JSONURL, graphDataReceived);
+				break;
+			case '24hr': 
+				console.log("Getting a 24 hr set");
+				var startDate = new Date(timeCursor.getTime() - 86400*1000);
+				var endDate = timeCursor;
+				
+				console.log("startDate (UTC):", formatUTCDateTime(startDate));
+				console.log("endDate (UTC):", formatUTCDateTime(endDate));
+				queryString = "?start=" + formatUTCDateTime(startDate) + "&end=" + formatUTCDateTime(endDate);
+				console.log(queryString);
 				break;
 		}
+		JSONURL = encodeURI("/meteolog" + queryString);
+		console.log(JSONURL);
+		getJSON(JSONURL, graphDataReceived);
+	
 	}
 
 	function drawGraph(data) {
 		
 		var temperature = [];
 		var inttemperature = [];
-		
+		var CPUtemp = [];
 		// Copy the data 
 		for (d of data) {
-			temperature.push( {x: new Date(d.Date), y: d.exttemp});
-			inttemperature.push( {x: new Date(d.Date), y: d.inttemp});
+			if (d.exttemp!=-100) temperature.push( {x: new Date(d.Date), y: d.exttemp});
+			if (d.inttemp!=-100) inttemperature.push( {x: new Date(d.Date), y: d.inttemp});
+			if (d.CPU!=-100) CPUtemp.push( {x: new Date(d.Date), y: d.CPU});
 		}
 
+		var chartObject = {};
 		var chartObject =  {
-			type: 'line',
+			type: 'scatter',
 			data: {
 				datasets: [{
 					label: 'Temperature',
 					pointBackgroundColor: 'rgba(0, 0, 0, 0.5)',
 					pointBorderColor: 'rgba(0, 0, 0, 0.5)',
+					backgroundColor: 'rgba(0, 0, 0, 0.5)',
 					pointRadius: 4,
 					pointStyle: 'rect',
 					data: temperature
@@ -126,9 +144,18 @@ logo background colour is #003e52 -->
 					label: 'Enclosure temperature', 
 					pointBackgroundColor: 'rgba(0, 200, 0, 0.5)',
 					pointBorderColor: 'rgba(0, 200, 0, 0.5)',
+					backgroundColor: 'rgba(0, 200, 0, 0.5)',
 					pointRadius: 4,
 					pointStyle: 'triangle',
 					data: inttemperature
+				}, { 
+					label: 'CPU temperature', 
+					pointBackgroundColor: 'rgba(200, 0, 0, 0.5)',
+					pointBorderColor: 'rgba(200, 0, 0, 0.5)',
+					backgroundColor: 'rgba(200, 0, 0, 0.5)',
+					pointRadius: 4,
+					pointStyle: 'circle',
+					data: CPUtemp
 				}]
 			},
 			options: {
@@ -151,15 +178,20 @@ logo background colour is #003e52 -->
 					yAxes: [{
       					scaleLabel: {
         					display: true,
-        					labelString: 'Temperature \u00B0C'
+        					labelString: 'Temperature (\u00B0C)'
       					}
     				}]
 				}
 			}
 		};
 		// Render the chart
-		var ctx = document.getElementById('temperatureChart').getContext('2d');
-		var temperatureChart = new Chart(ctx, chartObject);
+		if (temperatureChart==null) temperatureChart = new Chart(document.getElementById('temperatureChart').getContext('2d'), chartObject);
+		else {
+			temperatureChart.data.datasets[0].data = temperature;
+			temperatureChart.data.datasets[1].data = inttemperature;
+			temperatureChart.data.datasets[2].data = CPUtemp;
+			temperatureChart.update();
+		}
 
 		//
 		// HUMIDITY chart
@@ -179,6 +211,7 @@ logo background colour is #003e52 -->
 					label: 'Humidity',
 					pointBackgroundColor: 'rgba(0, 0, 0, 0.5)',
 					pointBorderColor: 'rgba(0, 0, 0, 0.5)',
+					backgroundColor: 'rgba(0, 0, 0, 0.5)',
 					pointRadius: 4,
 					pointStyle: 'rect',
 					data: humidity
@@ -186,6 +219,7 @@ logo background colour is #003e52 -->
 					label: 'Enclosure humidity', 
 					pointBackgroundColor: 'rgba(0, 200, 0, 0.5)',
 					pointBorderColor: 'rgba(0, 200, 0, 0.5)',
+					backgroundColor: 'rgba(0, 200, 0, 0.5)',
 					pointRadius: 4,
 					pointStyle: 'triangle',
 					data: inthumidity
@@ -211,7 +245,7 @@ logo background colour is #003e52 -->
 					yAxes: [{
       					scaleLabel: {
         					display: true,
-        					labelString: 'Humidity %'
+        					labelString: 'Humidity (%)'
       					},
 						ticks: {
                     		min: 0,
@@ -223,7 +257,12 @@ logo background colour is #003e52 -->
 		};
 		// Render the chart
 		ctx = document.getElementById('humidityChart').getContext('2d');
-		var humidityChart = new Chart(ctx, chartObject);
+		if (humidityChart==null) humidityChart = new Chart(ctx, chartObject);
+		else {
+			humidityChart.data.datasets[0].data = humidity;
+			humidityChart.data.datasets[1].data = inthumidity;
+			humidityChart.update();
+		}
 		//
 		// PRESSURE chart
 		//
@@ -236,12 +275,13 @@ logo background colour is #003e52 -->
 		}
 		// Define the chart
 		chartObject =  {
-			type: 'line',
+			type: 'scatter',
 			data: {
 				datasets: [{
 					label: 'Pressure',
 					pointBackgroundColor: 'rgba(0, 0, 0, 0.5)',
 					pointBorderColor: 'rgba(0, 0, 0, 0.5)',
+					backgroundColor: 'rgba(0, 0, 0, 0.5)',
 					pointRadius: 4,
 					pointStyle: 'rect',
 					data: pressure
@@ -249,6 +289,7 @@ logo background colour is #003e52 -->
 					label: 'Enclosure Pressure', 
 					pointBackgroundColor: 'rgba(0, 200, 0, 0.5)',
 					pointBorderColor: 'rgba(0, 200, 0, 0.5)',
+					backgroundColor: 'rgba(0, 200, 0, 0.5)',
 					pointRadius: 4,
 					pointStyle: 'triangle',
 					data: intpressure
@@ -274,7 +315,7 @@ logo background colour is #003e52 -->
 					yAxes: [{
       					scaleLabel: {
         					display: true,
-        					labelString: 'Pressure hPa'
+        					labelString: 'Pressure (hPa)'
       					},
 					
             		}]
@@ -283,8 +324,22 @@ logo background colour is #003e52 -->
 		};
 		// Render the chart
 		ctx = document.getElementById('pressureChart').getContext('2d');
-		var humidityChart = new Chart(ctx, chartObject);		
+		if (pressureChart==null) pressureChart = new Chart(ctx, chartObject);
+		else {
+			pressureChart.data.datasets[0].data = pressure;
+			pressureChart.data.datasets[1].data = intpressure;
+			pressureChart.update();
+		}
+		
+	}
 
+	function moveCursor(steps) {
+		console.log("Moving cursor by", steps, "steps.");
+		if (mode=="latest24") mode="24hr";
+		console.log("time cursor was:", timeCursor);
+		timeCursor = new Date(timeCursor.getTime() + steps*stepAmount*1000);
+		console.log("time cursor is now:", timeCursor);
+		downloadData();
 	}
 
 	
@@ -329,7 +384,12 @@ logo background colour is #003e52 -->
 							</div>
 					  </div>
 					</div>
-				</div>		 
+				</div>		
+						<table border="1">
+						<tr align="center">
+							<td onclick="moveCursor(-1)">&lt;&lt;</td><td>24 hours</td><td onclick="moveCursor(1)">&gt;&gt;</td>
+						</tr>
+					</table>
 				<canvas id="temperatureChart"></canvas>
 				<canvas id="humidityChart"></canvas>
 				<canvas id="pressureChart"></canvas>
