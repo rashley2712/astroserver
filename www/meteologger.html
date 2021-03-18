@@ -40,6 +40,7 @@ logo background colour is #003e52 -->
 	var imageIndex = 0;
 	var mode = "latest24";
 	var stepAmount = 86400;    // Step size in seconds
+	var startDate, endDate = null;
 	var timeCursor = null;     // current position of the right hand side of the chart
 	// Call a function only when the page is fully loaded.
 	var temperatureChart = null;
@@ -90,10 +91,8 @@ logo background colour is #003e52 -->
 				console.log("Getting most recent 24 hours...");
 				var now = new Date();
 				timeCursor = now;
-				var startDate = new Date(now.getTime() - 86400*1000);
-				console.log(now);
-				var endDate = now;
-
+				startDate = new Date(now.getTime() - 86400*1000);
+				endDate = now;
 				console.log("startDate (UTC):", formatUTCDateTime(startDate));
 				console.log("endDate (UTC):", formatUTCDateTime(endDate));
 				queryString = "?start=" + formatUTCDateTime(startDate) + "&end=" + formatUTCDateTime(endDate);
@@ -101,9 +100,8 @@ logo background colour is #003e52 -->
 				break;
 			case '24hr': 
 				console.log("Getting a 24 hr set");
-				var startDate = new Date(timeCursor.getTime() - 86400*1000);
-				var endDate = timeCursor;
-				
+				startDate = new Date(timeCursor.getTime() - 86400*1000);
+				endDate = timeCursor;
 				console.log("startDate (UTC):", formatUTCDateTime(startDate));
 				console.log("endDate (UTC):", formatUTCDateTime(endDate));
 				queryString = "?start=" + formatUTCDateTime(startDate) + "&end=" + formatUTCDateTime(endDate);
@@ -112,6 +110,7 @@ logo background colour is #003e52 -->
 		}
 		JSONURL = encodeURI("/meteolog" + queryString);
 		console.log(JSONURL);
+		
 		getJSON(JSONURL, graphDataReceived);
 	
 	}
@@ -145,7 +144,7 @@ logo background colour is #003e52 -->
 					pointBackgroundColor: 'rgba(0, 200, 0, 0.5)',
 					pointBorderColor: 'rgba(0, 200, 0, 0.5)',
 					backgroundColor: 'rgba(0, 200, 0, 0.5)',
-					pointRadius: 4,
+					pointRadius: 3,
 					pointStyle: 'triangle',
 					data: inttemperature
 				}, { 
@@ -153,14 +152,22 @@ logo background colour is #003e52 -->
 					pointBackgroundColor: 'rgba(200, 0, 0, 0.5)',
 					pointBorderColor: 'rgba(200, 0, 0, 0.5)',
 					backgroundColor: 'rgba(200, 0, 0, 0.5)',
-					pointRadius: 4,
+					pointRadius: 3,
 					pointStyle: 'circle',
 					data: CPUtemp
 				}]
 			},
 			options: {
+				title: {
+					display: true,
+					text:  formatUTCDateTime(startDate) + " -- " + formatUTCDateTime(endDate) + " UT",
+					fontSize: 20,
+					fontFamily: "AstroFarm"
+				},
 				legend: {
 					display: true,
+					position: 'top',
+
 					labels: {
 						fontColor: 'rgb(0, 0, 0)',
 						usePointStyle: true
@@ -187,6 +194,7 @@ logo background colour is #003e52 -->
 		// Render the chart
 		if (temperatureChart==null) temperatureChart = new Chart(document.getElementById('temperatureChart').getContext('2d'), chartObject);
 		else {
+			temperatureChart.options.title.text = formatUTCDateTime(startDate) + " -- " + formatUTCDateTime(endDate) + " UT";
 			temperatureChart.data.datasets[0].data = temperature;
 			temperatureChart.data.datasets[1].data = inttemperature;
 			temperatureChart.data.datasets[2].data = CPUtemp;
@@ -212,7 +220,7 @@ logo background colour is #003e52 -->
 					pointBackgroundColor: 'rgba(0, 0, 0, 0.5)',
 					pointBorderColor: 'rgba(0, 0, 0, 0.5)',
 					backgroundColor: 'rgba(0, 0, 0, 0.5)',
-					pointRadius: 4,
+					pointRadius: 3,
 					pointStyle: 'rect',
 					data: humidity
 				}, { 
@@ -220,7 +228,7 @@ logo background colour is #003e52 -->
 					pointBackgroundColor: 'rgba(0, 200, 0, 0.5)',
 					pointBorderColor: 'rgba(0, 200, 0, 0.5)',
 					backgroundColor: 'rgba(0, 200, 0, 0.5)',
-					pointRadius: 4,
+					pointRadius: 3,
 					pointStyle: 'triangle',
 					data: inthumidity
 				}]
@@ -282,7 +290,7 @@ logo background colour is #003e52 -->
 					pointBackgroundColor: 'rgba(0, 0, 0, 0.5)',
 					pointBorderColor: 'rgba(0, 0, 0, 0.5)',
 					backgroundColor: 'rgba(0, 0, 0, 0.5)',
-					pointRadius: 4,
+					pointRadius: 3,
 					pointStyle: 'rect',
 					data: pressure
 				}, { 
@@ -290,7 +298,7 @@ logo background colour is #003e52 -->
 					pointBackgroundColor: 'rgba(0, 200, 0, 0.5)',
 					pointBorderColor: 'rgba(0, 200, 0, 0.5)',
 					backgroundColor: 'rgba(0, 200, 0, 0.5)',
-					pointRadius: 4,
+					pointRadius: 3,
 					pointStyle: 'triangle',
 					data: intpressure
 				}]
