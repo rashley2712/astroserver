@@ -10,7 +10,9 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
     "express": "latest",
+    "googleapis": "^39.2.0",
     "multer": "^1.4.2",
     "smulter": "^1.2.4",
     "sqlite3": "^5.0.1",

@@ -25,6 +25,57 @@ logo background colour is #003e52 -->
     <link rel="stylesheet" href="assets/css/owl.css">
 
   </head>
+  
+<script src="assets/js/astrotools.js"></script>
+<script language="JavaScript">
+  	document.addEventListener('readystatechange', event => {
+		if (event.target.readyState === "complete") {
+			onLoad();
+		}
+	});
+	
+	function onLoad() {
+		console.log("The page has loaded....");
+		document.getElementById('contact').addEventListener("submit", processContact);
+	}
+
+	function getJSONcontact(url, data, callback) {
+		var xhr = new XMLHttpRequest();
+			xhr.open('POST', url, true);
+			xhr.responseType = 'json';
+			//Send the proper header information along with the request
+			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+			xhr.onload = function() {
+				var status = xhr.status;
+				if (status === 200) {
+					callback(null, xhr.response);
+				} else {
+					callback(status, xhr.response);
+				}
+			};
+			xhr.send("data=" + JSON.stringify(data));
+	};    
+
+
+	function processContact(e) {
+		e.preventDefault(); 
+		console.log("Processing contact form...");
+		var name = document.getElementById('name').value;
+		var email = document.getElementById('email').value;
+		var message =  document.getElementById('message').value;
+		console.log(name, email, message);
+		var data = { name: name, email: email, message: message};
+		JSONURL = "/contact";
+		getJSONcontact(JSONURL, data, responseFromContact);
+	}
+
+	function responseFromContact(err, data) {
+		console.log("Response received....");
+		console.log(data);
+	}
+
+</script>
 
 <body class="is-preload">
             
@@ -67,26 +118,28 @@ logo background colour is #003e52 -->
               </div>
             </section>
 
+			
+
                <!-- Contact Form -->
                <section class="contact-form">
                 <div class="container-fluid">
                   <div class="row">
                     <div class="col-md-6">
-                      <form id="contact" action="" method="post">
+                      <form id="contact">
                         <div class="row">
                           <div class="col-md-12">
                             <fieldset>
-                              <input name="name" type="text" class="form-control" id="name" placeholder="Your name..." required="">
+                              <input name="name" type="text" class="form-control" id="name" placeholder="Your name..." required="" value="Richard Ashley">
                             </fieldset>
                           </div>
                           <div class="col-md-12">
                             <fieldset>
-                              <input name="email" type="text" class="form-control" id="email" placeholder="Your email..." required="">
+                              <input name="email" type="text" class="form-control" id="email" placeholder="Your email..." required="" value="rashley@gmail.com">
                             </fieldset>
                           </div>
                           <div class="col-md-12">
                             <fieldset>
-                              <textarea name="message" rows="6" class="form-control" id="message" placeholder="Your message..." required=""></textarea>
+                              <textarea name="message" rows="6" class="form-control" id="message" placeholder="Your message..." required="">Please tell me more.</textarea>
                             </fieldset>
                           </div>
                           <div class="col-md-12">
@@ -107,7 +160,7 @@ logo background colour is #003e52 -->
               </section>
 
          
-
+			  <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfnQ1-b_CY7YWUOUilEJHwcdPxdxSOc3xc-hO11PylS83ZwKw/viewform?embedded=true" width="640" height="685" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
        
           </div>
         </div>
@@ -144,35 +197,6 @@ logo background colour is #003e52 -->
 			  </ul>
 			  </nav>
 
-
-
-
-            <!-- Featured Posts -->
-            <div class="featured-posts">
-              <div class="heading">
-                <h2>Featured Posts</h2>
-              </div>
-              <div class="owl-carousel owl-theme">
-                <a href="#">
-                  <div class="featured-item">
-                    <img src="assets/images/featured_post_01.jpg" alt="featured one">
-                    <p>Aliquam egestas convallis eros sed gravida. Curabitur consequat sit.</p>
-                  </div>
-                </a>
-                <a href="#">
-                  <div class="featured-item">
-                    <img src="assets/images/featured_post_01.jpg" alt="featured two">
-                    <p>Donec a scelerisque massa. Aliquam non iaculis quam. Duis arcu turpis.</p>
-                  </div>
-                </a>
-                <a href="#">
-                  <div class="featured-item">
-                    <img src="assets/images/featured_post_01.jpg" alt="featured three">
-                    <p>Suspendisse ac convallis urna, vitae luctus ante. Donec sit amet.</p>
-                  </div>
-                </a>
-              </div>
-            </div>
 
             <!-- Footer -->
             <footer id="footer">

@@ -2,6 +2,8 @@
 
 const express = require('express')
 const vhost= require('vhost')
+const cors = require('cors');
+const drive = require('./drive.js');
 const astronomy = require('./astronomy.js')
 const bodyParser = require('body-parser');
 var sqlite3 = require('sqlite3').verbose();
@@ -89,6 +91,18 @@ const storage = multer.diskStorage({
       cb(null, file.originalname);
     }
 });
+
+
+
+astrofarm.post('/contact', function(request, response) {
+	console.log("Received a contact post");
+	// Save the data
+	const data = JSON.parse(request.body.data);
+	console.log(data);
+	drive.makeEntry(data.name, data.email, data.message);
+	}
+  
+);
 
 astrofarm.post('/upload', function(request, response) {
   console.log("Received a post");
@@ -346,6 +360,7 @@ astrofarm.use(express.static(rootPath));
 
 
 const app = express()
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(vhost('*.astrofarm.*', astrofarm))
 app.use(vhost('astrofarm.*', astrofarm))
