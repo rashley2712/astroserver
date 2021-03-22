@@ -2,7 +2,6 @@
 
 const express = require('express')
 const vhost= require('vhost')
-const cors = require('cors');
 const drive = require('./drive.js');
 const astronomy = require('./astronomy.js')
 const bodyParser = require('body-parser');
