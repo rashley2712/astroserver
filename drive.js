@@ -31,7 +31,7 @@ function makeEntry(credentialsPath, name, email, message) {
 
 function main() {
 	// Goes through the token creation steps.
-	makeEntry("/var/www/astrofarm/credentials/", "test", "test@gmail.com", "Testing authentication to Google Drive.");
+	makeEntry("/var/www/astrofarm/", "test", "test@gmail.com", "Testing authentication to Google Drive.");
 }
 
 if (require.main === module) {
