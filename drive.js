@@ -1,5 +1,6 @@
 const fs = require('fs');
 const readline = require('readline');
+const path = require('path');
 const {google} = require('googleapis');
 
 // If modifying these scopes, delete token.json.
@@ -23,9 +24,9 @@ var message = "Let me know when you are open.";
 
 //makeEntry(name, email, message);
 
-function makeEntry(name, email, message) {
+function makeEntry(credentialsPath, name, email, message) {
 	entry = { name: name, email: email, message: message};
-	fs.readFile('credentials.json', gotCredentials);
+	fs.readFile(path.join(credentialsPath, 'credentials.json'), gotCredentials);
 }
 
 var credentials = null;
