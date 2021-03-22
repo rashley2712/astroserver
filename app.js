@@ -98,7 +98,7 @@ astrofarm.post('/contact', function(request, response) {
 	// Save the data
 	const data = JSON.parse(request.body.data);
 	console.log(data);
-	drive.makeEntry(rootPath, data.name, data.email, data.message);
+	drive.makeEntry(data.name, data.email, data.message);
 	}
   
 );
