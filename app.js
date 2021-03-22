@@ -359,7 +359,6 @@ astrofarm.use(express.static(rootPath));
 
 
 const app = express()
-app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(vhost('*.astrofarm.*', astrofarm))
 app.use(vhost('astrofarm.*', astrofarm))
