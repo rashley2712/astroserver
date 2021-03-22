@@ -29,6 +29,15 @@ function makeEntry(credentialsPath, name, email, message) {
 	fs.readFile(path.join(credentialsPath, 'credentials.json'), gotCredentials);
 }
 
+function main() {
+	// Goes through the token creation steps.
+	makeEntry("test", "test@gmail.com", "Testing authentication to Google Drive.");
+}
+
+if (require.main === module) {
+	main();
+  }
+
 var credentials = null;
 var auth = null;
 
