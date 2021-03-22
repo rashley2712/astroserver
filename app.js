@@ -98,7 +98,19 @@ astrofarm.post('/contact', function(request, response) {
 	// Save the data
 	const data = JSON.parse(request.body.data);
 	console.log(data);
+
+	data.timeStamp = (new Date()).toUTCString();
+	var logString = JSON.stringify(data) + "\n";
+	const contactLog = path.join(rootPath, 'contacts.log');
+	fs.appendFile(contactLog, logString, function (err) {
+	  if (err) return console.log(err);
+	  console.log('Updated', contactLog);
+	});
+
 	drive.makeEntry(data.name, data.email, data.message);
+	response.writeHead(200, { 'Content-Type': 'application/json',  'Access-Control-Allow-Origin': '*' });
+    response.write(JSON.stringify(data));
+    response.end();
 	}
   
 );
@@ -197,7 +209,6 @@ astrofarm.get('/info', function(req, res) {
   function writeout(err, data) {
     res.writeHead(200, { 'Content-Type': 'application/json',  'Access-Control-Allow-Origin': '*' });
     res.write(data);
-    console.log(data);
     res.end();
   }
 })

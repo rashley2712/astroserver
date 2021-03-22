@@ -23,6 +23,7 @@ var message = "Let me know when you are open.";
 
 //makeEntry(name, email, message);
 
+
 function makeEntry(name, email, message) {
 	entry = { name: name, email: email, message: message};
 	fs.readFile('credentials.json', gotCredentials);
@@ -58,7 +59,7 @@ function authorized(oAuth2Client) {
 
 
 function done(status) {
-	console.log("All done.");
+	console.log("All done.", status);
 }
 
 /**

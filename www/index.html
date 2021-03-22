@@ -73,6 +73,7 @@ logo background colour is #003e52 -->
 	function responseFromContact(err, data) {
 		console.log("Response received....");
 		console.log(data);
+		document.getElementById("button-text").innerText = "Thank you. We will be in touch shortly.";
 	}
 
 </script>
@@ -106,8 +107,9 @@ logo background colour is #003e52 -->
                             <h4>Welcome to <em>AstroFarm</em></h4> 
                             <span>ASTRO-TOURISM &amp; ASTRO-HOSTING</span>
                             <p>We are an astronomy tourism and telescope hosting site situated on the island of <em>La Palma</em> in the <em>Canary Islands</em>.</p>
-                            <div class="primary-button">
-                              <a href="aboutus.html">Read more about us...</a>
+							<div class="primary-button">
+								<a href="#contact">Contact us</a> or 
+							  <a href="aboutus.html">Read more ...</a>
                             </div>
                           </div>
                         </div>
@@ -144,7 +146,7 @@ logo background colour is #003e52 -->
                           </div>
                           <div class="col-md-12">
                             <fieldset>
-                              <button type="submit" id="form-submit" class="button">Send Message</button>
+                              <button type="submit" id="form-submit" class="button"><span id="button-text">Send Message</span></button>
                             </fieldset>
                           </div>
                         </div>
