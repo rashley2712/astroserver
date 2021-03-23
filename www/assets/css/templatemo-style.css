@@ -414,6 +414,11 @@ section.contact-form {
     cursor: pointer;
 }
 
+.contact-form button selected {
+		color: #fff;
+		background-color: rgba(0,62,82,1);		
+}
+
 .contact-form button:hover {
     color: #fff;
     background-color: rgba(0,62,82,1);

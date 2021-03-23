@@ -37,6 +37,8 @@ logo background colour is #003e52 -->
 	var availableDates = null;
 	var imageList = [];
 	var imageIndex = 0;
+	var videoSelection = 0;
+	var videoSettings = ['04', '08', '12', '24'];
 	// Call a function only when the page is fully loaded.
 	document.addEventListener('readystatechange', event => {
 		if (event.target.readyState === "complete") {
@@ -49,6 +51,9 @@ logo background colour is #003e52 -->
  
 		console.log("Current time is:", currentDate);
 		getJSON('skycam/skycam.json', showImages);
+		// Set the correct button of the video selector
+		var selectStyle = "color: #fff;background-color: rgba(0,62,82,1);";
+		document.getElementById('video_' + videoSettings[videoSelection]).style = selectStyle;
 	}
 	
 	function showImages (err, data){
@@ -66,6 +71,20 @@ logo background colour is #003e52 -->
 		if (imageIndex<0) imageIndex=0;
 		if (imageIndex>=imageList.length) imageIndex=0;
 		document.getElementById("skycamimage").src = "skycam/" + imageList[imageIndex];
+	}
+
+	function changeVideoSelection(value) {
+		console.log("Changing video to ", value);
+		// Reset the previous button of the video selector
+		var deselectStyle = "color: #003e52;background-color: transparent;";
+		document.getElementById('video_' + videoSettings[videoSelection]).style = deselectStyle;
+		videoSelection = value;
+		// Set the correct button of the video selector
+		var selectStyle = "color: #fff;background-color: rgba(0,62,82,1);";
+		document.getElementById('video_' + videoSettings[videoSelection]).style = selectStyle;
+		// Update the video link
+		document.getElementById('videosrc').src = "skycam/videos/latest_" + videoSettings[videoSelection] + ".mp4";
+		
 	}
 
   
@@ -124,11 +143,22 @@ logo background colour is #003e52 -->
 							<h4>Videos</h4>
 							<table>
 								<tr>
+									<td>&nbsp;</td>
+									<td align="center">
+										<button id="video_04" onclick="changeVideoSelection(0)">4 hours</button>
+										<button id="video_08" onclick="changeVideoSelection(1)">8 hours</button>
+										<button id="video_12" onclick="changeVideoSelection(2)">12 hours</button>
+										<button id="video_24" onclick="changeVideoSelection(3)">24 hours</button>
+									</td>
+									<td>&nbsp;</td>
+								</tr>
+							
+								<tr>
 									<td id="menuCell" onclick="changeVideo(-1)" style="width: 40px;">&lt;&lt;</td>
 							
 									<td align="center">
 										<div id="videoholder">
-											<video autoplay controls>
+											<video autoplay controls id="videosrc">
 												<source src="skycam/videos/latest_04.mp4" type="video/mp4">
 											</video>
 										</div>
