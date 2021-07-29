@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<script language="Javascript">
+  
+  function getLocation() {
+  	var x = document.getElementById("demo");
+  	if (navigator.geolocation) {
+  	    navigator.geolocation.getCurrentPosition(showPosition);
+  	  } else { 
+  	    x.innerHTML = "Geolocation is not supported by this browser.";
+  	  }
+  }
+
+  function showPosition(position) {
+  	var x = document.getElementById("demo");
+    x.innerHTML = "Latitude: " + position.coords.latitude + "<br>Longitude: " + position.coords.longitude;
+    var mapURL = "https://www.google.com/maps/@" + position.coords.latitude.toString() + "," +  position.coords.longitude.toString() + ",17z";
+    document.getElementById("maplink").href = mapURL;
+  }
+
+
+	window.addEventListener("load", function(event) {
+	    console.log("EventListener: All resources finished loading!");
+    getLocation();
+
+	});
+</script>
+<html>
+<body>
+<img src="images/opinana.png">
+<p>Click on the Maps link to see if we found you.</p>
+
+<p id="demo"></p>
+
+<a id="maplink" href="">Maps link</a>
+
+<script>
+</script>
+
+<!-- https://www.google.es/maps/@40.373,-3.526,17z -->
+
+</body>
+</html>
+
