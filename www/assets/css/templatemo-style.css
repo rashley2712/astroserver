@@ -25,6 +25,10 @@ input, select, textarea {
 	outline: none;
 }
 
+:first-child strong{
+    color: #9b9999;
+ }
+
 a:hover {
 	color: #FC3;
 	text-decoration: none;
