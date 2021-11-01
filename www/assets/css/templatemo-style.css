@@ -1153,7 +1153,7 @@ section.buttons .container-fluid {
     }
     #sidebar .toggle:after {
         background: rgba(0,62,82, 0.90);
-        border-radius: 5px;
+    	 border-radius: 5px;
         content: '';
         height: 60px;
         left: 15px;
