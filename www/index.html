@@ -46,6 +46,7 @@ logo background colour is #003e52 -->
 	function onLoad() {
 		console.log("The page has loaded....");
 		document.getElementById('contact').addEventListener("submit", processContact);
+    renderMenu();
 	}
 
 	function getJSONcontact(url, data, callback) {
@@ -188,30 +189,15 @@ logo background colour is #003e52 -->
             </section>
               
             <!-- Menu -->
-			<nav id="menu">
-				<ul>
-				  <li><a href="index.html">Home</a></li>
-				  <li><a href="aboutus.html">About us</a></li>
-          <li><a href="history.html">History</a></li>
-				  <li><a href="weather.html">Weather</a></li>
-				  <li>
-					<span class="opener">Experiments</span>
-					<ul>
-					  <li><a href="skycam.html">SkyCam</a></li>
-				      <li><a href="meteologger.html">Meteo logger</a></li>
-              		</ul>
-				  </li>
-		 
-				  <li><a href="https://www.airbnb.es/experiences/1353943" target="_new">Stargazing trips</a></li>
-				  <li><a href="http://www.astro-travels.com/La-Palma-astro.html" target="_new">Education</a></li>
-				  
-			  </ul>
-			  </nav>
+
+    	<nav id="menu">
+        <span id="menuPlaceHolder"></span>
+			</nav>
 
 
             <!-- Footer -->
             <footer id="footer">
-              <p class="copyright">Copyright &copy; 2021 AstroFarm S.L.
+              <p class="copyright">Copyright &copy; 2022 AstroFarm S.L.
               <br>CSS design taken from <a rel="nofollow" href="https://www.facebook.com/templatemo">Template Mo</a></p>
             </footer>
 
