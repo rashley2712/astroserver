@@ -279,7 +279,7 @@ function convertToGalactic(ra, dec) {
 			<li><a href="history.html">History</a></li>					
 			<li><a href="weather.html">Weather</a></li>
 			<li>
-				<span class="opener">Experiments</span>
+				<span class='opener'>Experiments</span>
 				<ul>
 					<li><a href="skycam.html">SkyCam</a></li>
 					<li><a href="meteologger.html">Meteo logger</a></li>

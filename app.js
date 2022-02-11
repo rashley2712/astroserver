@@ -12,6 +12,7 @@ const path = require('path');
 const rootPath = "/var/www/astrofarm";
 const sqlDBFile = "meteo.db";
 const { spawn } = require('child_process');
+const pug = require('pug');
 
 var port = 3001;
 
@@ -180,11 +181,11 @@ astrofarm.post('/imageUpload', function(req, res) {
   })
 
 
-astrofarm.get('/', function(req, res) {
+//astrofarm.get('/', function(req, res) {
   // res.send('Welcome to AstroFarm')
-  console.log("received a GET for", req.url)
-  res.redirect('/index.html')
-  })
+//  console.log("received a GET for", req.url)
+//  res.redirect('/index.html')
+//  })
 
 astrofarm.get('/moonphase', function(req, res) {
   astronomy.moon(null, writeout)					
@@ -377,8 +378,8 @@ app.use(vhost('localhost', astrofarm))
 app.use(vhost('thinkpad', astrofarm))
 
 app.get('/', (req, res) => {
+  console.log("testing pug");
   res.redirect("/index.html");
-	//res.send("Hello world");
 });
 
 app.get('/info', (req, res) => {
@@ -393,7 +394,7 @@ app.get('/info', (req, res) => {
 
 
 	// => res.redirect('/index.html'))
-app.use(express.static('/var/www'));
+// app.use(express.static('/var/www'));
 console.log(process.argv);
 let requestedPort = parseInt(process.argv[2]);
 if (isNaN(requestedPort)) {
