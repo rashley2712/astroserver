@@ -276,7 +276,8 @@ function convertToGalactic(ra, dec) {
 		<ul>   								
 			<li><a href="index.html">Home</a></li>			
 			<li><a href="aboutus.html">About us</a></li>	
-			<li><a href="history.html">History</a></li>					
+			<li><a href="history.html">History</a></li>
+			<li><a href="aerial.html">Aerial views</a></li>					
 			<li><a href="weather.html">Weather</a></li>
 			<!--  <li><a href="skycam.html">SkyCam</a></li>  -->
 			<!-- <li><a href="meteologger.html">Meteo logger</a></li>  -->

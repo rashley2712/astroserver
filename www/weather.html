@@ -23,11 +23,6 @@
     <!-- Bootstrap core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-<!--
-Ramayana CSS Template
-https://templatemo.com/tm-529-ramayana
-logo background colour is #003e52 -->
-
     <!-- Additional CSS Files -->
     <link rel="stylesheet" href="assets/css/fontawesome.css">
     <link rel="stylesheet" href="assets/css/templatemo-style.css">
@@ -63,6 +58,7 @@ logo background colour is #003e52 -->
 
       
     function onLoad() {
+        renderMenu();
         console.log("The page has loaded....");
         console.log("Current date-time is:", currentDate);
         console.log("Current month is", currentMonth);
@@ -150,24 +146,8 @@ logo background colour is #003e52 -->
               
             <!-- Menu -->
             <nav id="menu">
-				<ul>
-				  <li><a href="index.html">Home</a></li>
-				  <li><a href="aboutus.html">About us</a></li>
-          <li><a href="history.html">History</a></li>
-				  <li><a href="weather.html">Weather</a></li>
-				  <li>
-					<span class="opener">Experiments</span>
-					<ul>
-					  <li><a href="skycam.html">SkyCam</a></li>
-					  <li><a href="meteologger.html">Meteo logger</a></li>
-					</ul>
-				  </li>
-		 
-				  <li><a href="https://www.airbnb.es/experiences/1353943" target="_new">Stargazing trips</a></li>
-				  <li><a href="http://www.astro-travels.com/La-Palma-astro.html" target="_new">Education</a></li>
-				  
-			  </ul>
-			  </nav>
+              <span id="menuPlaceHolder"></span>
+				</nav>
 
          
             <!-- Footer -->
