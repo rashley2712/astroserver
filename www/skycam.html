@@ -59,7 +59,8 @@ logo background colour is #003e52 -->
 		console.log("The page has loaded....");
  
 		console.log("Current time is:", currentDate);
-		getJSON('skycam/skycam.json', showImages);
+		//getJSON('skycam/skycam.json', showImages);
+		getJSON('https://skywatching.eu/metadata?host=feelgood', showImages);
 		// Set the correct button of the video selector
 		var selectStyle = "color: #fff;background-color: rgba(0,62,82,1);";
 		document.getElementById('video_' + videoSettings[videoSelection]).style = selectStyle;
@@ -67,19 +68,19 @@ logo background colour is #003e52 -->
 	
 	function showImages (err, data){
 		console.log("Image data:");
-		console.log(data);
-		console.log("latest image is:", data.mostRecent);
-		imageList = data.files;
-		imageIndex = 0;
-		document.getElementById("skycamimage").src = "skycam/" + imageList[imageIndex];
-		// aspect ratio 2592 px x 1944 px
+		castDateTimeUT(data);
+		imageList = data.sort((a, b) => (a.dateTime.getTime()) - (b.dateTime.getTime()));
+		latestImage = imageList[imageList.length-1];
+		console.log("Latestest image: ", latestImage);
+		imageIndex = imageList.length - 1;
+		document.getElementById("skycamimage").src = "https://skywatching.eu/camera/small/" + imageList[imageIndex].file;
 	}
 	
 	function changeImage(delta) {
-		imageIndex-= delta;
+		imageIndex+= delta;
 		if (imageIndex<0) imageIndex=0;
-		if (imageIndex>=imageList.length) imageIndex=0;
-		document.getElementById("skycamimage").src = "skycam/" + imageList[imageIndex];
+		if (imageIndex>=imageList.length) imageIndex=imageList.length-1;
+		document.getElementById("skycamimage").src = "https://skywatching.eu/camera/small/" + imageList[imageIndex].file;
 	}
 
 	function changeVideoSelection(value) {

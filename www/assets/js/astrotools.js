@@ -271,6 +271,21 @@ function convertToGalactic(ra, dec) {
 		return count;
 	}
 
+	function castDateTimeUT(dayData) {
+		let count = 0;
+		for (line of dayData) {
+			let year = parseInt(line.date.substring(0, 4));
+			let month = parseInt(line.date.substring(5, 7));
+			let day = parseInt(line.date.substring(8, 10));
+			let hour = parseInt(line.date.substring(11, 13));
+			let minute = parseInt(line.date.substring(14, 16));
+			let second = parseFloat(line.date.substring(17, 25));
+			line.dateTime = new Date(Date.UTC(year, month-1, day, hour, minute, second));
+			count++;
+		  }
+		return count;
+	}
+
 	function renderMenu() {
 		const menuHTML = `
 		<ul>   								
@@ -279,7 +294,7 @@ function convertToGalactic(ra, dec) {
 			<li><a href="history.html">History</a></li>
 			<li><a href="aerial.html">Aerial views</a></li>					
 			<li><a href="weather.html">Weather</a></li>
-			<!--  <li><a href="skycam.html">SkyCam</a></li>  -->
+			<li><a href="skycam.html">SkyCam</a></li>  
 			<!-- <li><a href="meteologger.html">Meteo logger</a></li>  -->
 			<li><a href="https://www.airbnb.es/experiences/1353943" target="_new">Stargazing trips</a></li>
 			<li><a href="http://www.astro-travels.com/La-Palma-astro.html" target="_new">Education</a></li>
