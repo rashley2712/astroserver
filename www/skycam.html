@@ -57,7 +57,7 @@ logo background colour is #003e52 -->
 		
 	function onLoad() {
 		console.log("The page has loaded....");
- 
+		renderMenu();
 		console.log("Current time is:", currentDate);
 		//getJSON('skycam/skycam.json', showImages);
 		getJSON('https://skywatching.eu/metadata?host=feelgood', showImages);
@@ -85,6 +85,7 @@ logo background colour is #003e52 -->
 
 	function changeVideoSelection(value) {
 		console.log("Changing video to ", value);
+		let host = "feelgood";
 		// Reset the previous button of the video selector
 		var deselectStyle = "color: #003e52;background-color: transparent;";
 		document.getElementById('video_' + videoSettings[videoSelection]).style = deselectStyle;
@@ -93,7 +94,7 @@ logo background colour is #003e52 -->
 		var selectStyle = "color: #fff;background-color: rgba(0,62,82,1);";
 		document.getElementById('video_' + videoSettings[videoSelection]).style = selectStyle;
 		// Update the video link
-		document.getElementById('videosrc').src = "skycam/videos/latest_" + videoSettings[videoSelection] + ".mp4";
+		document.getElementById('videosrc').src = "https://skywatching.eu/camera/videos/" + host + "_" + videoSettings[videoSelection] + ".mp4";
 		
 	}
 
@@ -169,7 +170,7 @@ logo background colour is #003e52 -->
 									<td align="center">
 										<div id="videoholder">
 											<video autoplay controls id="videosrc">
-												<source src="skycam/videos/latest_04.mp4" type="video/mp4">
+												<source src="https://skywatching.eu/camera/videos/feelgood_04.mp4" type="video/mp4">
 											</video>
 										</div>
 									</td>
@@ -199,23 +200,7 @@ logo background colour is #003e52 -->
               
             <!-- Menu -->
             <nav id="menu">
-              <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="aboutus.html">About us</a></li>
-				<li><a href="history.html">History</a></li>
-                <li><a href="weather.html">Weather</a></li>
-                <li>
-                  <span class="opener">Experiments</span>
-                  <ul>
-                    <li><a href="skycam.html">SkyCam</a></li>
-					<li><a href="meteologger.html">Meteo logger</a></li>
-				  </ul>
-                </li>
-       
-				<li><a href="https://www.airbnb.es/experiences/1353943" target="_new">Stargazing trips</a></li>
-				<li><a href="http://www.astro-travels.com/La-Palma-astro.html" target="_new">Education</a></li>
-				
-			</ul>
+				<span id="menuPlaceHolder"></span>
             </nav>
 
        
